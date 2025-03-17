@@ -1,0 +1,17 @@
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\obj\Debug\net9.0\Services.Authorization.Persistence.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\obj\Debug\net9.0\Services.Authorization.Persistence.AssemblyInfoInputs.cache
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\obj\Debug\net9.0\Services.Authorization.Persistence.AssemblyInfo.cs
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\obj\Debug\net9.0\Services.Authorization.Persistence.csproj.CoreCompileInputs.cache
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\obj\Debug\net9.0\Services.Authorization.Persistence.csproj.AssemblyReference.cache
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\bin\Debug\net9.0\Services.Authorization.Persistence.deps.json
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\bin\Debug\net9.0\Services.Authorization.Persistence.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\bin\Debug\net9.0\Services.Authorization.Persistence.pdb
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\bin\Debug\net9.0\Services.Authorization.Application.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\bin\Debug\net9.0\Services.Authorization.Domain.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\bin\Debug\net9.0\Services.Authorization.Application.pdb
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\bin\Debug\net9.0\Services.Authorization.Domain.pdb
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\obj\Debug\net9.0\Services.677D4E0A.Up2Date
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\obj\Debug\net9.0\Services.Authorization.Persistence.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\obj\Debug\net9.0\refint\Services.Authorization.Persistence.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\obj\Debug\net9.0\Services.Authorization.Persistence.pdb
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Persistence\obj\Debug\net9.0\ref\Services.Authorization.Persistence.dll

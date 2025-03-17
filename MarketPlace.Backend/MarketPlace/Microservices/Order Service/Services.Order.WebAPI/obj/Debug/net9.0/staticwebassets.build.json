@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "5RBfidnDt8s9wtw5GLvgOGlpDA0c0bSRWJMqO7yJyws=",
+  "Source": "Services.Order.WebAPI",
+  "BasePath": "_content/Services.Order.WebAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

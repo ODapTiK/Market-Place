@@ -1,0 +1,15 @@
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\bin\Debug\net9.0\Services.Product.Application.deps.json
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\bin\Debug\net9.0\Services.Product.Application.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\bin\Debug\net9.0\Services.Product.Application.pdb
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\obj\Debug\net9.0\Services.Product.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\obj\Debug\net9.0\Services.Product.Application.AssemblyInfoInputs.cache
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\obj\Debug\net9.0\Services.Product.Application.AssemblyInfo.cs
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\obj\Debug\net9.0\Services.Product.Application.csproj.CoreCompileInputs.cache
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\obj\Debug\net9.0\Services.Product.Application.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\obj\Debug\net9.0\refint\Services.Product.Application.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\obj\Debug\net9.0\Services.Product.Application.pdb
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\obj\Debug\net9.0\ref\Services.Product.Application.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\obj\Debug\net9.0\Services.Product.Application.csproj.AssemblyReference.cache
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\bin\Debug\net9.0\Services.Product.Domain.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\bin\Debug\net9.0\Services.Product.Domain.pdb
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\obj\Debug\net9.0\Services.AB9176C4.Up2Date
