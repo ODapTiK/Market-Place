@@ -1,0 +1,17 @@
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\bin\Debug\net9.0\Services.User.Persistence.deps.json
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\bin\Debug\net9.0\Services.User.Persistence.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\bin\Debug\net9.0\Services.User.Persistence.pdb
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\bin\Debug\net9.0\Services.User.Application.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\bin\Debug\net9.0\Services.User.Domain.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\bin\Debug\net9.0\Services.User.Application.pdb
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\bin\Debug\net9.0\Services.User.Domain.pdb
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\Services.User.Persistence.csproj.AssemblyReference.cache
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\Services.User.Persistence.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\Services.User.Persistence.AssemblyInfoInputs.cache
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\Services.User.Persistence.AssemblyInfo.cs
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\Services.User.Persistence.csproj.CoreCompileInputs.cache
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\Services.C01C6196.Up2Date
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\Services.User.Persistence.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\refint\Services.User.Persistence.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\Services.User.Persistence.pdb
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\ref\Services.User.Persistence.dll
