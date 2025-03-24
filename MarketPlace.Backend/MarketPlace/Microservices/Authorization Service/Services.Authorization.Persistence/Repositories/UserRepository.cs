@@ -1,4 +1,6 @@
-﻿namespace AuthorizationService
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace AuthorizationService
 {
     public class UserRepository : IUserRepository
     {
@@ -32,7 +34,7 @@
 
         public async Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken)
         {
-            var user = await _authDbContext.Users.FindAsync([email], cancellationToken);
+            var user = await _authDbContext.Users.FirstOrDefaultAsync(x => x.Email.Equals(email), cancellationToken);
 
             return user;
         }

@@ -70,3 +70,4 @@ C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microserv
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.WebAPI\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.WebAPI\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.WebAPI\obj\Debug\net9.0\Services.Product.WebAPI.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.WebAPI\obj\Debug\net9.0\Services.Product.WebAPI.sourcelink.json

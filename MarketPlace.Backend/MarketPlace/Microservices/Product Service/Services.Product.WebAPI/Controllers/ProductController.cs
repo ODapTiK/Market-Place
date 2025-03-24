@@ -25,7 +25,7 @@ namespace ProductService
             return Ok(product);
         }
 
-        [HttpGet("ManufacturerProducts/{id}")]
+        [HttpGet("Manufacturer/{id}")]
         public async Task<ActionResult<List<Product>>> GetManufacturerProducts(Guid id)
         {
             var query = new GetManufacturerProductsQuery()

@@ -10,3 +10,4 @@ C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microserv
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Order Service\Services.Order.Domain\obj\Debug\net9.0\refint\Services.Order.Domain.dll
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Order Service\Services.Order.Domain\obj\Debug\net9.0\Services.Order.Domain.pdb
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Order Service\Services.Order.Domain\obj\Debug\net9.0\ref\Services.Order.Domain.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Order Service\Services.Order.Domain\obj\Debug\net9.0\Services.Order.Domain.sourcelink.json

@@ -2,9 +2,8 @@
 
 namespace AuthorizationService
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class TokenController : ControllerBase
+    public class TokenController : BaseController
     {
         private readonly IJwtProvider _jwtProvider;
 

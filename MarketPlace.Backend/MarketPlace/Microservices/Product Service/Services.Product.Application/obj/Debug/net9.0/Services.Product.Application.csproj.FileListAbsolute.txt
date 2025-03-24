@@ -13,3 +13,4 @@ C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microserv
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\bin\Debug\net9.0\Services.Product.Domain.dll
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\bin\Debug\net9.0\Services.Product.Domain.pdb
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\obj\Debug\net9.0\Services.AB9176C4.Up2Date
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Product Service\Services.Product.Application\obj\Debug\net9.0\Services.Product.Application.sourcelink.json

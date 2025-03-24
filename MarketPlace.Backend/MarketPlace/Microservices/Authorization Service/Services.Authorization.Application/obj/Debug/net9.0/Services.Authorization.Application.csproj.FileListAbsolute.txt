@@ -13,3 +13,4 @@ C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microserv
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Application\obj\Debug\net9.0\refint\Services.Authorization.Application.dll
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Application\obj\Debug\net9.0\Services.Authorization.Application.pdb
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Application\obj\Debug\net9.0\ref\Services.Authorization.Application.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Application\obj\Debug\net9.0\Services.Authorization.Application.sourcelink.json
