@@ -1,4 +1,19 @@
-.vs/
-*.suo
+# Игнорируем папки bin и obj в любых проектах
+**/bin/
+**/obj/
+
+# Дополнительные игнорируемые файлы и каталоги
 *.user
-*.userprefs
+*.suo
+*.sln.ide
+*.vs/
+*.vscode/
+*.dbmdl
+*.dbproj.schemaview
+*.dbproj
+*.jfm
+*.jfm.user
+*.pdb
+*.log
+*.tlog
+*.cache
