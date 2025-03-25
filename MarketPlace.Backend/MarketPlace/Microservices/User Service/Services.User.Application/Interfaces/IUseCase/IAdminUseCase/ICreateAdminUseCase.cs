@@ -2,6 +2,6 @@
 {
     public interface ICreateAdminUseCase
     {
-        public Task<Guid> Execute(AdminDTO adminDTO);
+        public Task<Guid> Execute(AdminDTO adminDTO, CancellationToken cancellationToken);
     }
 }

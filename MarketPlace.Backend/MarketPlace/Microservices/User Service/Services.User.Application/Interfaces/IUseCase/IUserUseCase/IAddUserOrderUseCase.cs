@@ -2,6 +2,6 @@
 {
     public interface IAddUserOrderUseCase
     {
-        public Task Execute(Guid userId, Guid orderId);
+        public Task Execute(Guid userId, Guid orderId, CancellationToken cancellationToken);
     }
 }

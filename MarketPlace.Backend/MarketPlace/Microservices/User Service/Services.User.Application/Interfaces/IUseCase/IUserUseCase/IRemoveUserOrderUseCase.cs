@@ -2,6 +2,6 @@
 {
     public interface IRemoveUserOrderUseCase
     {
-        public Task Execute(Guid userId, Guid orderId);
+        public Task Execute(Guid userId, Guid orderId, CancellationToken cancellationToken);
     }
 }

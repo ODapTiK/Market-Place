@@ -2,6 +2,6 @@
 {
     public interface IGetManufacturerInfoUseCase
     {
-        public Task<Manufacturer> Execute(Guid manufacturerId);
+        public Task<Manufacturer> Execute(Guid manufacturerId, CancellationToken cancellationToken);
     }
 }

@@ -16,13 +16,13 @@ namespace UserService
             _validator = validator;
         }
 
-        public async Task<Guid> Execute(ManufacturerDTO manufacturerDTO)
+        public async Task<Guid> Execute(ManufacturerDTO manufacturerDTO, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(manufacturerDTO);
             if (!validationResult.IsValid)
                 throw new FluentValidation.ValidationException(validationResult.Errors);
 
-            return await _manufacturerRepository.CreateAsync(_mapper.Map<Manufacturer>(manufacturerDTO), CancellationToken.None);
+            return await _manufacturerRepository.CreateAsync(_mapper.Map<Manufacturer>(manufacturerDTO), cancellationToken);
         }
     }
 }

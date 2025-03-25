@@ -2,6 +2,6 @@
 {
     public interface IRemoveManufacturerProductUseCase
     {
-        public Task Execute(Guid manufacturerId, Guid productId);
+        public Task Execute(Guid manufacturerId, Guid productId, CancellationToken cancellationToken);
     }
 }

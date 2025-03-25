@@ -15,7 +15,7 @@ namespace UserService
             _validator = validator;
         }
 
-        public async Task<Guid> Execute(UserDTO userDTO)
+        public async Task<Guid> Execute(UserDTO userDTO, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(userDTO);
             if (!validationResult.IsValid)
@@ -23,7 +23,7 @@ namespace UserService
                 throw new FluentValidation.ValidationException(validationResult.Errors);
             }
 
-            return await _userRepository.CreateAsync(_mapper.Map<User>(userDTO), CancellationToken.None);
+            return await _userRepository.CreateAsync(_mapper.Map<User>(userDTO), cancellationToken);
         }
     }
 }

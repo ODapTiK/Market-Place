@@ -9,9 +9,9 @@
             _adminRepository = adminRepository;
         }
 
-        public async Task<Admin> Execute(Guid adminId)
+        public async Task<Admin> Execute(Guid adminId, CancellationToken cancellationToken)
         {
-            var admin = await _adminRepository.GetByIdAsync(adminId, CancellationToken.None);
+            var admin = await _adminRepository.GetByIdAsync(adminId, cancellationToken);
             if (admin == null)
                 throw new EntityNotFoundException(nameof(Admin), adminId);
 

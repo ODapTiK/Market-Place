@@ -28,49 +28,49 @@ namespace UserService
         }
 
         [HttpGet]
-        public async Task<ActionResult<Manufacturer>> GetManufacturer()
+        public async Task<ActionResult<Manufacturer>> GetManufacturer(CancellationToken cancellationToken)
         {
-            var user = await _getManufacturerInfoUseCase.Execute(UserId);
+            var user = await _getManufacturerInfoUseCase.Execute(UserId, cancellationToken);
 
             return Ok(user);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateManufacturer([FromBody] ManufacturerDTO manufacturerDTO)
+        public async Task<ActionResult<Guid>> CreateManufacturer([FromBody] ManufacturerDTO manufacturerDTO, CancellationToken cancellationToken)
         {
-            var resultId = await _createManufacturerUseCase.Execute(manufacturerDTO);
+            var resultId = await _createManufacturerUseCase.Execute(manufacturerDTO, cancellationToken);
 
             return Ok(resultId);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateManufaturer([FromBody] ManufacturerDTO manufacturerDTO)
+        public async Task<IActionResult> UpdateManufaturer([FromBody] ManufacturerDTO manufacturerDTO, CancellationToken cancellationToken)
         {
-            await _updateManufacturerUseCase.Execute(manufacturerDTO);
+            await _updateManufacturerUseCase.Execute(manufacturerDTO, cancellationToken);
 
             return Ok();
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteManufacturer()
+        public async Task<IActionResult> DeleteManufacturer(CancellationToken cancellationToken)
         {
-            await _deleteManufacturerUseCase.Execute(UserId);
+            await _deleteManufacturerUseCase.Execute(UserId, cancellationToken);
 
             return Ok();
         }
 
         [HttpPut("/Product/Add/{id}")]
-        public async Task<IActionResult> AddManufacturerProduct(Guid id)
+        public async Task<IActionResult> AddManufacturerProduct(Guid id, CancellationToken cancellationToken)
         {
-            await _addManufacturerProductUseCase.Execute(UserId, id);
+            await _addManufacturerProductUseCase.Execute(UserId, id, cancellationToken);
 
             return Ok();
         }
 
         [HttpPut("Product/Remove/{id}")]
-        public async Task<IActionResult> RemoveManufacturerProduct(Guid id)
+        public async Task<IActionResult> RemoveManufacturerProduct(Guid id, CancellationToken cancellationToken)
         {
-            await _removeManufacturerProductUseCase.Execute(UserId, id);
+            await _removeManufacturerProductUseCase.Execute(UserId, id, cancellationToken);
 
             return Ok();
         }

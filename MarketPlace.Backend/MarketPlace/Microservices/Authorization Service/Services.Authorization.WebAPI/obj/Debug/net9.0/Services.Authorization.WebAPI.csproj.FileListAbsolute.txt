@@ -147,4 +147,9 @@ C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microserv
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.WebAPI\bin\Debug\net9.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.WebAPI\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.WebAPI\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.WebAPI\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.WebAPI\obj\Debug\net9.0\Services.Authorization.WebAPI.sourcelink.json
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.WebAPI\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.WebAPI\bin\Debug\net9.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.WebAPI\bin\Debug\net9.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.WebAPI\bin\Debug\net9.0\Microsoft.Extensions.Identity.Core.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.WebAPI\bin\Debug\net9.0\Microsoft.Extensions.Identity.Stores.dll

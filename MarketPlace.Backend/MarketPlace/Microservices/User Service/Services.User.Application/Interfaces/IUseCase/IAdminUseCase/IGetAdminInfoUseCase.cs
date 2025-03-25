@@ -2,6 +2,6 @@
 {
     public interface IGetAdminInfoUseCase
     {
-        public Task<Admin> Execute(Guid adminId);
+        public Task<Admin> Execute(Guid adminId, CancellationToken cancellationToken);
     }
 }

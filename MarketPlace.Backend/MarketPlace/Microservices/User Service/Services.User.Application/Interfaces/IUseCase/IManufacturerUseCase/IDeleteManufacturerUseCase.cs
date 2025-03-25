@@ -2,6 +2,6 @@
 {
     public interface IDeleteManufacturerUseCase
     {
-        public Task Execute(Guid manufacturerId);
+        public Task Execute(Guid manufacturerId, CancellationToken cancellationToken);
     }
 }

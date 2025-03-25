@@ -16,13 +16,13 @@ namespace UserService
             _validator = validator;
         }
 
-        public async Task<Guid> Execute(AdminDTO adminDTO)
+        public async Task<Guid> Execute(AdminDTO adminDTO, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(adminDTO);
             if (!validationResult.IsValid)
                 throw new FluentValidation.ValidationException(validationResult.Errors);
 
-            return await _adminRepository.CreateAsync(_mapper.Map<Admin>(adminDTO), CancellationToken.None);
+            return await _adminRepository.CreateAsync(_mapper.Map<Admin>(adminDTO), cancellationToken);
         }
     }
 }

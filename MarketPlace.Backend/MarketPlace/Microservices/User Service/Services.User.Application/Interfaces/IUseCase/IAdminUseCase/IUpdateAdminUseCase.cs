@@ -2,6 +2,6 @@
 {
     public interface IUpdateAdminUseCase
     {
-        public Task Execute(AdminDTO adminDTO);
+        public Task Execute(AdminDTO adminDTO, CancellationToken cancellationToken);
     }
 }

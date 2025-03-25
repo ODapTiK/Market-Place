@@ -21,21 +21,21 @@ namespace AuthorizationService
             _jwtProvider = jwtProvider;
         }
 
-        public async Task<TokenDTO> Execute(AuthUserDTO authUserDTO)
+        public async Task<TokenDTO> Execute(AuthUserDTO authUserDTO, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(authUserDTO);
             if (!validationResult.IsValid)
                 throw new FluentValidation.ValidationException(validationResult.Errors);
 
-            var user = await _userRepository.FindByEmailAsync(authUserDTO.Email, CancellationToken.None);
+            var user = await _userRepository.FindByEmailAsync(authUserDTO.Email, cancellationToken);
 
             if (user == null)
             {
                 throw new EntityNotFoundException(nameof(User), authUserDTO.Email);
             }
-            else if (_passwordEncryptor.VerifyPassword(user.Password, authUserDTO.Password))
+            else if (_passwordEncryptor.VerifyPassword(user.PasswordHash, authUserDTO.Password))
             {
-                return await _jwtProvider.GenerateToken(user, true, CancellationToken.None);
+                return await _jwtProvider.GenerateToken(user, true, cancellationToken);
             }
             else throw new AuthenticationException();
         }

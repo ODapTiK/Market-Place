@@ -1,17 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace AuthorizationService
 {
-    public class AuthDbContext : DbContext, IAuthDbContext
+    public class AuthDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>, IAuthDbContext
     {
         public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new UserConfiguration());
-
             base.OnModelCreating(modelBuilder);
         }
     }

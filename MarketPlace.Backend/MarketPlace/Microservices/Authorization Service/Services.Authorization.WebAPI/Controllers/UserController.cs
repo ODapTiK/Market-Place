@@ -20,25 +20,25 @@ namespace AuthorizationService
         }
 
         [HttpGet("Auth")]
-        public async Task<ActionResult<TokenDTO>> AuthenticateUser([FromQuery] AuthUserDTO authUserDTO)
+        public async Task<ActionResult<TokenDTO>> AuthenticateUser([FromQuery] AuthUserDTO authUserDTO, CancellationToken cancellationToken)
         {
-            var token = await _authenticationUseCase.Execute(authUserDTO);
+            var token = await _authenticationUseCase.Execute(authUserDTO, cancellationToken);
 
             return Ok(token);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateUser([FromBody] UserDTO userDTO)
+        public async Task<ActionResult<Guid>> CreateUser([FromBody] UserDTO userDTO, CancellationToken cancellationToken)
         {
-            var resultId = await _createUserUseCase.Execute(userDTO);
+            var resultId = await _createUserUseCase.Execute(userDTO, cancellationToken);
 
             return Ok(resultId);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        public async Task<IActionResult> DeleteUser(Guid id, CancellationToken cancellationToken)
         {
-            await _deleteUserUseCase.Execute(id);
+            await _deleteUserUseCase.Execute(id, cancellationToken);
 
             return Ok();
         }

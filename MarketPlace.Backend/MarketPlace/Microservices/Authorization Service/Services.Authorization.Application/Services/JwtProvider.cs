@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -15,12 +16,23 @@ namespace AuthorizationService
             _Options = options;
             _UserRepository = userRepository;
         }
-        private string GenerateAccessToken(User user)
+        private async Task<string> GenerateAccessToken(User user)
         {
             var signinCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Options.Key)),
-                SecurityAlgorithms.HmacSha256);
+            SecurityAlgorithms.HmacSha256);
 
-            Claim[] claims = [new("UserId", user.Id.ToString()), new("Role", user.Role), new(ClaimTypes.Role, user.Role), new(ClaimTypes.NameIdentifier, user.Id.ToString())];
+            var roles = await _UserRepository.GetUserRoleAsync(user); 
+            var claims = new List<Claim>
+            {
+                new Claim("UserId", user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
             var token = new JwtSecurityToken(
                 signingCredentials: signinCredentials,
                 claims: claims,
@@ -68,7 +80,7 @@ namespace AuthorizationService
 
         public async Task<TokenDTO> GenerateToken(User user, bool populateExp, CancellationToken cancellationToken)
         {
-            var accessToken = GenerateAccessToken(user);
+            var accessToken = await GenerateAccessToken(user);
             var refreshToken = GenerateRefreshToken();
 
             user.RefreshToken = refreshToken;
@@ -76,7 +88,7 @@ namespace AuthorizationService
             {
                 user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             }
-            await _UserRepository.UpdateAsync(cancellationToken);
+            await _UserRepository.UpdateAsync(user, cancellationToken);
 
             return new TokenDTO(accessToken, refreshToken);
         }

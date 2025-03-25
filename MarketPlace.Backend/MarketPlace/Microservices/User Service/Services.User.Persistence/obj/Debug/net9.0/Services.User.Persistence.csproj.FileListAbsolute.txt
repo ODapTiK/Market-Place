@@ -15,3 +15,4 @@ C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microserv
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\refint\Services.User.Persistence.dll
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\Services.User.Persistence.pdb
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\ref\Services.User.Persistence.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\User Service\Services.User.Persistence\obj\Debug\net9.0\Services.User.Persistence.sourcelink.json

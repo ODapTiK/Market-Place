@@ -14,26 +14,26 @@ namespace ProductService
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(Guid id)
+        public async Task<ActionResult<Product>> GetProduct(Guid id, CancellationToken cancellationToken)
         {
             var query = new GetProductQuery()
             {
                 Id = id
             };
 
-            var product = await Mediator.Send(query);
+            var product = await Mediator.Send(query, cancellationToken);
             return Ok(product);
         }
 
         [HttpGet("ManufacturerProducts/{id}")]
-        public async Task<ActionResult<List<Product>>> GetManufacturerProducts(Guid id)
+        public async Task<ActionResult<List<Product>>> GetManufacturerProducts(Guid id, CancellationToken cancellationToken)
         {
             var query = new GetManufacturerProductsQuery()
             {
                 ManufacturerId = id
             };
 
-            var products = await Mediator.Send(query);
+            var products = await Mediator.Send(query, cancellationToken);
             return Ok(products);
         }
 
@@ -47,27 +47,27 @@ namespace ProductService
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateProduct([FromBody] CreateProductDTO createProductDTO)
+        public async Task<ActionResult<Guid>> CreateProduct([FromBody] CreateProductDTO createProductDTO, CancellationToken cancellationToken)
         {
             var command = _mapper.Map<CreateProductCommand>(createProductDTO);
             command.ManufacturerId = UserId;
 
-            var productId = await Mediator.Send(command);
+            var productId = await Mediator.Send(command, cancellationToken);
             return Ok(productId);
         }
 
         [HttpPost("Review")]
-        public async Task<ActionResult<Guid>> CreateProductReview([FromBody] CreateProductReviewDTO createProductReviewDTO)
+        public async Task<ActionResult<Guid>> CreateProductReview([FromBody] CreateProductReviewDTO createProductReviewDTO, CancellationToken cancellationToken)
         {
             var command = _mapper.Map<CreateProductReviewCommand>(createProductReviewDTO);
             command.UserId = UserId;
 
-            var reviewId = await Mediator.Send(command);
+            var reviewId = await Mediator.Send(command, cancellationToken);
             return Ok(reviewId);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(Guid id)
+        public async Task<IActionResult> DeleteProduct(Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteProductCommand()
             {
@@ -75,27 +75,27 @@ namespace ProductService
                 ManufacturerId = UserId
             };
 
-            await Mediator.Send(command);
+            await Mediator.Send(command, cancellationToken);
             return Ok();
         }
 
         [HttpDelete("Review")]
-        public async Task<IActionResult> DeleteProductReview([FromBody] DeleteProductReviewDTO deleteProductReviewDTO)
+        public async Task<IActionResult> DeleteProductReview([FromBody] DeleteProductReviewDTO deleteProductReviewDTO, CancellationToken cancellationToken)
         {
             var command = _mapper.Map<DeleteProductReviewCommand>(deleteProductReviewDTO);
             command.UserId = UserId;
 
-            await Mediator.Send(command);
+            await Mediator.Send(command, cancellationToken);
             return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductDTO updateProductDTO)
+        public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductDTO updateProductDTO, CancellationToken cancellationToken)
         {
             var command = _mapper.Map<UpdateProductCommand>(updateProductDTO);
             command.ManufacturerId = UserId;
 
-            await Mediator.Send(command);
+            await Mediator.Send(command, cancellationToken);
             return Ok();
         }
     }

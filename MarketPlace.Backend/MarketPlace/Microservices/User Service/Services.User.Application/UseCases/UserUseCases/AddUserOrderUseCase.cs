@@ -9,18 +9,18 @@
             _userRepository = userRepository;
         }
 
-        public async Task Execute(Guid userId, Guid orderId)
+        public async Task Execute(Guid userId, Guid orderId, CancellationToken cancellationToken)
         {
             if (userId == Guid.Empty)
                 throw new FluentValidation.ValidationException("User Id must not be empty");
             else if (orderId == Guid.Empty)
                 throw new FluentValidation.ValidationException("Order Id must not be empty");
 
-            var user = await _userRepository.GetByIdAsync(userId, CancellationToken.None);
+            var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
             if (user == null)
                 throw new EntityNotFoundException(nameof(User), userId);
 
-            await _userRepository.AddOrderAsync(user, orderId, CancellationToken.None);
+            await _userRepository.AddOrderAsync(user, orderId, cancellationToken);
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface IUpdateManufacturerUseCase
     {
-        public Task Execute(ManufacturerDTO manufacturerDTO);
+        public Task Execute(ManufacturerDTO manufacturerDTO, CancellationToken cancellationToken);
     }
 }

@@ -9,18 +9,18 @@
             _manufacturerRepository = manufacturerRepository;
         }
 
-        public async Task Execute(Guid manufacturerId, Guid productId)
+        public async Task Execute(Guid manufacturerId, Guid productId, CancellationToken cancellationToken)
         {
             if (manufacturerId == Guid.Empty)
                 throw new FluentValidation.ValidationException("Manufacturer Id must not be empty");
             else if (productId == Guid.Empty)
                 throw new FluentValidation.ValidationException("Product Id must not be empty");
 
-            var manufacturer = await _manufacturerRepository.GetByIdAsync(manufacturerId, CancellationToken.None);
+            var manufacturer = await _manufacturerRepository.GetByIdAsync(manufacturerId, cancellationToken);
             if (manufacturer == null)
                 throw new EntityNotFoundException(nameof(Manufacturer), manufacturerId);
 
-            await _manufacturerRepository.AddProductAsync(manufacturer, productId, CancellationToken.None);
+            await _manufacturerRepository.AddProductAsync(manufacturer, productId, cancellationToken);
         }
     }
 }

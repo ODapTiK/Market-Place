@@ -16,19 +16,19 @@ namespace UserService
             _validator = validator;
         }
 
-        public async Task Execute(AdminDTO adminDTO)
+        public async Task Execute(AdminDTO adminDTO, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(adminDTO);
             if (!validationResult.IsValid)
                 throw new FluentValidation.ValidationException(validationResult.Errors);
 
-            var admin = await _adminRepository.GetByIdAsync(adminDTO.Id, CancellationToken.None);
+            var admin = await _adminRepository.GetByIdAsync(adminDTO.Id, cancellationToken);
             if (admin == null)
                 throw new EntityNotFoundException(nameof(AdminDTO), adminDTO.Id);
 
             admin = _mapper.Map<Admin>(adminDTO);
 
-            await _adminRepository.UpdateAsync(CancellationToken.None);
+            await _adminRepository.UpdateAsync(cancellationToken);
         }
     }
 }

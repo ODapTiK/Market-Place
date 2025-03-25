@@ -2,6 +2,6 @@
 {
     public interface ICreateManufacturerUseCase
     {
-        public Task<Guid> Execute(ManufacturerDTO manufacturerDTO);
+        public Task<Guid> Execute(ManufacturerDTO manufacturerDTO, CancellationToken cancellationToken);
     }
 }

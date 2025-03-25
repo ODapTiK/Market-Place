@@ -2,6 +2,6 @@
 {
     public interface IUpdateUserUseCase
     {
-        public Task Execute(UserDTO userDTO);
+        public Task Execute(UserDTO userDTO, CancellationToken cancellationToken);
     }
 }

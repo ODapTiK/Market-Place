@@ -9,3 +9,5 @@ C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microserv
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Domain\obj\Debug\net9.0\refint\Services.Authorization.Domain.dll
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Domain\obj\Debug\net9.0\Services.Authorization.Domain.pdb
 C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Domain\obj\Debug\net9.0\ref\Services.Authorization.Domain.dll
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Domain\obj\Debug\net9.0\Services.Authorization.Domain.sourcelink.json
+C:\Users\CVS\source\repos\Market Place\MarketPlace.Backend\MarketPlace\Microservices\Authorization Service\Services.Authorization.Domain\obj\Debug\net9.0\Services.Authorization.Domain.csproj.AssemblyReference.cache

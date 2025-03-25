@@ -6,31 +6,31 @@ namespace OrderService
     public class CartController : BaseController
     {
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateCart()
+        public async Task<ActionResult<Guid>> CreateCart(CancellationToken cancellationToken)
         {
             var command = new CreateCartCommand()
             {
                 UserId = UserId
             };
 
-            var resultId = await Mediator.Send(command);
+            var resultId = await Mediator.Send(command, cancellationToken);
             return Ok(resultId);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCart(Guid id)
+        public async Task<IActionResult> DeleteCart(Guid id, CancellationToken cancellationToken)
         {
             var command = new DeleteCartCommand()
             {
                 Id = id
             };
 
-            await Mediator.Send(command);
+            await Mediator.Send(command, cancellationToken);
             return Ok();
         }
 
         [HttpPut("AddPoint/{CartId}/{ProductId}")]
-        public async Task<IActionResult> AddOrderPoint(Guid CartId, Guid ProductId)
+        public async Task<IActionResult> AddOrderPoint(Guid CartId, Guid ProductId, CancellationToken cancellationToken)
         {
             var command = new AddOrderPointCommand()
             {
@@ -38,12 +38,12 @@ namespace OrderService
                 CartId = CartId
             };
 
-            await Mediator.Send(command);
+            await Mediator.Send(command, cancellationToken);
             return Ok();
         }
 
         [HttpPut("RemovePoint/{CartId}/{ProductId}")]
-        public async Task<IActionResult> RemoveOrderPoint(Guid CartId, Guid ProductId)
+        public async Task<IActionResult> RemoveOrderPoint(Guid CartId, Guid ProductId, CancellationToken cancellationToken)
         {
             var command = new RemoveOrderPointCommand()
             {
@@ -51,7 +51,7 @@ namespace OrderService
                 CartId = CartId
             };
 
-            await Mediator.Send(command);
+            await Mediator.Send(command, cancellationToken);
             return Ok();
         }
     }

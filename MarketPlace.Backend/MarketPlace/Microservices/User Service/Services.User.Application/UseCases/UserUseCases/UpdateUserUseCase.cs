@@ -16,7 +16,7 @@ namespace UserService
             _validator = validator;
         }
 
-        public async Task Execute(UserDTO userDTO)
+        public async Task Execute(UserDTO userDTO, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(userDTO);
             if (!validationResult.IsValid)
@@ -24,14 +24,14 @@ namespace UserService
                 throw new FluentValidation.ValidationException(validationResult.Errors);
             }
 
-            var user = await _userRepository.GetByIdAsync(userDTO.Id, CancellationToken.None);
+            var user = await _userRepository.GetByIdAsync(userDTO.Id, cancellationToken);
 
             if (user == null) 
                 throw new EntityNotFoundException(nameof(User), userDTO.Id);
 
             user = _mapper.Map<User>(userDTO);
 
-            await _userRepository.UpdateAsync(CancellationToken.None);
+            await _userRepository.UpdateAsync(cancellationToken);
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface IGetUserInfoUseCase
     {
-        public Task<User> Execute(Guid userId);
+        public Task<User> Execute(Guid userId, CancellationToken cancellationToken);
     }
 }

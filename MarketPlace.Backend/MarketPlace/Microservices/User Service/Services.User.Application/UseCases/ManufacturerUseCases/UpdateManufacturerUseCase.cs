@@ -16,19 +16,19 @@ namespace UserService
             _validator = validator;
         }
 
-        public async Task Execute(ManufacturerDTO manufacturerDTO)
+        public async Task Execute(ManufacturerDTO manufacturerDTO, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(manufacturerDTO);
             if (!validationResult.IsValid)
                 throw new FluentValidation.ValidationException(validationResult.Errors);
 
-            var manufacturer = await _manufacturerRepository.GetByIdAsync(manufacturerDTO.Id, CancellationToken.None);
+            var manufacturer = await _manufacturerRepository.GetByIdAsync(manufacturerDTO.Id, cancellationToken);
             if(manufacturer == null)
                 throw new EntityNotFoundException(nameof(Manufacturer), manufacturerDTO.Id);
 
             manufacturer = _mapper.Map<Manufacturer>(manufacturerDTO);
 
-            await _manufacturerRepository.UpdateAsync(CancellationToken.None);
+            await _manufacturerRepository.UpdateAsync(cancellationToken);
         }
     }
 }
