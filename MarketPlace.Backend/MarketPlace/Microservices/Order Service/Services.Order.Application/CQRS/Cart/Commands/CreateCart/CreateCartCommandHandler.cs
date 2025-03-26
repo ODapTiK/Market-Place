@@ -13,6 +13,10 @@ namespace OrderService
 
         public async Task<Guid> Handle(CreateCartCommand request, CancellationToken cancellationToken)
         {
+            var userCart = await _cartRepository.GetUserCartAsync(request.UserId, CancellationToken.None);
+            if(userCart != null)
+                throw new EntityAlreadyExistsException(nameof(Cart), request.UserId);
+
             var cart = new Cart()
             {
                 Id = Guid.NewGuid(),

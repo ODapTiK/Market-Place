@@ -1,11 +1,8 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace ProductService
+﻿namespace ProductService
 {
-    public class Product
+    [Serializable]
+    public class Product : Entity
     {
-        [BsonId]
-        public Guid Id { get; set; }
         public Guid ManufacturerId { get; set; }
         public string? Name { get; set; } 
         public string? Description { get; set; } 

@@ -6,12 +6,10 @@ namespace OrderService
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Guid>
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IMapper _mapper;
 
-        public CreateOrderCommandHandler(IOrderRepository orderRepository, IMapper mapper)
+        public CreateOrderCommandHandler(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
-            _mapper = mapper;
         }
 
         public Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -22,7 +20,7 @@ namespace OrderService
                 UserId = request.UserId,
                 OrderPoints = request.Points,
                 TotalPrice = request.TotalPrice,
-                OrderDateTime = DateTime.Now.ToUniversalTime(),
+                OrderDateTime = DateTime.Now.ToUniversalTime()
             };
 
             return _orderRepository.CreateAsync(order, cancellationToken);

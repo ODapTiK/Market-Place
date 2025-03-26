@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using StackExchange.Redis;
 
@@ -10,6 +13,7 @@ namespace ProductService
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
+            BsonSerializer.RegisterSerializer<Guid>(new GuidSerializer(GuidRepresentation.Standard));
             services.AddScoped<IJwtOptions, JwtOptions>();
             services.AddScoped<IProductRepository, ProductRepository>();
 

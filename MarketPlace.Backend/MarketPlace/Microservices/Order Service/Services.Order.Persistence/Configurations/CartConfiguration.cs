@@ -9,8 +9,8 @@ namespace OrderService
         {
             builder.HasKey(x => x.Id);
             builder.HasIndex(x => x.Id);
-            builder.Property(x => x.Id).IsRequired();
-            builder.Property(x => x.UserId).IsRequired();
+            builder.Property(x => x.Id).IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.UserId).IsRequired().ValueGeneratedNever();
         }
     }
 }

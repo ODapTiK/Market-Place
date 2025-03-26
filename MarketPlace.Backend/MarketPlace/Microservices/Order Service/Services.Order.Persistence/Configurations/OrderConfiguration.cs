@@ -9,14 +9,14 @@ namespace OrderService
         {
             builder.HasKey(x => x.Id);
             builder.HasIndex(x => x.Id).IsUnique();
-            builder.Property(x => x.Id).IsRequired();
-            builder.Property(x => x.UserId).IsRequired();
+            builder.Property(x => x.Id).IsRequired().ValueGeneratedNever();
+            builder.Property(x => x.UserId).IsRequired().ValueGeneratedNever();
             builder.Property(x => x.OrderDateTime).IsRequired();
             builder.Property(x => x.TotalPrice).IsRequired();
 
             builder.HasMany(x => x.OrderPoints)
                 .WithOne(x => x.Order)
-                .HasForeignKey(x => x.Orderid);
+                .HasForeignKey(x => x.OrderId);
         }
     }
 }

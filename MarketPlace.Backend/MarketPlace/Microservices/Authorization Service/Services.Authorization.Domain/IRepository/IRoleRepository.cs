@@ -4,8 +4,8 @@ namespace AuthorizationService
 {
     public interface IRoleRepository
     {
-        Task<IdentityRole?> GetRoleByNameAsync(string roleName);
+        Task<IdentityRole<Guid>?> GetRoleByNameAsync(string roleName);
         Task<bool> RoleExistsAsync(string roleName);
-        Task<IdentityResult> CreateRoleAsync(IdentityRole role);
+        Task<IdentityResult> CreateRoleAsync(IdentityRole<Guid> role);
     }
 }
