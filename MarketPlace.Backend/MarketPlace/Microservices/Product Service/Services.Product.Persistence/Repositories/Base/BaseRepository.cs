@@ -1,9 +1,8 @@
-﻿
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 
 namespace ProductService
 {
-    public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
+    public abstract class BaseRepository<T> : IBaseRepository<T> where T : Entity
     {
         protected readonly IMongoCollection<T> _collection;
 
@@ -17,7 +16,7 @@ namespace ProductService
 
             await _collection.InsertOneAsync(entity, options, cancellationToken);
 
-            return (Guid)typeof(T).GetProperty("Id")?.GetValue(entity);
+            return entity.Id;
         }
 
         public async Task DeleteAsync(T entity, CancellationToken cancellationToken)
@@ -27,7 +26,7 @@ namespace ProductService
 
         public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            var filter = Builders<T>.Filter.Where(item => ((Guid)item.GetType().GetProperty("Id").GetValue(item)) == id);
+            var filter = Builders<T>.Filter.Where(item => item.Id == id);
             var options = new FindOptions<T, T>();
 
             using (var cursor = await _collection.FindAsync(filter, options, cancellationToken))

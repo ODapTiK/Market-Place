@@ -25,7 +25,7 @@ namespace ProductService
             return Ok(product);
         }
 
-        [HttpGet("ManufacturerProducts/{id}")]
+        [HttpGet("Manufacturer/{id}")]
         public async Task<ActionResult<List<Product>>> GetManufacturerProducts(Guid id, CancellationToken cancellationToken)
         {
             var query = new GetManufacturerProductsQuery()
@@ -38,11 +38,11 @@ namespace ProductService
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetAllProducts()
+        public async Task<ActionResult<List<Product>>> GetAllProducts(CancellationToken cancellationToken)
         {
             var query = new GetAllProductsQuery();
 
-            var products = await Mediator.Send(query);
+            var products = await Mediator.Send(query, cancellationToken);
             return Ok(products);
         }
 

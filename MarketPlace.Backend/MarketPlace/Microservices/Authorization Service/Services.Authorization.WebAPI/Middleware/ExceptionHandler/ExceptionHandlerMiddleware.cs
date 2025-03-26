@@ -43,6 +43,9 @@ namespace AuthorizationService
                 case RefreshTokenBadRequestException:
                     code = HttpStatusCode.NotAcceptable;
                     break;
+                case EntityAlreadyExistsException:
+                    code = HttpStatusCode.BadRequest;
+                    break;
             }
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
