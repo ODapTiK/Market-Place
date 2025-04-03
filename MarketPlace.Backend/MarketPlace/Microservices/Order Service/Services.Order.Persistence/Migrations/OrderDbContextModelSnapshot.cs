@@ -26,7 +26,6 @@ namespace Services.Order.Persistence.Migrations
             modelBuilder.Entity("OrderService.Cart", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.PrimitiveCollection<List<Guid>>("Products")
@@ -46,7 +45,6 @@ namespace Services.Order.Persistence.Migrations
             modelBuilder.Entity("OrderService.Order", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("OrderDateTime")
@@ -69,13 +67,12 @@ namespace Services.Order.Persistence.Migrations
             modelBuilder.Entity("OrderService.OrderPoint", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<int>("NumberOfUnits")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("Orderid")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("ProductId")
@@ -83,7 +80,7 @@ namespace Services.Order.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Orderid");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderPoints");
                 });
@@ -92,7 +89,7 @@ namespace Services.Order.Persistence.Migrations
                 {
                     b.HasOne("OrderService.Order", "Order")
                         .WithMany("OrderPoints")
-                        .HasForeignKey("Orderid")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

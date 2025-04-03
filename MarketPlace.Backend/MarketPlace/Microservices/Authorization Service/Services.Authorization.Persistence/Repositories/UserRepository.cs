@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace AuthorizationService
 {
@@ -32,7 +32,7 @@ namespace AuthorizationService
         }
 
         public async Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken)
-        {
+        { 
             return await _userManager.FindByEmailAsync(email);
         }
 

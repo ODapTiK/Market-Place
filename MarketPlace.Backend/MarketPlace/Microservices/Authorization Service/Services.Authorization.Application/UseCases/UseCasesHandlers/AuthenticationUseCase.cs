@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
+using MediatR;
 using System.Security.Authentication;
 
 namespace AuthorizationService
 {
-    public class AuthenticationUseCase : IAuthenticationUseCase
+    public class AuthenticationUseCase : IRequestHandler<AuthUserRequest, TokenDTO>
     {
         private readonly IUserRepository _userRepository;
         private readonly IValidator<AuthUserDTO> _validator;
@@ -20,20 +21,19 @@ namespace AuthorizationService
             _passwordEncryptor = passwordEncryptor;
             _jwtProvider = jwtProvider;
         }
-
-        public async Task<TokenDTO> Execute(AuthUserDTO authUserDTO, CancellationToken cancellationToken)
+        public async Task<TokenDTO> Handle(AuthUserRequest request, CancellationToken cancellationToken)
         {
-            var validationResult = await _validator.ValidateAsync(authUserDTO);
+            var validationResult = await _validator.ValidateAsync(request.authUserDTO);
             if (!validationResult.IsValid)
                 throw new FluentValidation.ValidationException(validationResult.Errors);
 
-            var user = await _userRepository.FindByEmailAsync(authUserDTO.Email, cancellationToken);
+            var user = await _userRepository.FindByEmailAsync(request.authUserDTO.Email, CancellationToken.None);
 
             if (user == null)
             {
-                throw new EntityNotFoundException(nameof(User), authUserDTO.Email);
+                throw new EntityNotFoundException(nameof(User), request.authUserDTO.Email);
             }
-            else if (_passwordEncryptor.VerifyPassword(user.PasswordHash, authUserDTO.Password))
+            else if (_passwordEncryptor.VerifyPassword(user.PasswordHash, request.authUserDTO.Password))
             {
                 return await _jwtProvider.GenerateToken(user, true, cancellationToken);
             }

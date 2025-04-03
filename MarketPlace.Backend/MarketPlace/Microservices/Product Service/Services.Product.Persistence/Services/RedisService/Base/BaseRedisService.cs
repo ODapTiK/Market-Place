@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace ProductService
 {
-    public class BaseRedisService<T> : IBaseRedisService<T> where T : class
+    public abstract class BaseRedisService<T> : IBaseRedisService<T> where T : class
     {
         protected readonly IDatabase _redisDatabase;
 
@@ -61,6 +61,13 @@ namespace ProductService
         // Метод для создания HashEntry из объекта
         protected virtual HashEntry[] CreateHashEntries(T value)
         {
+            var jsonSettings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented, 
+                NullValueHandling = NullValueHandling.Ignore, 
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore, 
+            };
+
             PropertyInfo[] properties = value.GetType().GetProperties();
             return properties
                 .Where(x => x.GetValue(value) != null) 
@@ -71,9 +78,17 @@ namespace ProductService
                           object propertyValue = property.GetValue(value);
                           string hashValue;
 
-                          if (propertyValue is IEnumerable<object>)
+                          if (propertyValue is IEnumerable<object> collection)
                           {
-                              hashValue = JsonConvert.SerializeObject(propertyValue);
+                              hashValue = JsonConvert.SerializeObject(collection, jsonSettings);
+                          }
+                          else if(propertyValue.GetType() == typeof(Guid) || propertyValue.GetType() == typeof(DateTime))
+                          {
+                              hashValue = propertyValue.ToString();
+                          }
+                          else if (propertyValue != null && !propertyValue.GetType().IsPrimitive && propertyValue.GetType() != typeof(string))
+                          {
+                              hashValue = JsonConvert.SerializeObject(propertyValue, jsonSettings);
                           }
                           else
                           {
@@ -89,13 +104,55 @@ namespace ProductService
         // Метод для создания объекта T из HashEntry
         protected virtual T CreateEntity(HashEntry[] hashEntries)
         {
+            var jsonSettings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                NullValueHandling = NullValueHandling.Ignore,
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            };
             PropertyInfo[] properties = typeof(T).GetProperties();
             var value = Activator.CreateInstance(typeof(T));
             foreach (var property in properties)
             {
                 HashEntry entry = hashEntries.FirstOrDefault(g => g.Name.ToString().Equals(property.Name));
                 if (entry.Equals(new HashEntry())) continue;
-                property.SetValue(value, Convert.ChangeType(entry.Value.ToString(), property.PropertyType));
+                object propertyValue;
+                if (property.PropertyType == typeof(Guid))
+                {
+                    propertyValue = Guid.Parse(entry.Value);
+                }
+                else if (property.PropertyType == typeof(DateTime))
+                {
+                    propertyValue = DateTime.Parse(entry.Value);
+                }
+                else if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                {
+                    var underlyingType = Nullable.GetUnderlyingType(property.PropertyType);
+                    propertyValue = string.IsNullOrEmpty(entry.Value) ? null : Convert.ChangeType(entry.Value, underlyingType);
+                }
+                else if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    var itemType = property.PropertyType.GenericTypeArguments[0];
+                    var json = entry.Value;
+
+                    if (string.IsNullOrWhiteSpace(json))
+                    {
+                        propertyValue = Activator.CreateInstance(property.PropertyType); // Создаем пустой список
+                    }
+                    else
+                    {
+                        propertyValue = JsonConvert.DeserializeObject(json, property.PropertyType, jsonSettings);
+                    }
+                }
+                else if (!property.PropertyType.IsPrimitive && property.PropertyType != typeof(string))
+                {
+                    propertyValue = JsonConvert.DeserializeObject(entry.Value, property.PropertyType, jsonSettings);
+                }
+                else
+                {
+                    propertyValue = Convert.ChangeType(entry.Value, property.PropertyType);
+                }
+                property.SetValue(value, propertyValue);
             }
             return (T)value;
         }

@@ -7,6 +7,6 @@ namespace UserService
     [Route("api/[controller]/[action]")]
     public class BaseController : ControllerBase
     {
-        internal Guid UserId => !User.Identity.IsAuthenticated ? Guid.Empty : Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        public Guid UserId => !User.Identity.IsAuthenticated ? Guid.Empty : Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
     }
 }

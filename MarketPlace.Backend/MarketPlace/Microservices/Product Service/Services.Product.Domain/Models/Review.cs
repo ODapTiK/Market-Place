@@ -1,5 +1,6 @@
 ﻿namespace ProductService
 {
+    [Serializable]
     public class Review
     {
         public Guid Id { get; set; }
