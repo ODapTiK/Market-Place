@@ -6,10 +6,26 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+	<ItemGroup>
+	    <Protobuf Include="../../../Authorization-User.proto" ProtoCompile="true" />
+		<Protobuf Include="../../../Product-User.proto" ProtoCompile="true" />
+		<Protobuf Include="../../../Order-User.proto" ProtoCompile="true" />
+    </ItemGroup>
+
+    <PropertyGroup>
+	    <ProtobufNetCoreGenerate>true</ProtobufNetCoreGenerate>
+    </PropertyGroup>
+	
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.30.1" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.70.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.71.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
   </ItemGroup>
 

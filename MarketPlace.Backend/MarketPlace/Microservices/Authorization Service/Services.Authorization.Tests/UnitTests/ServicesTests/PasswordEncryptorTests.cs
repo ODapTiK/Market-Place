@@ -24,7 +24,8 @@ namespace AuthorizationService
 
             // Assert
             encryptedPassword.Should().NotBeNullOrEmpty();
-            encryptedPassword.Should().HaveLength(128); // SHA512 возвращает 64 байта, в шестнадцатеричном представлении это 128 символов
+            // SHA512 возвращает 64 байта, в шестнадцатеричном представлении это 128 символов
+            encryptedPassword.Should().HaveLength(128); 
         }
 
         [Fact]

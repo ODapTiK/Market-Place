@@ -12,9 +12,13 @@ namespace AuthorizationService
         public RoleManager<IdentityRole<Guid>> _roleManager { get; private set; }
 
         private readonly IServiceScope _scope;
+        private bool _isDisposed = false;
 
         public TestUserDatabaseFixture()
         {
+            if (_isDisposed)
+                throw new ObjectDisposedException(ToString());
+
             var services = new ServiceCollection();
 
             services.AddDbContext<AuthDbContext>(options =>
@@ -37,9 +41,13 @@ namespace AuthorizationService
         }
         public void Dispose()
         {
-            _context.Database.EnsureDeleted();
-            _context.Dispose();
-            _scope?.Dispose();
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+                _context.Database.EnsureDeleted();
+                _context.Dispose();
+                _scope?.Dispose();
+            }
         }
     }
 }

@@ -56,10 +56,11 @@ namespace ProductService
             return Ok(productId);
         }
 
-        [HttpPost("Review")]
-        public async Task<ActionResult<Guid>> CreateProductReview([FromBody] CreateProductReviewDTO createProductReviewDTO, CancellationToken cancellationToken)
+        [HttpPost("{productId}/Review")]
+        public async Task<ActionResult<Guid>> CreateProductReview(Guid productId, [FromBody] CreateProductReviewDTO createProductReviewDTO, CancellationToken cancellationToken)
         {
             var command = _mapper.Map<CreateProductReviewCommand>(createProductReviewDTO);
+            command.ProductId = productId;
             command.UserId = UserId;
 
             var reviewId = await Mediator.Send(command, cancellationToken);
@@ -79,11 +80,15 @@ namespace ProductService
             return Ok();
         }
 
-        [HttpDelete("Review")]
-        public async Task<IActionResult> DeleteProductReview([FromBody] DeleteProductReviewDTO deleteProductReviewDTO, CancellationToken cancellationToken)
+        [HttpDelete("{productId}/Review/{reviewId}")]
+        public async Task<IActionResult> DeleteProductReview(Guid productId, Guid reviewId, CancellationToken cancellationToken)
         {
-            var command = _mapper.Map<DeleteProductReviewCommand>(deleteProductReviewDTO);
-            command.UserId = UserId;
+            var command = new DeleteProductReviewCommand()
+            {
+                Id = reviewId,
+                ProductId = productId,
+                UserId = UserId
+            };  
 
             await Mediator.Send(command, cancellationToken);
             return Ok();

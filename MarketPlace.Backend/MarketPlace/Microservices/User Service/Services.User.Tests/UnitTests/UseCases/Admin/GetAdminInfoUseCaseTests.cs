@@ -23,7 +23,7 @@ namespace UserService
                 .ReturnsAsync((Admin?)null); 
 
             // Act
-            Func<Task> act = async () => await _getAdminInfoUseCase.Execute(adminId, CancellationToken.None);
+            var act = async () => await _getAdminInfoUseCase.Execute(adminId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();

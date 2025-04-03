@@ -88,7 +88,7 @@ namespace AuthorizationService
                 .ReturnsAsync(new ValidationResult(validationErrors));
 
             // Act
-            Func<Task> act = async () => await _authenticationUseCase.Handle(request, CancellationToken.None);
+            var act = async () => await _authenticationUseCase.Handle(request, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<ValidationException>();
@@ -112,7 +112,7 @@ namespace AuthorizationService
                 .ReturnsAsync((User?)null); 
 
             // Act
-            Func<Task> act = async () => await _authenticationUseCase.Handle(request, CancellationToken.None);
+            var act = async () => await _authenticationUseCase.Handle(request, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();
@@ -145,7 +145,7 @@ namespace AuthorizationService
                 .Returns(false); 
 
             // Act
-            Func<Task> act = async () => await _authenticationUseCase.Handle(request, CancellationToken.None);
+            var act = async () => await _authenticationUseCase.Handle(request, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<AuthenticationException>();

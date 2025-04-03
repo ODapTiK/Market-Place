@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Proto.OrderUser;
 using System.Reflection;
 using System.Text;
 
@@ -73,6 +74,12 @@ namespace UserService
                 });
             services.AddAuthorization();
 
+            services.AddGrpc();
+            services.AddGrpcClient<OrderUserService.OrderUserServiceClient>(options =>
+            {
+                options.Address = new Uri("http://localhost:6003");
+            });
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "MarketPlace v1", Version = "v1" });
@@ -111,6 +118,9 @@ namespace UserService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapGrpcService<AuthServiceImpl>();
+                endpoints.MapGrpcService<OrderServiceImpl>();
+                endpoints.MapGrpcService<ProductServiceImpl>();
             });
 
 

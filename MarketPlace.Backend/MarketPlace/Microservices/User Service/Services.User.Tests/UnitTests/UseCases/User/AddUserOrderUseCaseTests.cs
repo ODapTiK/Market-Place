@@ -39,7 +39,7 @@ namespace UserService
             var orderId = Guid.NewGuid();
 
             // Act
-            Func<Task> act = async () => await _addUserOrderUseCase.Execute(Guid.Empty, orderId, CancellationToken.None);
+            var act = async () => await _addUserOrderUseCase.Execute(Guid.Empty, orderId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<FluentValidation.ValidationException>();
@@ -52,7 +52,7 @@ namespace UserService
             var userId = Guid.NewGuid();
 
             // Act
-            Func<Task> act = async () => await _addUserOrderUseCase.Execute(userId, Guid.Empty, CancellationToken.None);
+            var act = async () => await _addUserOrderUseCase.Execute(userId, Guid.Empty, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<FluentValidation.ValidationException>();
@@ -69,7 +69,7 @@ namespace UserService
                 .ReturnsAsync((User?)null); 
 
             // Act
-            Func<Task> act = async () => await _addUserOrderUseCase.Execute(userId, orderId, CancellationToken.None);
+            var act = async () => await _addUserOrderUseCase.Execute(userId, orderId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();

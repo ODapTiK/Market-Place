@@ -6,7 +6,7 @@ namespace OrderService
     {
         public DeleteCartCommandValidator()
         {
-            RuleFor(x => x.Id).NotEmpty();
+            RuleFor(x => x.UserId).NotEmpty();
         }
     }
 }

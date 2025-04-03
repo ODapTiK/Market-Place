@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Proto.ProductUser;
 using System.Reflection;
 using System.Text;
 
@@ -29,7 +30,7 @@ namespace ProductService
                 cfg.AddProfile(new AssemblyMappingProfile(typeof(ProductDbContext).Assembly));
             });
 
-            services.AddApplication();
+            services.AddApplication(configuration);
             services.AddPersistence(configuration);
 
             services.AddCors(options =>
@@ -61,6 +62,11 @@ namespace ProductService
                     };
                 });
             services.AddAuthorization();
+
+            services.AddGrpcClient<ProductUserService.ProductUserServiceClient>(options =>
+            {
+                options.Address = new Uri("http://localhost:6002");
+            });
 
             services.AddSwaggerGen(options =>
             {

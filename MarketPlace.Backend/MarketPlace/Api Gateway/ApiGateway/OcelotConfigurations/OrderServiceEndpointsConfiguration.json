@@ -1,0 +1,72 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/Order",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6003
+        }
+      ],
+      "UpstreamPathTemplate": "/orders",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "SwaggerKey": "Order"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Order/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6003
+        }
+      ],
+      "UpstreamPathTemplate": "/orders/{id}",
+      "UpstreamHttpMethod": [ "GET", "DELETE" ],
+      "SwaggerKey": "Order"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Cart",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6003
+        }
+      ],
+      "UpstreamPathTemplate": "/cart",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "Order"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Cart/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6003
+        }
+      ],
+      "UpstreamPathTemplate": "/cart/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "Order"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Cart/{CartId}/Point/{ProductId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6003
+        }
+      ],
+      "UpstreamPathTemplate": "/cart/{CartId}/points/{ProductId}",
+      "UpstreamHttpMethod": [ "POST", "DELETE" ],
+      "SwaggerKey": "Order"
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:6000"
+  }
+}

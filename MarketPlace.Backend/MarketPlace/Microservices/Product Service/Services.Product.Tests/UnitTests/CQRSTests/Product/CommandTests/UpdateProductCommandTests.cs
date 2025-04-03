@@ -8,12 +8,15 @@ namespace ProductService
     public class UpdateProductCommandTests
     {
         private readonly Mock<IProductRepository> _productRepositoryMock;
+        private readonly Mock<IRabbitMqProducerService> _rabbitMqProducerServiceMock;
         private readonly UpdateProductCommandHandler _handler;
 
         public UpdateProductCommandTests()
         {
             _productRepositoryMock = new Mock<IProductRepository>();
-            _handler = new UpdateProductCommandHandler(_productRepositoryMock.Object);
+            _rabbitMqProducerServiceMock = new Mock<IRabbitMqProducerService>();
+            _handler = new UpdateProductCommandHandler(_productRepositoryMock.Object,
+                                                       _rabbitMqProducerServiceMock.Object);
         }
 
         [Fact]
@@ -62,6 +65,7 @@ namespace ProductService
             product.Image.Should().Be(command.Image);
             product.Price.Should().Be(command.Price);
             _productRepositoryMock.Verify(repo => repo.UpdateAsync(product, It.IsAny<CancellationToken>()), Times.Once);
+            _rabbitMqProducerServiceMock.Verify(m => m.SendMessage(productId.ToString(), "UpdatedProducts"), Times.Once);
         }
 
         [Fact]
@@ -79,7 +83,7 @@ namespace ProductService
                 .ReturnsAsync((Product?)null);
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
+            var act = async () => await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();
@@ -106,7 +110,7 @@ namespace ProductService
                 .ReturnsAsync(product);
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
+            var act = async () => await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<LackOfRightException>();

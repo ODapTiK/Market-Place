@@ -11,6 +11,6 @@ namespace ProductService
         private IMediator? _Mediator;
         protected IMediator Mediator => _Mediator ??= HttpContext.RequestServices.GetService<IMediator>();
 
-        internal Guid UserId => !User.Identity.IsAuthenticated ? Guid.Empty : Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        public Guid UserId => !User.Identity.IsAuthenticated ? Guid.Empty : Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
     }
 }

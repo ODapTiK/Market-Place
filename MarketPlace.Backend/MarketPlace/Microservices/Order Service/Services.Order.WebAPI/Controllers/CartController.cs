@@ -29,31 +29,7 @@ namespace OrderService
             return Ok(cart);    
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Guid>> CreateCart(CancellationToken cancellationToken)
-        {
-            var command = new CreateCartCommand()
-            {
-                UserId = UserId
-            };
-
-            var resultId = await Mediator.Send(command, cancellationToken);
-            return Ok(resultId);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCart(Guid id, CancellationToken cancellationToken)
-        {
-            var command = new DeleteCartCommand()
-            {
-                Id = id
-            };
-
-            await Mediator.Send(command, cancellationToken);
-            return Ok();
-        }
-
-        [HttpPut("AddPoint/{CartId}/{ProductId}")]
+        [HttpPost("{CartId}/Point/{ProductId}")]
         public async Task<IActionResult> AddOrderPoint(Guid CartId, Guid ProductId, CancellationToken cancellationToken)
         {
             var command = new AddOrderPointCommand()
@@ -66,7 +42,7 @@ namespace OrderService
             return Ok();
         }
 
-        [HttpPut("RemovePoint/{CartId}/{ProductId}")]
+        [HttpDelete("{CartId}/Point/{ProductId}")]
         public async Task<IActionResult> RemoveOrderPoint(Guid CartId, Guid ProductId, CancellationToken cancellationToken)
         {
             var command = new RemoveOrderPointCommand()

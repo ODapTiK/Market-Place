@@ -5,10 +5,13 @@ namespace ProductService
     public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand>
     {
         private readonly IProductRepository _productRepository;
+        private readonly IRabbitMqProducerService _rabbitMqProducerService;
 
-        public UpdateProductCommandHandler(IProductRepository productRepository)
+        public UpdateProductCommandHandler(IProductRepository productRepository,
+                                           IRabbitMqProducerService rabbitMqProducerService)
         {
             _productRepository = productRepository;
+            _rabbitMqProducerService = rabbitMqProducerService;
         }
 
         public async Task Handle(UpdateProductCommand request, CancellationToken cancellationToken)
@@ -27,6 +30,8 @@ namespace ProductService
             product.Price = request.Price;
 
             await _productRepository.UpdateAsync(product, cancellationToken);
+
+            await _rabbitMqProducerService.SendMessage(product.Id.ToString(), "UpdatedProducts");
         }
     }
 }

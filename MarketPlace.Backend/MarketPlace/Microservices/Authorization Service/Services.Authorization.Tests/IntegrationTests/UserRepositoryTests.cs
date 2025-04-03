@@ -9,27 +9,25 @@ namespace AuthorizationService
         private readonly UserRepository _userRepository;
         private readonly AuthDbContext _context;
         private readonly UserManager<User> _userManager;
-        private readonly Faker _faker;
+        private readonly Faker<User> _faker;
 
         public UserRepositoryTests(TestUserDatabaseFixture fixture)
         {
             _context = fixture._context;
             _userManager = fixture._userManager;
             _userRepository = new UserRepository(_userManager);
-            _faker = new Faker();
+            _faker = new Faker<User>()
+                .RuleFor(x => x.Id, Guid.NewGuid())
+                .RuleFor(x => x.Email, f => f.Internet.Email())
+                .RuleFor(x => x.UserName, Guid.NewGuid().ToString())
+                .RuleFor(x => x.PasswordHash, new PasswordHasher<User>().HashPassword(null, "Password123"));
         }
 
         [Fact]
         public async Task CreateAsync_ShouldCreateUser()
         {
             // Arrange
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Email = _faker.Internet.Email(),
-                UserName = Guid.NewGuid().ToString(),
-                PasswordHash = new PasswordHasher<User>().HashPassword(null, "Password123")
-            };
+            var user = _faker.Generate();
 
             // Act
             var userId = await _userRepository.CreateAsync(user, CancellationToken.None);
@@ -44,13 +42,7 @@ namespace AuthorizationService
         public async Task FindByEmailAsync_ShouldReturnUser()
         {
             // Arrange
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Email = _faker.Internet.Email(),
-                UserName = Guid.NewGuid().ToString(),
-                PasswordHash = new PasswordHasher<User>().HashPassword(null, "Password123")
-            };
+            var user = _faker.Generate();
 
             await _userRepository.CreateAsync(user, CancellationToken.None);
 
@@ -66,13 +58,7 @@ namespace AuthorizationService
         public async Task FindByIdAsync_ShouldReturnUser()
         {
             // Arrange
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Email = _faker.Internet.Email(),
-                UserName = Guid.NewGuid().ToString(),
-                PasswordHash = new PasswordHasher<User>().HashPassword(null, "Password123")
-            };
+            var user = _faker.Generate();
 
             await _userRepository.CreateAsync(user, CancellationToken.None);
 
@@ -88,13 +74,7 @@ namespace AuthorizationService
         public async Task DeleteAsync_ShouldRemoveUser()
         {
             // Arrange
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Email = _faker.Internet.Email(),
-                UserName = Guid.NewGuid().ToString(),
-                PasswordHash = new PasswordHasher<User>().HashPassword(null, "Password123")
-            };
+            var user = _faker.Generate();
 
             await _userRepository.CreateAsync(user, CancellationToken.None);
 
@@ -110,13 +90,7 @@ namespace AuthorizationService
         public async Task AddUserToRoleAsync_ShouldAddRoleToUser()
         {
             // Arrange
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Email = _faker.Internet.Email(),
-                UserName = Guid.NewGuid().ToString(),
-                PasswordHash = new PasswordHasher<User>().HashPassword(null, "Password123")
-            };
+            var user = _faker.Generate();
 
             await _userRepository.CreateAsync(user, CancellationToken.None);
             var roleName = "Admin";
@@ -134,13 +108,7 @@ namespace AuthorizationService
         public async Task GetUserRolesAsync_ShouldReturnUserRoles()
         {
             // Arrange
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Email = _faker.Internet.Email(),
-                UserName = Guid.NewGuid().ToString(),
-                PasswordHash = new PasswordHasher<User>().HashPassword(null, "Password123")
-            };
+            var user = _faker.Generate();
 
             await _userRepository.CreateAsync(user, CancellationToken.None);
             var roleName = "Admin";

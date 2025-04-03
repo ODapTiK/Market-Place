@@ -1,0 +1,114 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/Product",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6004
+        }
+      ],
+      "UpstreamPathTemplate": "/products",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "Product"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Product/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6004
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "Product"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Product/Manufacturer/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6004
+        }
+      ],
+      "UpstreamPathTemplate": "/products/manufacturer/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "Product"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Product",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6004
+        }
+      ],
+      "UpstreamPathTemplate": "/products",
+      "UpstreamHttpMethod": [ "POST", "PUT" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Product"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Product/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6004
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{id}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Product"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Product/{productId}/Review",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6004
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{productId}/reviews",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Product"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Product/{productId}/Review/{reviewId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6004
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{productId}/reviews/{reviewId}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Product"
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:6000"
+  }
+}

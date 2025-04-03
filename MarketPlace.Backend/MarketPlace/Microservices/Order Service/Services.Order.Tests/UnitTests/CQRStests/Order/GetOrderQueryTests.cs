@@ -55,7 +55,7 @@ namespace OrderService
                 .ReturnsAsync((Order?)null); 
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(query, CancellationToken.None);
+            var act = async () => await _handler.Handle(query, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();

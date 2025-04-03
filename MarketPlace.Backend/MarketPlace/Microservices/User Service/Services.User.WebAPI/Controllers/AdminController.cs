@@ -5,19 +5,13 @@ namespace UserService
     [Route("api/[controller]")]
     public class AdminController : BaseController
     {
-        private readonly ICreateAdminUseCase _createAdminUseCase;
         private readonly IUpdateAdminUseCase _updateAdminUseCase;
-        private readonly IDeleteAdminUseCase _deleteAdminUseCase;
         private readonly IGetAdminInfoUseCase _getAdminInfoUseCase;
 
-        public AdminController(ICreateAdminUseCase createAdminUseCase, 
-                               IUpdateAdminUseCase updateAdminUseCase, 
-                               IDeleteAdminUseCase deleteAdminUseCase, 
+        public AdminController(IUpdateAdminUseCase updateAdminUseCase, 
                                IGetAdminInfoUseCase getAdminInfoUseCase)
         {
-            _createAdminUseCase = createAdminUseCase;
             _updateAdminUseCase = updateAdminUseCase;
-            _deleteAdminUseCase = deleteAdminUseCase;
             _getAdminInfoUseCase = getAdminInfoUseCase;
         }
 
@@ -29,26 +23,10 @@ namespace UserService
             return Ok(admin);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Guid>> CreateAdmin([FromBody] AdminDTO adminDTO, CancellationToken cancellationToken)
-        {
-            var resultId = await _createAdminUseCase.Execute(adminDTO, cancellationToken);
-
-            return Ok(resultId);
-        }
-
         [HttpPut]
         public async Task<IActionResult> UpdateAdmin([FromBody] AdminDTO adminDTO, CancellationToken cancellationToken)
         {
             await _updateAdminUseCase.Execute(adminDTO, cancellationToken);
-
-            return Ok();
-        }
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAdmin(CancellationToken cancellationToken)
-        {
-            await _deleteAdminUseCase.Execute(UserId, cancellationToken);
 
             return Ok();
         }

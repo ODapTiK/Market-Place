@@ -1,0 +1,46 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/User",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6002
+        }
+      ],
+      "UpstreamPathTemplate": "/user",
+      "UpstreamHttpMethod": [ "GET", "PUT" ],
+      "SwaggerKey": "User"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Admin",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6002
+        }
+      ],
+      "UpstreamPathTemplate": "/admin",
+      "UpstreamHttpMethod": [ "GET", "PUT" ],
+      "SwaggerKey": "User"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Manufacturer",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6002
+        }
+      ],
+      "UpstreamPathTemplate": "/manufacturer",
+      "UpstreamHttpMethod": [ "GET", "PUT" ],
+      "SwaggerKey": "User"
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:6000"
+  }
+}
