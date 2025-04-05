@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
+using Proto.OrderUser;
 
 namespace UserService
 {
@@ -7,11 +8,13 @@ namespace UserService
     {
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly DeleteUserUseCase _deleteUserUseCase;
+        private readonly Mock<OrderUserService.OrderUserServiceClient> _orderUserServiceMock;
 
         public DeleteUserUseCaseTests()
         {
             _userRepositoryMock = new Mock<IUserRepository>();
-            _deleteUserUseCase = new DeleteUserUseCase(_userRepositoryMock.Object);
+            _orderUserServiceMock = new Mock<OrderUserService.OrderUserServiceClient>();
+            _deleteUserUseCase = new DeleteUserUseCase(_userRepositoryMock.Object, _orderUserServiceMock.Object);
         }
 
         [Fact]
@@ -24,11 +27,56 @@ namespace UserService
             _userRepositoryMock.Setup(u => u.GetByIdAsync(userId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
 
+            var mockCall = CallHelpers.CreateAsyncUnaryCall(new Response
+            {
+                Message = "Test",
+                Success = true
+            });
+            _orderUserServiceMock
+                .Setup(m => m.DeleteCartAsync(
+                    It.IsAny<CartRequest>(), null, null, CancellationToken.None))
+                .Returns(mockCall);
+            _orderUserServiceMock
+                .Setup(m => m.DeleteUserOrdersAsync(
+                    It.IsAny<DeleteUserOrdersRequest>(), null, null, CancellationToken.None))
+                .Returns(mockCall);
+
             // Act
             await _deleteUserUseCase.Execute(userId, CancellationToken.None);
 
             // Assert
             _userRepositoryMock.Verify(u => u.DeleteAsync(user, It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task Execute_ShouldThrowGRPCRequestFailException_WhenGRPCRequestFailed()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            var user = new User { Id = userId };
+
+            _userRepositoryMock.Setup(u => u.GetByIdAsync(userId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(user);
+
+            var mockCall = CallHelpers.CreateAsyncUnaryCall(new Response
+            {
+                Message = "Fail",
+                Success = false
+            });
+            _orderUserServiceMock
+                .Setup(m => m.DeleteCartAsync(
+                    It.IsAny<CartRequest>(), null, null, CancellationToken.None))
+                .Returns(mockCall);
+            _orderUserServiceMock
+                .Setup(m => m.DeleteUserOrdersAsync(
+                    It.IsAny<DeleteUserOrdersRequest>(), null, null, CancellationToken.None))
+                .Returns(mockCall);
+
+            // Act
+            var act = async () => await _deleteUserUseCase.Execute(userId, CancellationToken.None);
+
+            // Assert
+            await act.Should().ThrowAsync<GRPCRequestFailException>().WithMessage("Fail");
         }
 
         [Fact]
@@ -38,7 +86,7 @@ namespace UserService
             var userId = Guid.Empty;
 
             // Act
-            Func<Task> act = async () => await _deleteUserUseCase.Execute(userId, CancellationToken.None);
+            var act = async () => await _deleteUserUseCase.Execute(userId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<FluentValidation.ValidationException>();
@@ -54,7 +102,7 @@ namespace UserService
                 .ReturnsAsync((User?)null); 
 
             // Act
-            Func<Task> act = async () => await _deleteUserUseCase.Execute(userId, CancellationToken.None);
+            var act = async () => await _deleteUserUseCase.Execute(userId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();

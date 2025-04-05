@@ -31,7 +31,7 @@ namespace UserService
                 .ReturnsAsync(validationResult);
 
             // Act
-            Func<Task> act = async () => await _updateAdminUseCase.Execute(adminDTO, CancellationToken.None);
+            var act = async () => await _updateAdminUseCase.Execute(adminDTO, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<ValidationException>();
@@ -48,7 +48,7 @@ namespace UserService
                 .ReturnsAsync((Admin?)null); 
 
             // Act
-            Func<Task> act = async () => await _updateAdminUseCase.Execute(adminDTO, CancellationToken.None);
+            var act = async () => await _updateAdminUseCase.Execute(adminDTO, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();

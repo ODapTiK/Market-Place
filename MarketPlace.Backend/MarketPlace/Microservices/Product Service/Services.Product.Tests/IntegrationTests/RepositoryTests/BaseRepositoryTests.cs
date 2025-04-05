@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using Bogus;
+using FluentAssertions;
 using MongoDB.Driver;
 
 namespace ProductService
@@ -9,11 +10,20 @@ namespace ProductService
         private readonly IMongoDatabase _database;
         private readonly IMongoCollection<Product> _collection;
         private readonly TestBaseRepository _repository;
+        private readonly Faker<Product> _productFaker;
+        private bool _isDisposed = false;
 
         public BaseRepositoryTests()
         {
+            if (_isDisposed)
+                throw new ObjectDisposedException(ToString());
+
             var client = new MongoClient("mongodb://localhost:27017");
             _repository = new TestBaseRepository(new ProductDbContext(client, "TestDatabase"));
+
+            _productFaker = new Faker<Product>()
+                .RuleFor(x => x.Name, "Test")
+                .RuleFor(x => x.Id, Guid.NewGuid());
 
             _database = client.GetDatabase("TestDatabase");
             _collection = _database.GetCollection<Product>("TestEntities");
@@ -23,7 +33,7 @@ namespace ProductService
         public async Task CreateAsync_ShouldInsertEntity()
         {
             // Arrange
-            var entity = new Product { Id = Guid.NewGuid(), Name = "Test" };
+            var entity = _productFaker.Generate();
 
             // Act
             await _repository.CreateAsync(entity, CancellationToken.None);
@@ -38,7 +48,7 @@ namespace ProductService
         public async Task DeleteAsync_ShouldRemoveEntity()
         {
             // Arrange
-            var entity = new Product { Id = Guid.NewGuid(), Name = "Test" };
+            var entity = _productFaker.Generate();
             await _repository.CreateAsync(entity, CancellationToken.None);
 
             // Act
@@ -81,7 +91,7 @@ namespace ProductService
         public async Task UpdateAsync_ShouldReplaceEntity()
         {
             // Arrange
-            var entity = new Product { Id = Guid.NewGuid(), Name = "Test" };
+            var entity = _productFaker.Generate();
             await _repository.CreateAsync(entity, CancellationToken.None);
             entity.Name = "Updated Test";
 
@@ -96,8 +106,11 @@ namespace ProductService
 
         public void Dispose()
         {
-            // Очистка коллекции для тестов
-            _database.DropCollection("TestEntities");
+            if (_isDisposed)
+            {
+                _isDisposed = true;
+                _database.DropCollection("TestEntities");
+            }
         }
     }
 }

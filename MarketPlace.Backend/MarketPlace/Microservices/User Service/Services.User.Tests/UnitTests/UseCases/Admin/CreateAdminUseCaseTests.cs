@@ -31,7 +31,7 @@ namespace UserService
                 .ReturnsAsync(validationResult);
 
             // Act
-            Func<Task> act = async () => await _createAdminUseCase.Execute(adminDTO, CancellationToken.None);
+            var act = async () => await _createAdminUseCase.Execute(adminDTO, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<ValidationException>();

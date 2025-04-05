@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Proto.OrderUser;
 using System.Reflection;
 using System.Text;
 
@@ -39,7 +40,7 @@ namespace OrderService
                 cfg.AddProfile(new AssemblyMappingProfile(typeof(OrderDbContext).Assembly));
             });
 
-            services.AddApplication();
+            services.AddApplication(configuration);
             services.AddPersistence();
 
             services.AddCors(options =>
@@ -71,6 +72,8 @@ namespace OrderService
                     };
                 });
             services.AddAuthorization();
+
+            services.AddGrpc();
 
             services.AddSwaggerGen(options =>
             {
@@ -109,6 +112,7 @@ namespace OrderService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapGrpcService<UserServiceImpl>();
             });
 
 

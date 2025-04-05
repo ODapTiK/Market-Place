@@ -22,7 +22,7 @@ namespace UserService
             var productId = Guid.NewGuid();
 
             // Act
-            Func<Task> act = async () => await _removeManufacturerProductUseCase.Execute(manufacturerId, productId, CancellationToken.None);
+            var act = async () => await _removeManufacturerProductUseCase.Execute(manufacturerId, productId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<FluentValidation.ValidationException>();
@@ -36,7 +36,7 @@ namespace UserService
             var productId = Guid.Empty;
 
             // Act
-            Func<Task> act = async () => await _removeManufacturerProductUseCase.Execute(manufacturerId, productId, CancellationToken.None);
+            var act = async () => await _removeManufacturerProductUseCase.Execute(manufacturerId, productId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<FluentValidation.ValidationException>();
@@ -53,7 +53,7 @@ namespace UserService
                 .ReturnsAsync((Manufacturer?)null); 
 
             // Act
-            Func<Task> act = async () => await _removeManufacturerProductUseCase.Execute(manufacturerId, productId, CancellationToken.None);
+            var act = async () => await _removeManufacturerProductUseCase.Execute(manufacturerId, productId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();
@@ -75,7 +75,7 @@ namespace UserService
                 .ReturnsAsync(manufacturer);
 
             // Act
-            Func<Task> act = async () => await _removeManufacturerProductUseCase.Execute(manufacturerId, productId, CancellationToken.None);
+            var act = async () => await _removeManufacturerProductUseCase.Execute(manufacturerId, productId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();

@@ -13,9 +13,9 @@ namespace OrderService
 
         public async Task Handle(DeleteCartCommand request, CancellationToken cancellationToken)
         {
-            var cart = await _cartRepository.GetByIdAsync(request.Id, cancellationToken);
+            var cart = await _cartRepository.GetUserCartAsync(request.UserId, cancellationToken);
             if (cart == null) 
-                throw new EntityNotFoundException(nameof(Cart), request.Id);
+                throw new EntityNotFoundException(nameof(Cart), request.UserId);
 
             await _cartRepository.DeleteAsync(cart, cancellationToken);
         }

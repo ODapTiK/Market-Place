@@ -44,5 +44,43 @@ namespace OrderService
             // Assert
             result.Should().BeEmpty();
         }
+
+        [Fact]
+        public async Task GetManyOrdersAsync_ShouldReturnOrders_WhenOrdersExist()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+
+            var orders = new List<Order>
+            {
+                new Order { Id = Guid.NewGuid(), UserId = userId, OrderPoints = new List<OrderPoint>() },
+                new Order { Id = Guid.NewGuid(), UserId = userId, OrderPoints = new List<OrderPoint>() },
+                new Order { Id = Guid.NewGuid(), UserId = Guid.NewGuid(), OrderPoints = new List<OrderPoint>() }
+            };
+
+            await _context.Orders.AddRangeAsync(orders);
+            await _context.SaveChangesAsync(CancellationToken.None);
+
+            // Act
+            var result = await _repository.GetManyOrdersAsync(o => o.UserId == userId, CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public async Task GetManyOrdersAsync_ShouldReturnEmptyList_WhenNoOrdersExist()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+
+            // Act
+            var result = await _repository.GetManyOrdersAsync(o => o.UserId == userId, CancellationToken.None);
+
+            // Assert
+            result.Should().BeEmpty();
+            result.Should().NotBeNull();
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace UserService
             var adminId = Guid.Empty;
 
             // Act
-            Func<Task> act = async () => await _deleteAdminUseCase.Execute(adminId, CancellationToken.None);
+            var act = async () => await _deleteAdminUseCase.Execute(adminId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<FluentValidation.ValidationException>();
@@ -36,7 +36,7 @@ namespace UserService
                 .ReturnsAsync((Admin?)null); 
 
             // Act
-            Func<Task> act = async () => await _deleteAdminUseCase.Execute(adminId, CancellationToken.None);
+            var act = async () => await _deleteAdminUseCase.Execute(adminId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();

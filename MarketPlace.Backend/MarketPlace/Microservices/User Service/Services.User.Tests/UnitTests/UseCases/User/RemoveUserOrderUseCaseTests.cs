@@ -44,7 +44,7 @@ namespace UserService
             var orderId = Guid.NewGuid();
 
             // Act
-            Func<Task> act = async () => await _removeUserOrderUseCase.Execute(userId, orderId, CancellationToken.None);
+            var act = async () => await _removeUserOrderUseCase.Execute(userId, orderId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<FluentValidation.ValidationException>();
@@ -58,7 +58,7 @@ namespace UserService
             var orderId = Guid.Empty;
 
             // Act
-            Func<Task> act = async () => await _removeUserOrderUseCase.Execute(userId, orderId, CancellationToken.None);
+            var act = async () => await _removeUserOrderUseCase.Execute(userId, orderId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<FluentValidation.ValidationException>();
@@ -75,7 +75,7 @@ namespace UserService
                 .ReturnsAsync((User?)null); 
 
             // Act
-            Func<Task> act = async () => await _removeUserOrderUseCase.Execute(userId, orderId, CancellationToken.None);
+            var act = async () => await _removeUserOrderUseCase.Execute(userId, orderId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();
@@ -97,7 +97,7 @@ namespace UserService
                 .ReturnsAsync(user);
 
             // Act
-            Func<Task> act = async () => await _removeUserOrderUseCase.Execute(userId, orderId, CancellationToken.None);
+            var act = async () => await _removeUserOrderUseCase.Execute(userId, orderId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();

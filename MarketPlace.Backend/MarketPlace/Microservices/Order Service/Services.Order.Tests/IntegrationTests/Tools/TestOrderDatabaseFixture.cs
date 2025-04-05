@@ -7,9 +7,13 @@ namespace OrderService
     {
         public OrderDbContext _context { get; private set; }
         private readonly IServiceScope _scope;
+        private bool _isDisposed = false;
 
         public TestOrderDatabaseFixture()
         {
+            if(_isDisposed)
+                throw new ObjectDisposedException(ToString());
+
             var services = new ServiceCollection();
 
             services.AddDbContext<OrderDbContext>(options =>
@@ -21,9 +25,13 @@ namespace OrderService
         }
         public void Dispose()
         {
-            _context.Database.EnsureDeleted();
-            _context.Dispose();
-            _scope?.Dispose();
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+                _context.Database.EnsureDeleted();
+                _context.Dispose();
+                _scope?.Dispose();
+            }
         }
     }
 }

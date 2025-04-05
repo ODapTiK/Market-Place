@@ -2,7 +2,7 @@
 
 namespace AuthorizationService
 {
-    [Route("api/[controller]")]
+    [Route("api/token")]
     public class TokenController : BaseController
     {
         private readonly IJwtProvider _jwtProvider;
@@ -12,7 +12,7 @@ namespace AuthorizationService
             _jwtProvider = jwtProvider;
         }
 
-        [HttpPut("Refresh")]
+        [HttpPut]
         public async Task<ActionResult<TokenDTO>> RefreshToken([FromBody] TokenDTO tokenDTO)
         {
             var updatedTokenDTO = await _jwtProvider.RefreshToken(tokenDTO);

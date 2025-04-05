@@ -14,6 +14,7 @@ namespace OrderService
         private readonly Mock<IMediator> _mediatorMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly OrderController _controller;
+        private readonly Faker<OrderPoint> _orderPointFaker;
         private readonly Faker _faker;
 
         public OrderControllerTests()
@@ -22,6 +23,11 @@ namespace OrderService
             _mapperMock = new Mock<IMapper>();
 
             _faker = new Faker();
+            _orderPointFaker = new Faker<OrderPoint>()
+                .RuleFor(o => o.Id, f => f.Random.Guid())
+                .RuleFor(o => o.OrderId, f => f.Random.Guid())
+                .RuleFor(o => o.ProductId, f => f.Random.Guid())
+                .RuleFor(o => o.NumberOfUnits, f => f.Random.Int(1, 5));
 
             var httpContext = new DefaultHttpContext();
             httpContext.RequestServices = new ServiceCollection()
@@ -43,25 +49,13 @@ namespace OrderService
             // Arrange
             var createOrderDTO = new CreateOrderDTO
             {
-                Points = (List<OrderPoint>)_faker.Make(_faker.Random.Int(1, 10), () => new OrderPoint()
-                {
-                    Id = _faker.Random.Guid(),
-                    OrderId = _faker.Random.Guid(),
-                    ProductId = _faker.Random.Guid(),
-                    NumberOfUnits = _faker.Random.Int(1, 5)
-                }),
+                Points = (List<OrderPoint>)_faker.Make(_faker.Random.Int(1, 10), () => _orderPointFaker.Generate()),
                 TotalPrice = _faker.Random.Decimal()
             };
             var command = new CreateOrderCommand 
             { 
                 UserId = _faker.Random.Guid(),
-                Points = (List<OrderPoint>)_faker.Make(_faker.Random.Int(1, 10), () => new OrderPoint()
-                {
-                    Id = _faker.Random.Guid(),
-                    OrderId = _faker.Random.Guid(),
-                    ProductId = _faker.Random.Guid(),
-                    NumberOfUnits = _faker.Random.Int(1, 5)
-                }),
+                Points = (List<OrderPoint>)_faker.Make(_faker.Random.Int(1, 10), () => _orderPointFaker.Generate()),
                 TotalPrice = _faker.Random.Decimal()
             };
             var expectedOrderId = _faker.Random.Guid();
@@ -105,13 +99,7 @@ namespace OrderService
                 Id = orderId,
                 UserId = _faker.Random.Guid(),
                 OrderDateTime = _faker.Date.Past(),
-                OrderPoints = (List<OrderPoint>)_faker.Make(_faker.Random.Int(1, 10), () => new OrderPoint()
-                {
-                    Id = _faker.Random.Guid(),
-                    OrderId = _faker.Random.Guid(),
-                    ProductId = _faker.Random.Guid(),
-                    NumberOfUnits = _faker.Random.Int(1, 5)
-                }),
+                OrderPoints = (List<OrderPoint>)_faker.Make(_faker.Random.Int(1, 10), () => _orderPointFaker.Generate()),
                 TotalPrice = _faker.Random.Decimal()
             };
 
@@ -137,17 +125,11 @@ namespace OrderService
                 Id = _faker.Random.Guid(),
                 UserId = userId,
                 OrderDateTime = _faker.Date.Past(),
-                OrderPoints = (List<OrderPoint>)_faker.Make(_faker.Random.Int(1, 10), () => new OrderPoint()
-                {
-                    Id = _faker.Random.Guid(),
-                    OrderId = _faker.Random.Guid(),
-                    ProductId = _faker.Random.Guid(),
-                    NumberOfUnits = _faker.Random.Int(1, 5)
-                }),
+                OrderPoints = (List<OrderPoint>)_faker.Make(_faker.Random.Int(1, 10), () => _orderPointFaker.Generate()),
                 TotalPrice = _faker.Random.Decimal()
             });
 
-            _mediatorMock.Setup(m => m.Send(It.IsAny < GetUserOrdersQuery > (), default))
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetUserOrdersQuery>(), default))
                 .ReturnsAsync(expectedOrders);
 
             // Act
@@ -156,7 +138,7 @@ namespace OrderService
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             okResult.Value.Should().BeEquivalentTo(expectedOrders);
-            _mediatorMock.Verify(m => m.Send(It.IsAny < GetUserOrdersQuery > (), default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetUserOrdersQuery>(), default), Times.Once);
         }
     }
 }

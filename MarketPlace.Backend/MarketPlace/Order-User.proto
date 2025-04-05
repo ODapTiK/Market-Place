@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package orderUser;
+
+option csharp_namespace = "Proto.OrderUser";
+
+service OrderUserService {
+    rpc AddUserOrder(OrderRequest) returns (Response);
+    rpc RemoveUserOrder(OrderRequest) returns (Response);
+    rpc CreateCart(CartRequest) returns (Response);
+    rpc DeleteCart(CartRequest) returns (Response);
+    rpc DeleteUserOrders(DeleteUserOrdersRequest) returns (Response);
+}
+
+message OrderRequest {
+    string user_id = 1;
+    string order_id = 2;
+}
+
+message CartRequest{
+    string user_id = 1;
+}
+
+message DeleteUserOrdersRequest{
+    string user_id = 1;
+}
+
+message Response {
+    bool success = 1;
+    string message = 2;
+}

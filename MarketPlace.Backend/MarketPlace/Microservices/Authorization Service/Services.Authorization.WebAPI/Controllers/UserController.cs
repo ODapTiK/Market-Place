@@ -2,11 +2,11 @@
 
 namespace AuthorizationService
 {
-    [Route("api/[controller]")]
+    [Route("api/user")]
     public class UserController : BaseController
     {
 
-        [HttpGet("Auth")]
+        [HttpGet("auth")]
         public async Task<ActionResult<TokenDTO>> AuthenticateUser([FromQuery] AuthUserDTO authUserDTO, CancellationToken cancellationToken)
         {
             var token = await Mediator.Send(new AuthUserRequest(authUserDTO));

@@ -38,7 +38,7 @@ namespace UserService
             var userId = Guid.Empty;
 
             // Act
-            Func<Task> act = async () => await _getUserInfoUseCase.Execute(userId, CancellationToken.None);
+            var act = async () => await _getUserInfoUseCase.Execute(userId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<FluentValidation.ValidationException>();
@@ -54,7 +54,7 @@ namespace UserService
                 .ReturnsAsync((User?)null); 
 
             // Act
-            Func<Task> act = async () => await _getUserInfoUseCase.Execute(userId, CancellationToken.None);
+            var act = async () => await _getUserInfoUseCase.Execute(userId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();

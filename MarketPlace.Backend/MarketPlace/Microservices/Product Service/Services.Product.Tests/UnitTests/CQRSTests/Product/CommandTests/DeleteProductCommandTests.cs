@@ -1,18 +1,21 @@
 ﻿using FluentAssertions;
 using FluentValidation.TestHelper;
 using Moq;
+using Proto.ProductUser;
 
 namespace ProductService
 {
     public class DeleteProductCommandTests
     {
         private readonly Mock<IProductRepository> _productRepositoryMock;
+        private readonly Mock<ProductUserService.ProductUserServiceClient> _userServiceClientMock;
         private readonly DeleteProductCommandHandler _handler;
 
         public DeleteProductCommandTests()
         {
             _productRepositoryMock = new Mock<IProductRepository>();
-            _handler = new DeleteProductCommandHandler(_productRepositoryMock.Object);
+            _userServiceClientMock = new Mock<ProductUserService.ProductUserServiceClient>();
+            _handler = new DeleteProductCommandHandler(_productRepositoryMock.Object, _userServiceClientMock.Object);
         }
 
         [Fact]
@@ -36,6 +39,16 @@ namespace ProductService
             _productRepositoryMock.Setup(repo => repo.GetByIdAsync(productId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(product);
 
+            var mockCall = CallHelpers.CreateAsyncUnaryCall(new ProductResponse
+            {
+                Message = "Test",
+                Success = true
+            });
+            _userServiceClientMock
+                .Setup(m => m.RemoveManufacturerProductAsync(
+                    It.IsAny<ProductRequest>(), null, null, CancellationToken.None))
+                .Returns(mockCall);
+
             // Act
             await _handler.Handle(command, CancellationToken.None);
 
@@ -57,7 +70,7 @@ namespace ProductService
                 .ReturnsAsync((Product?)null); 
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
+            var act = async () => await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();
@@ -84,10 +97,48 @@ namespace ProductService
                 .ReturnsAsync(product);
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
+            var act = async () => await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<LackOfRightException>();
+        }
+
+        [Fact]
+
+        public void Handle_ShouldThrowGRPCRequestFailException_WhenGRPCRequestReturnsFailure()
+        {
+            var productId = Guid.NewGuid();
+            var command = new DeleteProductCommand
+            {
+                Id = productId,
+                ManufacturerId = Guid.NewGuid()
+            };
+
+            var product = new Product
+            {
+                Id = productId,
+                ManufacturerId = Guid.NewGuid()
+            };
+
+            _productRepositoryMock.Setup(repo => repo.GetByIdAsync(productId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(product);
+
+
+            var mockCall = CallHelpers.CreateAsyncUnaryCall(new ProductResponse
+            {
+                Message = "Failure test",
+                Success = false
+            });
+            _userServiceClientMock
+                .Setup(m => m.RemoveManufacturerProductAsync(
+                    It.IsAny<ProductRequest>(), null, null, CancellationToken.None))
+                .Returns(mockCall);
+
+            // Act
+            var act = async () => await _handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            act.Should().ThrowAsync<GRPCRequestFailException>().WithMessage("Failure test");
         }
 
         [Fact]

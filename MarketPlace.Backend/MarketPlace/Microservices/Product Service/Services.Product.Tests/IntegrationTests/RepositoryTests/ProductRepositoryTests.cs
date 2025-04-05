@@ -9,9 +9,13 @@ namespace ProductService
         private readonly IMongoDatabase _database;
         private readonly IMongoCollection<Product> _collection;
         private readonly ProductRepository _repository;
+        private bool _isDisposed = false;
 
         public ProductRepositoryTests()
         {
+            if(_isDisposed)
+                throw new ObjectDisposedException(ToString());
+
             var client = new MongoClient("mongodb://localhost:27017");
             _database = client.GetDatabase("TestDatabase");
             _collection = _database.GetCollection<Product>("Products");
@@ -61,8 +65,11 @@ namespace ProductService
 
         public void Dispose()
         {
-            // Очистка коллекции для тестов
-            _database.DropCollection("Products");
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+                _database.DropCollection("Products");
+            }
         }
     }
 }

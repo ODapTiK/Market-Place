@@ -9,9 +9,13 @@ namespace ProductService
         private readonly SampleRedisService _redisService;
         private const string RedisConnectionString = "localhost:6379"; 
         private const int DatabaseIndex = 10;
+        private bool _disposed;
 
         public BaseRedisServiceTests()
         {
+            if (_disposed)
+                throw new ObjectDisposedException(ToString());
+
             _connectionMultiplexer = ConnectionMultiplexer.Connect(RedisConnectionString);
             _redisService = new SampleRedisService(_connectionMultiplexer, DatabaseIndex);
         }
@@ -78,14 +82,18 @@ namespace ProductService
 
         public void Dispose()
         {
-            var server = _connectionMultiplexer.GetServer(RedisConnectionString);
-            var keys = server.Keys(database: DatabaseIndex);
-            var database = _connectionMultiplexer.GetDatabase(DatabaseIndex);
-            foreach (var key in keys)
+            if (!_disposed)
             {
-                database.KeyDelete(key);
+                _disposed = true;
+                var server = _connectionMultiplexer.GetServer(RedisConnectionString);
+                var keys = server.Keys(database: DatabaseIndex);
+                var database = _connectionMultiplexer.GetDatabase(DatabaseIndex);
+                foreach (var key in keys)
+                {
+                    database.KeyDelete(key);
+                }
+                _connectionMultiplexer.Dispose();
             }
-            _connectionMultiplexer.Dispose();
         }
     }
 }

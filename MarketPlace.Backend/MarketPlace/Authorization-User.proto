@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package authUser;
+
+option csharp_namespace = "Proto.AuthUser";
+
+import "google/protobuf/timestamp.proto";  
+
+service AuthUserService {
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+    rpc CreateManufacturer(CreateManufacturerRequest) returns (CreateManufacturerResponse);
+    rpc CreateAdmin(CreateAdminRequest) returns (CreateAdminResponse);
+    rpc DeleteEntity(DeleteEntityRequest) returns (DeleteEntityResponse);
+}
+
+message CreateUserRequest {
+    string id = 1;  
+    string name = 2;
+    string surname = 3;
+    google.protobuf.Timestamp birth_date = 4;  
+}
+
+message CreateUserResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message CreateManufacturerRequest {
+    string id = 1;  
+    string organization = 2;
+}
+
+message CreateManufacturerResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message CreateAdminRequest {
+    string id = 1;  
+    string name = 2;
+    string surname = 3;
+}
+
+message CreateAdminResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message DeleteEntityRequest {
+    string id = 1;  
+    string role = 2;
+}
+
+message DeleteEntityResponse {
+    bool success = 1;
+    string message = 2;
+}

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using System.Security.Claims;
 
 namespace ProductService
 {
@@ -24,6 +25,8 @@ namespace ProductService
             _faker = new Faker();
 
             var httpContext = new DefaultHttpContext();
+            var claims = new[] { new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()) };
+            httpContext.User = new ClaimsPrincipal(new ClaimsIdentity(claims));
             httpContext.RequestServices = new ServiceCollection()
                 .AddSingleton(_mediatorMock.Object)
                 .BuildServiceProvider();
@@ -185,13 +188,14 @@ namespace ProductService
             // Arrange
             var createProductReviewDTO = new CreateProductReviewDTO
             {
-                ProductId = Guid.NewGuid(),
                 Raiting = _faker.Random.Int(1, 5),
                 Description = _faker.Lorem.Sentence()
             };
+            var productId = Guid.NewGuid();
+
             var command = new CreateProductReviewCommand
             {
-                ProductId = createProductReviewDTO.ProductId,
+                ProductId = productId,
                 Raiting = createProductReviewDTO.Raiting,
                 Description = createProductReviewDTO.Description,
                 UserId = Guid.NewGuid() 
@@ -204,7 +208,7 @@ namespace ProductService
                 .ReturnsAsync(expectedReviewId);
 
             // Act
-            var result = await _controller.CreateProductReview(createProductReviewDTO, CancellationToken.None);
+            var result = await _controller.CreateProductReview(productId, createProductReviewDTO, CancellationToken.None);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
@@ -216,28 +220,22 @@ namespace ProductService
         public async Task DeleteProductReview_ShouldReturnOk()
         {
             // Arrange
-            var deleteProductReviewDTO = new DeleteProductReviewDTO
-            {
-                Id = Guid.NewGuid(),
-                ProductId = Guid.NewGuid() 
-            };
+            var reviewId = Guid.NewGuid();
+            var productId = Guid.NewGuid();
 
             var command = new DeleteProductReviewCommand
             {
-                Id = deleteProductReviewDTO.Id,
-                ProductId = deleteProductReviewDTO.ProductId,
-                UserId = Guid.NewGuid()
+                Id = reviewId,
+                ProductId = productId,
+                UserId = _controller.UserId,
             };
 
-            _mapperMock.Setup(m => m.Map<DeleteProductReviewCommand>(deleteProductReviewDTO))
-                .Returns(command);
-
             // Act
-            var result = await _controller.DeleteProductReview(deleteProductReviewDTO, CancellationToken.None);
+            var result = await _controller.DeleteProductReview(productId, reviewId, CancellationToken.None);
 
             // Assert
             Assert.IsType<OkResult>(result);
-            _mediatorMock.Verify(m => m.Send(command, default), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<DeleteProductReviewCommand>(), default), Times.Once);
         }
     }
 }

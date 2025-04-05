@@ -55,7 +55,7 @@ namespace OrderService
                 .ReturnsAsync(existingCart); 
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
+            var act = async () => await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityAlreadyExistsException>();

@@ -10,23 +10,15 @@ namespace UserService
 {
     public class ManufacturerControllerTests
     {
-        private readonly Mock<ICreateManufacturerUseCase> _createManufacturerUseCaseMock;
         private readonly Mock<IUpdateManufacturerUseCase> _updateManufacturerUseCaseMock;
-        private readonly Mock<IDeleteManufacturerUseCase> _deleteManufacturerUseCaseMock;
         private readonly Mock<IGetManufacturerInfoUseCase> _getManufacturerInfoUseCaseMock;
-        private readonly Mock<IAddManufacturerProductUseCase> _addManufacturerProductUseCaseMock;
-        private readonly Mock<IRemoveManufacturerProductUseCase> _removeManufacturerProductUseCaseMock;
         private readonly ManufacturerController _controller;
         private readonly Faker _faker;
 
         public ManufacturerControllerTests()
         {
-            _createManufacturerUseCaseMock = new Mock<ICreateManufacturerUseCase>();
             _updateManufacturerUseCaseMock = new Mock<IUpdateManufacturerUseCase>();
-            _deleteManufacturerUseCaseMock = new Mock<IDeleteManufacturerUseCase>();
             _getManufacturerInfoUseCaseMock = new Mock<IGetManufacturerInfoUseCase>();
-            _addManufacturerProductUseCaseMock = new Mock<IAddManufacturerProductUseCase>();
-            _removeManufacturerProductUseCaseMock = new Mock<IRemoveManufacturerProductUseCase>();
 
             var httpContext = new DefaultHttpContext();
             var claims = new[] { new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()) };
@@ -35,12 +27,8 @@ namespace UserService
                 .BuildServiceProvider();
 
             _controller = new ManufacturerController(
-                _createManufacturerUseCaseMock.Object,
                 _updateManufacturerUseCaseMock.Object,
-                _deleteManufacturerUseCaseMock.Object,
-                _getManufacturerInfoUseCaseMock.Object,
-                _addManufacturerProductUseCaseMock.Object,
-                _removeManufacturerProductUseCaseMock.Object)
+                _getManufacturerInfoUseCaseMock.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -73,24 +61,6 @@ namespace UserService
         }
 
         [Fact]
-        public async Task CreateManufacturer_ShouldReturnOkResult_WithNewManufacturerId()
-        {
-            // Arrange
-            var manufacturerDTO = new ManufacturerDTO { Organization = _faker.Company.CompanyName() };
-            var newManufacturerId = Guid.NewGuid();
-            _createManufacturerUseCaseMock.Setup(u => u.Execute(manufacturerDTO, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(newManufacturerId);
-
-            // Act
-            var result = await _controller.CreateManufacturer(manufacturerDTO, CancellationToken.None);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            okResult.Value.Should().BeEquivalentTo(newManufacturerId);
-            _createManufacturerUseCaseMock.Verify(m => m.Execute(manufacturerDTO, It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
         public async Task UpdateManufacturer_ShouldReturnOkResult()
         {
             // Arrange
@@ -102,50 +72,6 @@ namespace UserService
             // Assert
             var okResult = Assert.IsType<OkResult>(result);
             _updateManufacturerUseCaseMock.Verify(m => m.Execute(manufacturerDTO, It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task DeleteManufacturer_ShouldReturnOkResult()
-        {
-            // Arrange
-            var userId = _controller.UserId;
-
-            // Act
-            var result = await _controller.DeleteManufacturer(CancellationToken.None);
-
-            // Assert
-            var okResult = Assert.IsType<OkResult>(result);
-            _deleteManufacturerUseCaseMock.Verify(m => m.Execute(userId, It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task AddManufacturerProduct_ShouldReturnOkResult()
-        {
-            // Arrange
-            var productId = Guid.NewGuid();
-            var userId = _controller.UserId;
-
-            // Act
-            var result = await _controller.AddManufacturerProduct(productId, CancellationToken.None);
-
-            // Assert
-            var okResult = Assert.IsType<OkResult>(result);
-            _addManufacturerProductUseCaseMock.Verify(m => m.Execute(userId, productId, It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task RemoveManufacturerProduct_ShouldReturnOkResult()
-        {
-            // Arrange
-            var productId = Guid.NewGuid();
-            var userId = _controller.UserId;
-
-            // Act
-            var result = await _controller.RemoveManufacturerProduct(productId, CancellationToken.None);
-
-            // Assert
-            var okResult = Assert.IsType<OkResult>(result);
-            _removeManufacturerProductUseCaseMock.Verify(m => m.Execute(userId, productId, It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

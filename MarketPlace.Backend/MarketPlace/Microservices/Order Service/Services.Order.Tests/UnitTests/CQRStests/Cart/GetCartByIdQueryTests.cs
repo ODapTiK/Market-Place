@@ -28,11 +28,11 @@ namespace OrderService
         public async Task Handle_ShouldReturnCart_WhenCartExists()
         {
             // Arrange
-            var cart = _cartFaker.Generate(); // Генерация поддельной корзины
+            var cart = _cartFaker.Generate(); 
             var query = new GetCartByIdQuery { Id = cart.Id };
 
             _cartRepositoryMock.Setup(repo => repo.GetByIdAsync(cart.Id, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(cart); // Корзина найдена
+                .ReturnsAsync(cart); 
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -53,7 +53,7 @@ namespace OrderService
                 .ReturnsAsync((Cart?)null); 
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(query, CancellationToken.None);
+            var act = async () => await _handler.Handle(query, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();

@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Moq;
 using FluentValidation.TestHelper;
+using Proto.OrderUser;
 
 namespace OrderService
 {
@@ -11,10 +12,12 @@ namespace OrderService
         private readonly DeleteOrderCommandHandler _handler;
         private readonly Faker _faker;
         private readonly DeleteOrderCommandValidator _validator;
+        private readonly Mock<OrderUserService.OrderUserServiceClient> _orderUserServiceClientMock; 
         public DeleteOrderCommandTests()
         {
             _orderRepositoryMock = new Mock<IOrderRepository>();
-            _handler = new DeleteOrderCommandHandler(_orderRepositoryMock.Object);
+            _orderUserServiceClientMock = new Mock<OrderUserService.OrderUserServiceClient>();
+            _handler = new DeleteOrderCommandHandler(_orderRepositoryMock.Object, _orderUserServiceClientMock.Object);
             _faker = new Faker();
             _validator = new DeleteOrderCommandValidator();
         }
@@ -29,6 +32,16 @@ namespace OrderService
 
             _orderRepositoryMock.Setup(repo => repo.GetByIdAsync(orderId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(existingOrder);
+
+            var mockCall = CallHelpers.CreateAsyncUnaryCall(new Response
+            {
+                Message = "Test",
+                Success = true
+            });
+            _orderUserServiceClientMock
+                .Setup(m => m.RemoveUserOrderAsync(
+                    It.IsAny<OrderRequest>(), null, null, CancellationToken.None))
+                .Returns(mockCall);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
@@ -48,7 +61,7 @@ namespace OrderService
                 .ReturnsAsync((Order?)null); 
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
+            var act = async () => await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();
@@ -68,6 +81,35 @@ namespace OrderService
 
             // Assert
             result.ShouldHaveValidationErrorFor(x => x.Id);
+        }
+
+        [Fact]
+
+        public void Handle_ShouldThrowGRPCRequestFailException_WhenGRPCRequestReturnsFailure()
+        {
+            // Arrange
+            var orderId = _faker.Random.Guid();
+            var command = new DeleteOrderCommand { Id = orderId };
+            var existingOrder = new Order { Id = orderId };
+
+            _orderRepositoryMock.Setup(repo => repo.GetByIdAsync(orderId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(existingOrder);
+
+            var mockCall = CallHelpers.CreateAsyncUnaryCall(new Response
+            {
+                Message = "Failure test",
+                Success = false
+            });
+            _orderUserServiceClientMock
+                .Setup(m => m.RemoveUserOrderAsync(
+                    It.IsAny<OrderRequest>(), null, null, CancellationToken.None))
+                .Returns(mockCall);
+
+            // Act
+            var act = async () => await _handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            act.Should().ThrowAsync<GRPCRequestFailException>().WithMessage("Failure test");
         }
     }
 }

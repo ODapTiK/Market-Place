@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using Bogus.DataSets;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +43,7 @@ namespace AuthorizationService
             };
 
             var token = new TokenDTO("access_token", "refresh_token");
-            _mediatorMock.Setup(m => m.Send(It.IsAny < AuthUserRequest > (), default))
+            _mediatorMock.Setup(m => m.Send(It.IsAny<AuthUserRequest>(), default))
                          .ReturnsAsync(token);
 
             // Act
@@ -69,7 +68,7 @@ namespace AuthorizationService
             };
 
             var userId = Guid.NewGuid();
-            _mediatorMock.Setup(m => m.Send(It.IsAny < CreateUserRequest > (), default))
+            _mediatorMock.Setup(m => m.Send(It.IsAny<CreateUserRequest>(), default))
                          .ReturnsAsync(userId);
 
             // Act
@@ -85,7 +84,7 @@ namespace AuthorizationService
         {
             // Arrange
             var userId = Guid.NewGuid();
-            _mediatorMock.Setup(m => m.Send(It.IsAny < DeleteUserRequest > (), default))
+            _mediatorMock.Setup(m => m.Send(It.IsAny<DeleteUserRequest>(), default))
                          .Returns(Task.CompletedTask);
 
             // Act

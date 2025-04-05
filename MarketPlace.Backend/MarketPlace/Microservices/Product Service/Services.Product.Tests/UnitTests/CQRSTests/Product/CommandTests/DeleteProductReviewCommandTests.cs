@@ -65,7 +65,7 @@ namespace ProductService
                 .ReturnsAsync((Product?)null); 
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
+            var act = async () => await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();
@@ -94,7 +94,7 @@ namespace ProductService
                 .ReturnsAsync(product);
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
+            var act = async () => await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();
@@ -127,7 +127,7 @@ namespace ProductService
                 .ReturnsAsync(product);
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
+            var act = async () => await _handler.Handle(command, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<LackOfRightException>();

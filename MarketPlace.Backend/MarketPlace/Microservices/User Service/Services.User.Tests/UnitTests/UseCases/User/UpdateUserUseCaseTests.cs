@@ -59,7 +59,7 @@ namespace UserService
                 .ReturnsAsync(new ValidationResult(validationErrors));
 
             // Act
-            Func<Task> act = async () => await _updateUserUseCase.Execute(userDTO, CancellationToken.None);
+            var act = async () => await _updateUserUseCase.Execute(userDTO, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<ValidationException>();
@@ -79,7 +79,7 @@ namespace UserService
                 .ReturnsAsync((User?)null); 
 
             // Act
-            Func<Task> act = async () => await _updateUserUseCase.Execute(userDTO, CancellationToken.None);
+            var act = async () => await _updateUserUseCase.Execute(userDTO, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<EntityNotFoundException>();

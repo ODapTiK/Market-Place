@@ -38,37 +38,6 @@ namespace OrderService
         }
 
         [Fact]
-        public async Task CreateCart_ShouldReturnOk_WithCartId()
-        {
-            // Arrange
-            var expectedCartId = Guid.NewGuid();
-            _mediatorMock.Setup(m => m.Send(It.IsAny<CreateCartCommand>(), default))
-                .ReturnsAsync(expectedCartId);
-
-            // Act
-            var result = await _controller.CreateCart(CancellationToken.None);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(expectedCartId, okResult.Value);
-            _mediatorMock.Verify(m => m.Send(It.IsAny<CreateCartCommand>(), default), Times.Once);
-        }
-
-        [Fact]
-        public async Task DeleteCart_ShouldReturnOk()
-        {
-            // Arrange
-            var cartId = Guid.NewGuid();
-
-            // Act
-            var result = await _controller.DeleteCart(cartId, CancellationToken.None);
-
-            // Assert
-            Assert.IsType<OkResult>(result);
-            _mediatorMock.Verify(m => m.Send(It.IsAny<DeleteCartCommand>(), default), Times.Once);
-        }
-
-        [Fact]
         public async Task AddOrderPoint_ShouldReturnOk()
         {
             // Arrange

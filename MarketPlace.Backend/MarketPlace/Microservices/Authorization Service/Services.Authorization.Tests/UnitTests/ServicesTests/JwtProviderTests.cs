@@ -89,7 +89,7 @@ namespace AuthorizationService
             var tokenDto = new TokenDTO(expiredToken.accessToken, "invalidRefreshToken");
 
             // Act 
-            Func<Task> act = async () => await _jwtProvider.RefreshToken(tokenDto);
+            var act = async () => await _jwtProvider.RefreshToken(tokenDto);
 
             //Assert
             await act.Should().ThrowAsync<RefreshTokenBadRequestException>();
@@ -104,7 +104,8 @@ namespace AuthorizationService
             {
                 Id = Guid.Parse(userId),
                 RefreshToken = "validRefreshToken",
-                RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(-1) // expired
+                //expired
+                RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(-1) 
             };
 
             _mockUserRepository.Setup(repo => repo.GetUserRoleAsync(It.IsAny<User>())).ReturnsAsync(["Admin"]);
@@ -114,7 +115,7 @@ namespace AuthorizationService
             var tokenDto = new TokenDTO(expiredToken.accessToken, "validRefreshToken");
 
             // Act 
-            Func<Task> act = async () => await _jwtProvider.RefreshToken(tokenDto);
+            var act = async () => await _jwtProvider.RefreshToken(tokenDto);
 
             //Assert
             await act.Should().ThrowAsync<RefreshTokenBadRequestException>();

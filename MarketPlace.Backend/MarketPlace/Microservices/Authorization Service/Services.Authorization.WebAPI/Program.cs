@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Identity;
+using Proto.AuthUser;
 
 namespace AuthorizationService
 {
@@ -70,6 +71,11 @@ namespace AuthorizationService
                     };
                 });
             services.AddAuthorization();
+
+            services.AddGrpcClient<AuthUserService.AuthUserServiceClient>(options =>
+            {
+                options.Address = new Uri("http://localhost:6002");
+            });
 
             services.AddSwaggerGen(options =>
             {

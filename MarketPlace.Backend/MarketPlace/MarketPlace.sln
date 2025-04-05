@@ -85,6 +85,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F1B9DAC3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Product.Tests", "Microservices\Product Service\Services.Product.Tests\Services.Product.Tests.csproj", "{49AC1479-2B14-47E4-8900-D2959E03F918}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common Protos", "Common Protos", "{61DDE966-9AF6-4540-9144-04126B02F15F}"
+	ProjectSection(SolutionItems) = preProject
+		Authorization-User.proto = Authorization-User.proto
+		Order-User.proto = Order-User.proto
+		Product-User.proto = Product-User.proto
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api Gateway", "Api Gateway", "{1AA222F5-BF25-4ADC-8F49-EDEAD2C0469F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "Api Gateway\ApiGateway\ApiGateway.csproj", "{21E42213-BCBD-491C-9422-14662CF18FA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +182,10 @@ Global
 		{49AC1479-2B14-47E4-8900-D2959E03F918}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49AC1479-2B14-47E4-8900-D2959E03F918}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49AC1479-2B14-47E4-8900-D2959E03F918}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21E42213-BCBD-491C-9422-14662CF18FA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21E42213-BCBD-491C-9422-14662CF18FA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21E42213-BCBD-491C-9422-14662CF18FA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21E42213-BCBD-491C-9422-14662CF18FA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -216,5 +231,7 @@ Global
 		{A30C4AF2-1A2C-4AF7-AB0C-D1E3D56905EC} = {7C04E3FC-9328-4FD9-A7AE-26CB393394B8}
 		{F1B9DAC3-FCCC-4D81-ADD4-DA293E299B4D} = {DF60B773-6100-4E07-8E2A-75C2DF341CEB}
 		{49AC1479-2B14-47E4-8900-D2959E03F918} = {F1B9DAC3-FCCC-4D81-ADD4-DA293E299B4D}
+		{61DDE966-9AF6-4540-9144-04126B02F15F} = {169D1AD9-F705-4AD9-B4A9-764ED04A85C2}
+		{21E42213-BCBD-491C-9422-14662CF18FA4} = {1AA222F5-BF25-4ADC-8F49-EDEAD2C0469F}
 	EndGlobalSection
 EndGlobal
