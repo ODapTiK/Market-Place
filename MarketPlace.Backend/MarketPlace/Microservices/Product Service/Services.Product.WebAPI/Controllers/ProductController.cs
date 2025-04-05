@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ProductService
 {
-    [Route("api/[controller]")]
+    [Route("api/products")]
     public class ProductController : BaseController
     {
         private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ namespace ProductService
             return Ok(product);
         }
 
-        [HttpGet("Manufacturer/{id}")]
+        [HttpGet("manufacturers/{id}")]
         public async Task<ActionResult<List<Product>>> GetManufacturerProducts(Guid id, CancellationToken cancellationToken)
         {
             var query = new GetManufacturerProductsQuery()
@@ -56,7 +56,7 @@ namespace ProductService
             return Ok(productId);
         }
 
-        [HttpPost("{productId}/Review")]
+        [HttpPost("{productId}/reviews")]
         public async Task<ActionResult<Guid>> CreateProductReview(Guid productId, [FromBody] CreateProductReviewDTO createProductReviewDTO, CancellationToken cancellationToken)
         {
             var command = _mapper.Map<CreateProductReviewCommand>(createProductReviewDTO);
@@ -80,7 +80,7 @@ namespace ProductService
             return Ok();
         }
 
-        [HttpDelete("{productId}/Review/{reviewId}")]
+        [HttpDelete("{productId}/reviews/{reviewId}")]
         public async Task<IActionResult> DeleteProductReview(Guid productId, Guid reviewId, CancellationToken cancellationToken)
         {
             var command = new DeleteProductReviewCommand()

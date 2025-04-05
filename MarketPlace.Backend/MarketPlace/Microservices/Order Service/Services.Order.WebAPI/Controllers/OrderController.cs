@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace OrderService
 {
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     public class OrderController : BaseController
     {
         private readonly IMapper _mapper;

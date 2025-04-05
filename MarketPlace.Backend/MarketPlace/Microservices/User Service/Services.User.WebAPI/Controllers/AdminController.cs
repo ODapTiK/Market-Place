@@ -2,7 +2,7 @@
 
 namespace UserService
 {
-    [Route("api/[controller]")]
+    [Route("api/admin")]
     public class AdminController : BaseController
     {
         private readonly IUpdateAdminUseCase _updateAdminUseCase;

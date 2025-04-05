@@ -1,7 +1,7 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/api/User",
+      "DownstreamPathTemplate": "/api/user",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -27,7 +27,7 @@
       "SwaggerKey": "User"
     },
     {
-      "DownstreamPathTemplate": "/api/Manufacturer",
+      "DownstreamPathTemplate": "/api/manufacturer",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {

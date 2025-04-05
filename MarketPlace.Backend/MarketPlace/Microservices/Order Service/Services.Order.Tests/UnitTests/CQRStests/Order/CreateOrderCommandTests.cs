@@ -85,7 +85,6 @@ namespace OrderService
         }
 
         [Fact]
-
         public void Handle_ShouldThrowGRPCRequestFailException_WhenGRPCRequestReturnsFailure()
         {
             // Arrange

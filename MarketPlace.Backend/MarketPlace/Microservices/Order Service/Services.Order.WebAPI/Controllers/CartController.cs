@@ -2,7 +2,7 @@
 
 namespace OrderService
 {
-    [Route("api/[controller]")]
+    [Route("api/carts")]
     public class CartController : BaseController
     {
         [HttpGet]
@@ -29,7 +29,7 @@ namespace OrderService
             return Ok(cart);    
         }
 
-        [HttpPost("{CartId}/Point/{ProductId}")]
+        [HttpPost("{CartId}/products/{ProductId}")]
         public async Task<IActionResult> AddOrderPoint(Guid CartId, Guid ProductId, CancellationToken cancellationToken)
         {
             var command = new AddOrderPointCommand()
@@ -42,7 +42,7 @@ namespace OrderService
             return Ok();
         }
 
-        [HttpDelete("{CartId}/Point/{ProductId}")]
+        [HttpDelete("{CartId}/products/{ProductId}")]
         public async Task<IActionResult> RemoveOrderPoint(Guid CartId, Guid ProductId, CancellationToken cancellationToken)
         {
             var command = new RemoveOrderPointCommand()

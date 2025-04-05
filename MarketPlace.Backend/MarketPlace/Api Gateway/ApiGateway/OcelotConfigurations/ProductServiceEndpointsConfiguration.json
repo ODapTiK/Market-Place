@@ -1,7 +1,7 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/api/Product",
+      "DownstreamPathTemplate": "/api/products",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -14,7 +14,7 @@
       "SwaggerKey": "Product"
     },
     {
-      "DownstreamPathTemplate": "/api/Product/{id}",
+      "DownstreamPathTemplate": "/api/products/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -27,7 +27,7 @@
       "SwaggerKey": "Product"
     },
     {
-      "DownstreamPathTemplate": "/api/Product/Manufacturer/{id}",
+      "DownstreamPathTemplate": "/api/products/manufacturers/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -35,12 +35,12 @@
           "Port": 6004
         }
       ],
-      "UpstreamPathTemplate": "/products/manufacturer/{id}",
+      "UpstreamPathTemplate": "/products/manufacturers/{id}",
       "UpstreamHttpMethod": [ "GET" ],
       "SwaggerKey": "Product"
     },
     {
-      "DownstreamPathTemplate": "/api/Product",
+      "DownstreamPathTemplate": "/api/products",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -57,7 +57,7 @@
       "SwaggerKey": "Product"
     },
     {
-      "DownstreamPathTemplate": "/api/Product/{id}",
+      "DownstreamPathTemplate": "/api/products/{id}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -74,7 +74,7 @@
       "SwaggerKey": "Product"
     },
     {
-      "DownstreamPathTemplate": "/api/Product/{productId}/Review",
+      "DownstreamPathTemplate": "/api/products/{productId}/reviews",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -91,7 +91,7 @@
       "SwaggerKey": "Product"
     },
     {
-      "DownstreamPathTemplate": "/api/Product/{productId}/Review/{reviewId}",
+      "DownstreamPathTemplate": "/api/products/{productId}/reviews/{reviewId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {

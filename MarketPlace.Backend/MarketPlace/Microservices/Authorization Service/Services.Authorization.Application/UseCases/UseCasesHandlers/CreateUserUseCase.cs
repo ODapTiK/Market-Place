@@ -58,9 +58,9 @@ namespace AuthorizationService
 
             switch (request.userDTO.Role)
             {
-                case "User":
+                case nameof(Role.User):
                     var rpcUser = request.userDTO as CreateUserDTO;
-                    if(rpcUser == null)
+                    if (rpcUser == null)
                         throw new ConversionException(nameof(UserDTO), nameof(CreateUserDTO));
 
                     var userRpcRequest = new Proto.AuthUser.CreateUserRequest
@@ -79,7 +79,7 @@ namespace AuthorizationService
                     if (!userResponse.Success)
                         throw new GRPCRequestFailException(userResponse.Message);
                     break;
-                case "Admin":
+                case nameof(Role.Admin):
                     var rpcAdmin = request.userDTO as CreateAdminDTO;
                     if (rpcAdmin == null)
                         throw new ConversionException(nameof(UserDTO), nameof(CreateAdminDTO));
@@ -96,7 +96,7 @@ namespace AuthorizationService
                     if (!adminResponse.Success)
                         throw new GRPCRequestFailException(adminResponse.Message);
                     break;
-                case "Manufacturer":
+                case nameof(Role.Manufacturer):
                     var rpcManufacturer = request.userDTO as CreateManufacturerDTO;
                     if (rpcManufacturer == null)
                         throw new ConversionException(nameof(UserDTO), nameof(CreateManufacturerDTO));

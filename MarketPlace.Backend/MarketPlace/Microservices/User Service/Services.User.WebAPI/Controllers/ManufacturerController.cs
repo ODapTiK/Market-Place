@@ -2,7 +2,7 @@
 
 namespace UserService
 {
-    [Route("api/[controller]")]
+    [Route("api/manufacturer")]
     public class ManufacturerController : BaseController
     {
         private readonly IUpdateManufacturerUseCase _updateManufacturerUseCase;

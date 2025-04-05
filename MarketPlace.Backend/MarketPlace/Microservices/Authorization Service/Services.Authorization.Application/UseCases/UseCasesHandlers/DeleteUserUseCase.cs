@@ -32,7 +32,7 @@ namespace AuthorizationService
 
             var rpcResponse = await _userServiceClient.DeleteEntityAsync(deleteEntityRpcRequest);
 
-            if(!rpcResponse.Success)
+            if (!rpcResponse.Success)
                 throw new GRPCRequestFailException(rpcResponse.Message);
         }
     }
