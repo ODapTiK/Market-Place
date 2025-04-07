@@ -7,6 +7,7 @@ option csharp_namespace = "Proto.ProductUser";
 service ProductUserService {
     rpc AddManufacturerProduct(ProductRequest) returns (ProductResponse);
     rpc RemoveManufacturerProduct(ProductRequest) returns (ProductResponse);
+    rpc GetManufacturers(ManufacturersRequest) returns (ManufacturerResponse);
 }
 
 message ProductRequest {
@@ -17,5 +18,13 @@ message ProductRequest {
 message ProductResponse {
     bool success = 1;
     string message = 2;
+}
+
+message ManufacturersRequest { }
+
+message ManufacturerResponse {
+    bool success = 1;
+    string message = 2;
+    repeated string manufacturer_id = 3;
 }
 

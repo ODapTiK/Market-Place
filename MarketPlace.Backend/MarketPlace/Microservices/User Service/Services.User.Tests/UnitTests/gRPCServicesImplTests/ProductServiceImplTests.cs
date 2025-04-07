@@ -9,6 +9,7 @@ namespace UserService
     {
         private readonly Mock<IAddManufacturerProductUseCase> _addManufacturerProductUseCaseMock;
         private readonly Mock<IRemoveManufacturerProductUseCase> _removeManufacturerProductUseCaseMock;
+        private readonly Mock<IGetManufacturersIdUseCase> _getManufacturersIdUseCaseMock;
         private readonly ProductServiceImpl _productService;
         private readonly Faker<ProductRequest> _requestFaker;
 
@@ -16,6 +17,7 @@ namespace UserService
         {
             _addManufacturerProductUseCaseMock = new Mock<IAddManufacturerProductUseCase>();
             _removeManufacturerProductUseCaseMock = new Mock<IRemoveManufacturerProductUseCase>();
+            _getManufacturersIdUseCaseMock = new Mock<IGetManufacturersIdUseCase>();
 
             _requestFaker = new Faker<ProductRequest>()
                 .RuleFor(x => x.ManufacturerId, Guid.NewGuid().ToString())
@@ -23,7 +25,8 @@ namespace UserService
 
             _productService = new ProductServiceImpl(
                 _addManufacturerProductUseCaseMock.Object,
-                _removeManufacturerProductUseCaseMock.Object);
+                _removeManufacturerProductUseCaseMock.Object,
+                _getManufacturersIdUseCaseMock.Object);
         }
 
         [Fact]
@@ -104,6 +107,49 @@ namespace UserService
             response.Should().NotBeNull();
             response.Success.Should().BeFalse();
             response.Message.Should().Be("Failed to remove product");
+        }
+
+        [Fact]
+        public async Task GetManufacturers_ShouldReturnSuccess_WhenManufacturersIdAreReceived()
+        {
+            // Arrange
+            var manufacturersIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
+
+            _getManufacturersIdUseCaseMock.Setup(x => x.Execute(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(manufacturersIds);
+
+            var request = new ManufacturersRequest();
+
+            // Act
+            var response = await _productService.GetManufacturers(request, TestServerCallContext.Create());
+
+            // Assert
+            response.Should().NotBeNull();
+            response.Success.Should().BeTrue();
+            response.Message.Should().Be("Manufacturer IDs successfully received");
+            response.ManufacturerId.Should().HaveCount(manufacturersIds.Count);
+            response.ManufacturerId.Should().Contain(manufacturersIds.Select(id => id.ToString()));
+        }
+
+        [Fact]
+        public async Task GetManufacturers_ShouldReturnFailure_WhenExceptionIsThrown()
+        {
+            // Arrange
+            var cancellationToken = new CancellationToken();
+
+            _getManufacturersIdUseCaseMock.Setup(x => x.Execute(cancellationToken))
+                .ThrowsAsync(new Exception("Failed to get manufacturer IDs"));
+
+            var request = new ManufacturersRequest();
+
+            // Act
+            var response = await _productService.GetManufacturers(request, TestServerCallContext.Create());
+
+            // Assert
+            response.Should().NotBeNull();
+            response.Success.Should().BeFalse();
+            response.Message.Should().Be("Failed to get manufacturer IDs");
+            response.ManufacturerId.Should().BeEmpty();
         }
     }
 }

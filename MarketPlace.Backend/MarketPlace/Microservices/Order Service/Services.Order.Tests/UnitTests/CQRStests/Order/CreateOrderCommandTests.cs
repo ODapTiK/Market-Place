@@ -3,22 +3,34 @@ using FluentValidation.TestHelper;
 using FluentAssertions;
 using Moq;
 using Proto.OrderUser;
+using Hangfire;
+using Hangfire.Common;
+using Hangfire.States;
 
 namespace OrderService
 {
-    public class CreateOrderCommandTests
+    public class CreateOrderCommandTests 
     {
         private readonly Mock<IOrderRepository> _orderRepositoryMock;
         private readonly CreateOrderCommandHandler _handler;
         private readonly Faker<OrderPoint> _orderPointFaker;
         private readonly CreateOrderCommandValidator _validator;
         private readonly Mock<OrderUserService.OrderUserServiceClient> _orderUserServiceClientMock;
+        private readonly Mock<IObsoleteOrderCollector> _ordersCollectorMock;    
+        private readonly Mock<IBackgroundJobClient> _backgroundJobClientMock;
 
         public CreateOrderCommandTests()
         {
             _orderRepositoryMock = new Mock<IOrderRepository>();
             _orderUserServiceClientMock = new Mock<OrderUserService.OrderUserServiceClient>();
-            _handler = new CreateOrderCommandHandler(_orderRepositoryMock.Object, _orderUserServiceClientMock.Object);
+            _ordersCollectorMock = new Mock<IObsoleteOrderCollector>();
+            _backgroundJobClientMock = new Mock<IBackgroundJobClient>();
+
+            _handler = new CreateOrderCommandHandler(_orderRepositoryMock.Object, 
+                                                     _orderUserServiceClientMock.Object, 
+                                                     _ordersCollectorMock.Object,
+                                                     _backgroundJobClientMock.Object);
+
             _validator = new CreateOrderCommandValidator();
 
             _orderPointFaker = new Faker<OrderPoint>()
@@ -41,6 +53,8 @@ namespace OrderService
 
             _orderRepositoryMock.Setup(repo => repo.CreateAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Guid.NewGuid());
+            _ordersCollectorMock.Setup(repo => repo.RemoveObsoleteOrder(It.IsAny<Order>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
 
             var mockCall = CallHelpers.CreateAsyncUnaryCall(new Response
             {
@@ -56,7 +70,12 @@ namespace OrderService
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
+            _backgroundJobClientMock.Verify(x => x.Create(
+                It.Is<Job>(job => job.Method.Name == nameof(IObsoleteOrderCollector.RemoveObsoleteOrder)),
+                It.IsAny<IState>()));
+
             result.Should().NotBe(Guid.Empty);
+
             _orderRepositoryMock.Verify(repo => repo.CreateAsync(It.Is<Order>(o =>
                 o.UserId == userId &&
                 o.OrderPoints.Count == orderPoints.Count &&

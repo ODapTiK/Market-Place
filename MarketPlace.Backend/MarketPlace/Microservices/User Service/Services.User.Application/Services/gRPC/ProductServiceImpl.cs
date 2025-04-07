@@ -7,12 +7,42 @@ namespace UserService
     {
         private readonly IAddManufacturerProductUseCase _addManufacturerProductUseCase;
         private readonly IRemoveManufacturerProductUseCase _removeManufacturerProductUseCase;
+        private readonly IGetManufacturersIdUseCase _getManufacturersIdUseCase;
 
         public ProductServiceImpl(IAddManufacturerProductUseCase addManufacturerProductUseCase, 
-                                  IRemoveManufacturerProductUseCase removeManufacturerProductUseCase)
+                                  IRemoveManufacturerProductUseCase removeManufacturerProductUseCase,
+                                  IGetManufacturersIdUseCase getManufacturersIdUseCase)
         {
             _addManufacturerProductUseCase = addManufacturerProductUseCase;
             _removeManufacturerProductUseCase = removeManufacturerProductUseCase;
+            _getManufacturersIdUseCase = getManufacturersIdUseCase;
+        }
+
+        public override async Task<ManufacturerResponse> GetManufacturers(ManufacturersRequest request, ServerCallContext context)
+        {
+            try
+            {
+                var manufacturersId = await _getManufacturersIdUseCase.Execute(context.CancellationToken);
+                var response = new ManufacturerResponse()
+                {
+                    Success = true,
+                    Message = "Manufacturer IDs successfully received"
+                };
+                response.ManufacturerId.AddRange(manufacturersId.Select(x => x.ToString()).ToList());
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                var response = new ManufacturerResponse()
+                {
+                    Success = false,
+                    Message = ex.Message,
+                };
+                response.ManufacturerId.AddRange([]);
+
+                return response;
+            }
         }
 
         public override async Task<ProductResponse> AddManufacturerProduct(ProductRequest request, ServerCallContext context)

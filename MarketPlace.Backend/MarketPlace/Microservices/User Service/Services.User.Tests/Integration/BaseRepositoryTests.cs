@@ -3,6 +3,7 @@ using FluentAssertions;
 
 namespace UserService
 {
+    [Collection("Database Collection")]
     public class BaseRepositoryTests : IClassFixture<TestUserDatabaseFixture>
     {
         private readonly TestBaseRepository _testRepository;

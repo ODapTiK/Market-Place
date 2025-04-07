@@ -1,12 +1,15 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Hangfire;
+using Hangfire.PostgreSql;
+using Microsoft.Extensions.Configuration;
 
 namespace UserService
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services)
+        public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddValidatorsFromAssemblies([Assembly.GetExecutingAssembly()]);
 
@@ -21,6 +24,7 @@ namespace UserService
             services.AddScoped<IGetManufacturerInfoUseCase, GetManufacturerInfoUseCase>();
             services.AddScoped<IAddManufacturerProductUseCase, AddManufacturerProductUseCase>();
             services.AddScoped<IRemoveManufacturerProductUseCase, RemoveManufacturerProductUseCase>();
+            services.AddScoped<IGetManufacturersIdUseCase, GetManufacturersIdUseCase>();
 
             services.AddScoped<ICreateUserUseCase, CreateUserUseCase>();
             services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
@@ -28,6 +32,16 @@ namespace UserService
             services.AddScoped<IGetUserInfoUseCase, GetUserInfoUseCase>();
             services.AddScoped<IAddUserOrderUseCase, AddUserOrderUseCase>();
             services.AddScoped<IRemoveUserOrderUseCase, RemoveUserOrderUseCase>();
+            services.AddScoped<IGetUsersWithBirthdayUseCase, GetUsersWithBirthdayUseCase>();
+
+            services.AddHangfire(config => config
+               .UseSimpleAssemblyNameTypeSerializer()
+               .UseRecommendedSerializerSettings()
+               .UsePostgreSqlStorage(configuration.GetConnectionString("HangfireDB")));
+            services.AddHangfireServer();
+
+            var manager = new RecurringJobManager();
+            manager.AddOrUpdate<BirthdayGreetingsGenerator>("birthday-greetings", x => x.GenerateBirthdayGreetings(default), Cron.Daily);
 
             return services;
         }

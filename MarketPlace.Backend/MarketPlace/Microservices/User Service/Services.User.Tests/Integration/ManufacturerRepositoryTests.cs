@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UserService
 {
+    [Collection("Database Collection")]
     public class ManufacturerRepositoryTests : IClassFixture<TestUserDatabaseFixture>
     {
         private readonly ManufacturerRepository _manufacturerRepository;
@@ -57,6 +58,45 @@ namespace UserService
             // Assert
             var updatedManufacturer = await _context.Manufacturers.FindAsync(manufacturerId);
             updatedManufacturer.OrganizationProductsId.Should().NotContain(productId);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldReturnAllManufacturers_WhenManufacturersExist()
+        {
+            // Arrange
+            _context.Manufacturers.RemoveRange(await _context.Manufacturers.ToListAsync());
+            var manufacturers = new List<Manufacturer>
+            {
+                new Manufacturer { Id = Guid.NewGuid(), Organization = "Manufacturer 1" },
+                new Manufacturer { Id = Guid.NewGuid(), Organization = "Manufacturer 2" }
+            };
+
+            await _context.Manufacturers.AddRangeAsync(manufacturers);
+            await _context.SaveChangesAsync(default);
+
+            // Act
+            var result = await _manufacturerRepository.GetAllAsync(CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().HaveCount(2);
+            result.Should().Contain(m => m.Organization == "Manufacturer 1");
+            result.Should().Contain(m => m.Organization == "Manufacturer 2");
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldReturnEmptyList_WhenNoManufacturersExist()
+        {
+            //Assert
+            _context.Manufacturers.RemoveRange(await _context.Manufacturers.ToListAsync());
+            await _context.SaveChangesAsync(default);
+
+            // Act
+            var result = await _manufacturerRepository.GetAllAsync(CancellationToken.None);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Should().BeEmpty();
         }
     }
 }
