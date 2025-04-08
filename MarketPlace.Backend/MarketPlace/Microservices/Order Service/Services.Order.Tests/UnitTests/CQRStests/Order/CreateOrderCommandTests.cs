@@ -53,7 +53,7 @@ namespace OrderService
 
             _orderRepositoryMock.Setup(repo => repo.CreateAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Guid.NewGuid());
-            _ordersCollectorMock.Setup(repo => repo.RemoveObsoleteOrder(It.IsAny<Order>(), It.IsAny<CancellationToken>()))
+            _ordersCollectorMock.Setup(repo => repo.RemoveObsoleteOrderAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             var mockCall = CallHelpers.CreateAsyncUnaryCall(new Response
@@ -71,7 +71,7 @@ namespace OrderService
 
             // Assert
             _backgroundJobClientMock.Verify(x => x.Create(
-                It.Is<Job>(job => job.Method.Name == nameof(IObsoleteOrderCollector.RemoveObsoleteOrder)),
+                It.Is<Job>(job => job.Method.Name == nameof(IObsoleteOrderCollector.RemoveObsoleteOrderAsync)),
                 It.IsAny<IState>()));
 
             result.Should().NotBe(Guid.Empty);

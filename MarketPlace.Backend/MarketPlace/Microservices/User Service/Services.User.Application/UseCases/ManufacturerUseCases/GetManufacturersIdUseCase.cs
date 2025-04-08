@@ -11,7 +11,9 @@
 
         public async Task<List<Guid>> Execute(CancellationToken cancellationToken)
         {
-            return (await _manufacturerRepository.GetAllAsync(cancellationToken)).Select(x => x.Id).ToList();
+            var manufacturers = await _manufacturerRepository.GetAllAsync(cancellationToken);
+
+            return manufacturers.Select(x => x.Id).ToList();
         }
     }
 }

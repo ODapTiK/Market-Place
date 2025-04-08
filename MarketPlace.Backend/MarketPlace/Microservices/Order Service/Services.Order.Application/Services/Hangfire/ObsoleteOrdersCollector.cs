@@ -9,7 +9,7 @@
             _orderRepository = orderRepository;
         }
 
-        public async Task RemoveObsoleteOrder(Order order, CancellationToken cancellationToken)
+        public async Task RemoveObsoleteOrderAsync(Order order, CancellationToken cancellationToken)
         {
             await _orderRepository.DeleteAsync(order, cancellationToken);
         }

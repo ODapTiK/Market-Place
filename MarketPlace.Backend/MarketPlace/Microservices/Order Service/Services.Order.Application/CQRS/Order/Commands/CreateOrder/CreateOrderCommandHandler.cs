@@ -46,7 +46,7 @@ namespace OrderService
             if(!rpcResponse.Success)
                 throw new GRPCRequestFailException(rpcResponse.Message);
 
-            _backgroundJobClient.Schedule(() => _obsoleteOrderCollector.RemoveObsoleteOrder(order, cancellationToken), TimeSpan.FromDays(2));
+            _backgroundJobClient.Schedule(() => _obsoleteOrderCollector.RemoveObsoleteOrderAsync(order, cancellationToken), TimeSpan.FromDays(2));
 
             return orderId;
         }

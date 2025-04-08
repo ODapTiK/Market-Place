@@ -19,7 +19,7 @@ namespace UserService
         }
         public async Task<List<Manufacturer>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _context.Manufacturers.Where(x => true).ToListAsync();
+            return await _context.Manufacturers.Where(x => true).ToListAsync(cancellationToken);
         }
     }
 }

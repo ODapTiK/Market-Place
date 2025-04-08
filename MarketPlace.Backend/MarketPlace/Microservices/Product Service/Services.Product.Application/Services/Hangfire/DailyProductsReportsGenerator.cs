@@ -4,6 +4,8 @@ namespace ProductService
 {
     public class DailyProductsReportsGenerator
     {
+        private const int REPORTS_TIME_INTERVAL = 24;
+
         private readonly ProductUserService.ProductUserServiceClient _productUserServiceClient;
         private readonly IProductRepository _productRepository;
 
@@ -13,6 +15,7 @@ namespace ProductService
             _productUserServiceClient = productUserServiceClient;
             _productRepository = productRepository;
         }
+
         public async Task GenerateDailyReports(CancellationToken cancellationToken)
         {
             var rpcResponse = await _productUserServiceClient.GetManufacturersAsync(new ManufacturersRequest());
@@ -20,7 +23,7 @@ namespace ProductService
             if (!rpcResponse.Success)
                 throw new GRPCRequestFailException(rpcResponse.Message);
 
-            var cutoffDate = DateTime.Now.ToUniversalTime().AddDays(-1);
+            var cutoffDate = DateTime.Now.ToUniversalTime().AddHours(-1 * REPORTS_TIME_INTERVAL);
 
             foreach(var manufacturerId in rpcResponse.ManufacturerId)
             {

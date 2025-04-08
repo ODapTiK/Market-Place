@@ -2,6 +2,6 @@
 {
     public interface IObsoleteOrderCollector
     {
-        public Task RemoveObsoleteOrder(Order order, CancellationToken cancellationToken);
+        public Task RemoveObsoleteOrderAsync(Order order, CancellationToken cancellationToken);
     }
 }
