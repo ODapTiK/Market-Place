@@ -1,4 +1,6 @@
 ﻿using FluentValidation;
+using Hangfire;
+using Hangfire.PostgreSql;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +17,15 @@ namespace ProductService
             services.Configure<RabbitMqOptions>(configuration.GetSection(nameof(RabbitMqOptions)));
             services.AddValidatorsFromAssemblies([Assembly.GetExecutingAssembly()]);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddHangfire(config => config
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UsePostgreSqlStorage(configuration.GetConnectionString("HangfireDB")));
+            services.AddHangfireServer();
+
+            var manager = new RecurringJobManager();
+            manager.AddOrUpdate<DailyProductsReportsGenerator>("daily-report", x => x.GenerateDailyReports(default), Cron.Daily);
+
             return services;
         }
     }

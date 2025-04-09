@@ -1,3 +1,4 @@
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -102,6 +103,8 @@ namespace ProductService
                 config.RoutePrefix = string.Empty;
                 config.SwaggerEndpoint("/swagger/v1/swagger.json", "Event App API V1");
             });
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

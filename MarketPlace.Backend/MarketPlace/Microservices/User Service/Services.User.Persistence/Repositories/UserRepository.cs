@@ -1,4 +1,6 @@
-﻿
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+
 namespace UserService
 {
     public class UserRepository : BaseRepository<User>, IUserRepository
@@ -15,6 +17,11 @@ namespace UserService
         {
             user.UserOrdersId.Remove(orderId);
             await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<List<User>> GetManyAsync(Expression<Func<User, bool>> predicate, CancellationToken cancellationToken)
+        {
+            return await _context.Users.Where(predicate).ToListAsync(cancellationToken);
         }
     }
 }
