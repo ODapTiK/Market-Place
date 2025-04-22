@@ -29,7 +29,9 @@ namespace UserService
             if (user == null) 
                 throw new EntityNotFoundException(nameof(User), userDTO.Id);
 
-            user = _mapper.Map<User>(userDTO);
+            user.BirthDate = userDTO.BirthDate;
+            user.Name = userDTO.Name;
+            user.Surname = userDTO.Surname;
 
             await _userRepository.UpdateAsync(cancellationToken);
         }

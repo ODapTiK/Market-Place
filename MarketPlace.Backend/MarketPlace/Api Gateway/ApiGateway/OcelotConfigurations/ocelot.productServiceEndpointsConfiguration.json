@@ -2,11 +2,11 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/api/products",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 6004
+          "Port": 6014
         }
       ],
       "UpstreamPathTemplate": "/products",
@@ -15,11 +15,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products/{id}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 6004
+          "Port": 6014
         }
       ],
       "UpstreamPathTemplate": "/products/{id}",
@@ -28,11 +28,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products/manufacturers/{id}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 6004
+          "Port": 6014
         }
       ],
       "UpstreamPathTemplate": "/products/manufacturers/{id}",
@@ -41,11 +41,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 6004
+          "Port": 6014
         }
       ],
       "UpstreamPathTemplate": "/products",
@@ -58,11 +58,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products/{id}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 6004
+          "Port": 6014
         }
       ],
       "UpstreamPathTemplate": "/products/{id}",
@@ -75,11 +75,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products/{productId}/reviews",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 6004
+          "Port": 6014
         }
       ],
       "UpstreamPathTemplate": "/products/{productId}/reviews",
@@ -92,11 +92,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products/{productId}/reviews/{reviewId}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 6004
+          "Port": 6014
         }
       ],
       "UpstreamPathTemplate": "/products/{productId}/reviews/{reviewId}",
@@ -106,9 +106,26 @@
         "AllowedScopes": []
       },
       "SwaggerKey": "Product"
+    },
+    {
+      "DownstreamPathTemplate": "/api/products/{productId}/user",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6014
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{productId}/user",
+      "UpstreamHttpMethod": [ "POST", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Product"
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:6000"
+    "BaseUrl": "https://localhost:6010"
   }
 }

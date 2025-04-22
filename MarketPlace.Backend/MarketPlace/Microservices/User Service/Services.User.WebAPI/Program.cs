@@ -6,13 +6,18 @@ using Microsoft.OpenApi.Models;
 using Proto.OrderUser;
 using System.Reflection;
 using System.Text;
+using Serilog;
+using Grpc.Core;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 
 namespace UserService
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
+            DotNetEnv.Env.Load("../../../.env");
             var builder = WebApplication.CreateBuilder(args);
 
             var services = builder.Services;
@@ -20,8 +25,10 @@ namespace UserService
 
             configuration.AddEnvironmentVariables();
 
+            var connectionString = Environment.GetEnvironmentVariable("USER_DB_CONNECTION_STRING")
+                ?? throw new InvalidOperationException("USER_DB_CONNECTION_STRING is not set in environment variables");
             services.AddDbContext<UserDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("UserDb"), npgsqlOptionsAction =>
+                options.UseNpgsql(connectionString, npgsqlOptionsAction =>
                     npgsqlOptionsAction.EnableRetryOnFailure(
                         maxRetryCount: 5,
                         maxRetryDelay: TimeSpan.FromSeconds(30),
@@ -40,10 +47,11 @@ namespace UserService
                 cfg.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
                 cfg.AddProfile(new AssemblyMappingProfile(typeof(IUserDbContext).Assembly));
                 cfg.AddProfile(new AssemblyMappingProfile(typeof(UserDbContext).Assembly));
+                cfg.AddProfile(new AssemblyMappingProfile(typeof(AssemblyMappingProfile).Assembly));
             });
 
-            services.AddApplication(configuration);
-            services.AddPersistence();
+            services.AddApplication();
+            services.AddPersistence(configuration);
 
             services.AddCors(options =>
             {
@@ -73,21 +81,65 @@ namespace UserService
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
                     };
                 });
-            services.AddAuthorization();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("User", policy => policy.RequireRole("User"));
+                options.AddPolicy("Manufacturer", policy => policy.RequireRole("Manufacturer"));
+            });
 
             services.AddGrpc();
             services.AddGrpcClient<OrderUserService.OrderUserServiceClient>(options =>
             {
-                options.Address = new Uri("http://localhost:6003");
+                options.Address = new Uri("https://localhost:6013");
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler();
+
+                handler.ServerCertificateCustomValidationCallback =
+                   (sender, certificate, chain, sslPolicyErrors) => true;
+
+                return handler;
             });
 
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "MarketPlace v1", Version = "v1" });
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Description =
+                        "JWT Authorization header using the Bearer scheme. \r\n\r\n" +
+                        "Enter 'Bearer' [space] and the your token in the text input below. \r\n\r\n" +
+                        "Example: \"Bearer 12casdc1sd\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Scheme = "Bearer"
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header
+                    },
+                    new List<string>()
+                    }
+
+                });
             });
             services.AddControllers();
 
             services.AddHttpContextAccessor();
+
+            LoggingService.Configure(configuration);
+            builder.Host.UseSerilog();
 
             var app = builder.Build();
 
@@ -97,11 +149,13 @@ namespace UserService
                 try
                 {
                     var context = serviceProvider.GetRequiredService<UserDbContext>();
-                    context.Database.EnsureCreated();
+                    await context.Database.EnsureCreatedAsync();
+                    var hangfireContext = serviceProvider.GetRequiredService<HangfireUserDbContext>();
+                    await hangfireContext.Database.MigrateAsync();
                 }
                 catch (Exception exception)
                 {
-                    //Log.Fatal(exception, "An error occured while app initialization");
+                    Log.Fatal(exception, "An error occured while app initialization");
                 }
             }
 
@@ -116,15 +170,17 @@ namespace UserService
                 config.RoutePrefix = string.Empty;
                 config.SwaggerEndpoint("/swagger/v1/swagger.json", "Event App API V1");
             });
-            app.UseHangfireServer();
+
+            //app.UseHangfireServer();
             app.UseHangfireDashboard();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapGrpcService<AuthServiceImpl>();
-                endpoints.MapGrpcService<OrderServiceImpl>();
-                endpoints.MapGrpcService<ProductServiceImpl>();
-            });
+
+            var manager = new RecurringJobManager();
+            manager.AddOrUpdate<BirthdayGreetingsGenerator>("birthday-greetings", x => x.GenerateBirthdayGreetings(default), Cron.Daily);
+
+            app.MapControllers();
+            app.MapGrpcService<AuthServiceImpl>();
+            app.MapGrpcService<OrderServiceImpl>();
+            app.MapGrpcService<ProductServiceImpl>();
 
 
             app.Run();

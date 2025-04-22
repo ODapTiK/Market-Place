@@ -26,7 +26,8 @@ namespace UserService
             if (admin == null)
                 throw new EntityNotFoundException(nameof(AdminDTO), adminDTO.Id);
 
-            admin = _mapper.Map<Admin>(adminDTO);
+            admin.Name = adminDTO.Name;
+            admin.Surname = adminDTO.Surname;
 
             await _adminRepository.UpdateAsync(cancellationToken);
         }

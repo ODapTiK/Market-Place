@@ -5,13 +5,16 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Identity;
 using Proto.AuthUser;
+using Serilog;
+using Grpc.Core;
 
 namespace AuthorizationService
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
+            DotNetEnv.Env.Load("../../../.env");
             var builder = WebApplication.CreateBuilder(args);
 
             var services = builder.Services;
@@ -19,8 +22,10 @@ namespace AuthorizationService
 
             configuration.AddEnvironmentVariables();
 
+            var connectionString = Environment.GetEnvironmentVariable("AUTH_DB_CONNECTION_STRING")
+                ?? throw new InvalidOperationException("AUTH_DB_CONNECTION_STRING is not set in environment variables");
             services.AddDbContext<AuthDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("AuthDb"), npgsqlOptionsAction =>
+                options.UseNpgsql(connectionString, npgsqlOptionsAction =>
                     npgsqlOptionsAction.EnableRetryOnFailure(
                         maxRetryCount: 5,
                         maxRetryDelay: TimeSpan.FromSeconds(30),
@@ -74,16 +79,55 @@ namespace AuthorizationService
 
             services.AddGrpcClient<AuthUserService.AuthUserServiceClient>(options =>
             {
-                options.Address = new Uri("http://localhost:6002");
+                options.Address = new Uri("https://localhost:6012");
+            }).ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler();
+
+                handler.ServerCertificateCustomValidationCallback =
+                   (sender, certificate, chain, sslPolicyErrors) => true;
+
+                return handler;
             });
 
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "MarketPlace v1", Version = "v1" });
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Description =
+                        "JWT Authorization header using the Bearer scheme. \r\n\r\n" +
+                        "Enter 'Bearer' [space] and the your token in the text input below. \r\n\r\n" +
+                        "Example: \"Bearer 12casdc1sd\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Scheme = "Bearer"
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header
+                    },
+                    new List<string>()
+                    }
+
+                });
             });
             services.AddControllers();
 
             services.AddHttpContextAccessor();
+
+            LoggingService.Configure(configuration);
+            builder.Host.UseSerilog();
 
             var app = builder.Build();
 
@@ -93,11 +137,13 @@ namespace AuthorizationService
                 try
                 {
                     var context = serviceProvider.GetRequiredService<AuthDbContext>();
-                    context.Database.EnsureCreated();
+                    await context.Database.EnsureCreatedAsync();
+                    var dbInitializer = new DbInitializer(serviceProvider.GetRequiredService<IRoleRepository>());
+                    await dbInitializer.InitializeAsync();
                 }
                 catch (Exception exception)
                 {
-                    //Log.Fatal(exception, "An error occured while app initialization");
+                    Log.Fatal(exception, "An error occured while app initialization");
                 }
             }
 
@@ -112,11 +158,8 @@ namespace AuthorizationService
                 config.RoutePrefix = string.Empty;
                 config.SwaggerEndpoint("/swagger/v1/swagger.json", "Event App API V1");
             });
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
+            
+            app.MapControllers();
 
             app.Run();
         }

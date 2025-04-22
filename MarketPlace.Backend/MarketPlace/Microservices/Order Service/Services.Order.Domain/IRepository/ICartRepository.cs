@@ -5,5 +5,6 @@
         public Task<Cart?> GetUserCartAsync(Guid userId, CancellationToken cancellationToken);
         public Task AddOrderPointAsync(Cart cart, Guid orderPoinproductId, CancellationToken cancellationToken);
         public Task RemoveOrderPointAsync(Cart cart, Guid productId, CancellationToken cancellationToken);
+        public Task RemoveProductFromCartsAsync(Guid productId, CancellationToken cancellationToken);
     }
 }

@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package productUser;
+
+option csharp_namespace = "Proto.OrderProduct";
+
+service OrderProductService {
+    rpc AddProductToCart(ProductRequest) returns (Response);
+    rpc RemoveProductFromCart(ProductRequest) returns (Response);
+    rpc DeleteProductFromAllCarts(DeleteProductRequest) returns (Response);
+    rpc CalculateTotalPrice(OrderRequest) returns (OrderResponse);
+}
+
+message ProductRequest{
+    string product_id = 1;
+    string user_id = 2;
+}
+
+message DeleteProductRequest{
+    string product_id = 1;
+}
+
+message Response {
+    bool success = 1;
+    string message = 2;
+}
+
+message OrderPoint {
+    string product_id = 1;
+    int32 number_of_units = 2;
+}
+message OrderRequest {
+    repeated OrderPoint order_points = 1;
+}
+
+message OrderResponse {
+    bool success = 1;
+    string message = 2;
+    double total_price = 3;
+}
+

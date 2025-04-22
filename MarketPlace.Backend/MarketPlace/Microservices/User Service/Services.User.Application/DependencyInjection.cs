@@ -9,7 +9,7 @@ namespace UserService
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddValidatorsFromAssemblies([Assembly.GetExecutingAssembly()]);
 
@@ -33,15 +33,6 @@ namespace UserService
             services.AddScoped<IAddUserOrderUseCase, AddUserOrderUseCase>();
             services.AddScoped<IRemoveUserOrderUseCase, RemoveUserOrderUseCase>();
             services.AddScoped<IGetUsersWithBirthdayUseCase, GetUsersWithBirthdayUseCase>();
-
-            services.AddHangfire(config => config
-               .UseSimpleAssemblyNameTypeSerializer()
-               .UseRecommendedSerializerSettings()
-               .UsePostgreSqlStorage(configuration.GetConnectionString("HangfireDB")));
-            services.AddHangfireServer();
-
-            var manager = new RecurringJobManager();
-            manager.AddOrUpdate<BirthdayGreetingsGenerator>("birthday-greetings", x => x.GenerateBirthdayGreetings(default), Cron.Daily);
 
             return services;
         }

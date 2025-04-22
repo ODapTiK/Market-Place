@@ -14,10 +14,6 @@ namespace OrderService
             builder.Property(x => x.OrderId).IsRequired().ValueGeneratedNever();
             builder.Property(x => x.ProductId).IsRequired().ValueGeneratedNever();
             builder.Property(x => x.NumberOfUnits).IsRequired();
-
-            builder.HasOne(x => x.Order)
-                .WithMany(x => x.OrderPoints)
-                .HasForeignKey(x => x.OrderId);
         }
     }
 }

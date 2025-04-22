@@ -14,9 +14,7 @@ namespace OrderService
             builder.Property(x => x.OrderDateTime).IsRequired();
             builder.Property(x => x.TotalPrice).IsRequired();
 
-            builder.HasMany(x => x.OrderPoints)
-                .WithOne(x => x.Order)
-                .HasForeignKey(x => x.OrderId);
+            builder.HasMany(x => x.OrderPoints);
         }
     }
 }

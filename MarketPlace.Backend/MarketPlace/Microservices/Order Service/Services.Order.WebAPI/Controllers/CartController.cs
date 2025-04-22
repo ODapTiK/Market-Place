@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace OrderService
 {
     [Route("api/carts")]
     public class CartController : BaseController
     {
+        [Authorize(Policy = "User")]
         [HttpGet]
         public async Task<ActionResult<Cart>> GetUserCart()
         {
@@ -27,32 +29,6 @@ namespace OrderService
 
             var cart = await Mediator.Send(query);
             return Ok(cart);    
-        }
-
-        [HttpPost("{CartId}/products/{ProductId}")]
-        public async Task<IActionResult> AddOrderPoint(Guid CartId, Guid ProductId, CancellationToken cancellationToken)
-        {
-            var command = new AddOrderPointCommand()
-            {
-                ProductId = ProductId,
-                CartId = CartId
-            };
-
-            await Mediator.Send(command, cancellationToken);
-            return Ok();
-        }
-
-        [HttpDelete("{CartId}/products/{ProductId}")]
-        public async Task<IActionResult> RemoveOrderPoint(Guid CartId, Guid ProductId, CancellationToken cancellationToken)
-        {
-            var command = new RemoveOrderPointCommand()
-            {
-                ProductId = ProductId,
-                CartId = CartId
-            };
-
-            await Mediator.Send(command, cancellationToken);
-            return Ok();
         }
     }
 }

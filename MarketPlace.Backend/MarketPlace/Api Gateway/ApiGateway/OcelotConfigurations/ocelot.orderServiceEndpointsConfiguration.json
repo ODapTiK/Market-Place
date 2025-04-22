@@ -2,11 +2,11 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/api/orders",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 6003
+          "Port": 6013
         }
       ],
       "UpstreamPathTemplate": "/orders",
@@ -15,11 +15,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/orders/{id}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 6003
+          "Port": 6013
         }
       ],
       "UpstreamPathTemplate": "/orders/{id}",
@@ -28,11 +28,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/carts",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 6003
+          "Port": 6013
         }
       ],
       "UpstreamPathTemplate": "/carts",
@@ -41,32 +41,19 @@
     },
     {
       "DownstreamPathTemplate": "/api/carts/{id}",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 6003
+          "Port": 6013
         }
       ],
       "UpstreamPathTemplate": "/carts/{id}",
       "UpstreamHttpMethod": [ "GET" ],
       "SwaggerKey": "Order"
-    },
-    {
-      "DownstreamPathTemplate": "/api/carts/{CartId}/products/{ProductId}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 6003
-        }
-      ],
-      "UpstreamPathTemplate": "/carts/{CartId}/products/{ProductId}",
-      "UpstreamHttpMethod": [ "POST", "DELETE" ],
-      "SwaggerKey": "Order"
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:6000"
+    "BaseUrl": "https://localhost:6010"
   }
 }

@@ -32,6 +32,7 @@ namespace ProductService
             await _productRepository.UpdateAsync(product, cancellationToken);
 
             await _rabbitMqProducerService.SendMessage(product.Id.ToString(), "UpdatedProducts");
+            Console.WriteLine("message send");
         }
     }
 }

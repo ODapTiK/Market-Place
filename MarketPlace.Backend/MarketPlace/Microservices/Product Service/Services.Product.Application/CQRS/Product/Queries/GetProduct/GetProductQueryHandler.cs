@@ -19,6 +19,8 @@ namespace ProductService
 
             product.ViewAt.Add(DateTime.Now.ToUniversalTime());
 
+            await _productRepository.UpdateAsync(product, cancellationToken);
+
             return product;
         }
     }

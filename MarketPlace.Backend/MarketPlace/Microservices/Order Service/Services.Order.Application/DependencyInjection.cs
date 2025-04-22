@@ -1,6 +1,4 @@
 ﻿using FluentValidation;
-using Hangfire;
-using Hangfire.PostgreSql;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,11 +16,6 @@ namespace OrderService
             services.Configure<RabbitMqOptions>(configuration.GetSection(nameof(RabbitMqOptions)));
             services.AddValidatorsFromAssemblies([Assembly.GetExecutingAssembly()]);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-            services.AddHangfire(config => config
-                .UseSimpleAssemblyNameTypeSerializer()
-                .UseRecommendedSerializerSettings()
-                .UsePostgreSqlStorage(configuration.GetConnectionString("HangfireDB")));
-            services.AddHangfireServer();
 
             return services;
         }

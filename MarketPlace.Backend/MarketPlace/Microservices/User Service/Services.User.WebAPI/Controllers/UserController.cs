@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace UserService
 {
@@ -23,9 +24,11 @@ namespace UserService
             return Ok(user);
         }
 
+        [Authorize(Policy = "User")]
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromBody] UserDTO userDTO, CancellationToken cancellationToken)
         {
+            userDTO.Id = UserId;
             await _updateUserUseCase.Execute(userDTO, cancellationToken);
 
             return Ok();

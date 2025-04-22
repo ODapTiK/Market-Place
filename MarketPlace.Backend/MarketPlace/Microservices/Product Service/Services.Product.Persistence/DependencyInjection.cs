@@ -6,6 +6,9 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using StackExchange.Redis;
+using Hangfire;
+using Hangfire.PostgreSql;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProductService
 {
@@ -39,6 +42,14 @@ namespace ProductService
                 var databaseName = configuration["MongoDB:DatabaseName"];
                 return new ProductDbContext(mongoClient, databaseName);
             });
+
+            var connectionString = Environment.GetEnvironmentVariable("PRODUCT_HANGFIRE_DB_CONNECTION_STRING")
+                ?? throw new InvalidOperationException("PRODUCT_HANGFIRE_DB_CONNECTION_STRING is not set in environment variables");
+            services.AddDbContext<HangfireProductDbContext>(options =>
+                options.UseNpgsql(connectionString));
+            services.AddHangfire(config => config
+                .UsePostgreSqlStorage(connectionString));
+            services.AddHangfireServer();
 
             return services;
         }

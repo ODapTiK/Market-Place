@@ -36,7 +36,7 @@ namespace ProductService
                 Category = faker.Commerce.Department(),
                 Type = faker.Commerce.ProductMaterial(),
                 Image = Convert.ToBase64String(faker.Random.Bytes(64)),
-                Price = Convert.ToDecimal(faker.Commerce.Price())
+                Price = Convert.ToDouble(faker.Commerce.Price())
             };
 
             var product = new Product
@@ -48,7 +48,7 @@ namespace ProductService
                 Category = faker.Commerce.Department(),
                 Type = faker.Commerce.ProductMaterial(),
                 Image = Convert.ToBase64String(faker.Random.Bytes(64)),
-                Price = Convert.ToDecimal(faker.Commerce.Price())
+                Price = Convert.ToDouble(faker.Commerce.Price())
             };
 
             _productRepositoryMock.Setup(repo => repo.GetByIdAsync(productId, It.IsAny<CancellationToken>()))

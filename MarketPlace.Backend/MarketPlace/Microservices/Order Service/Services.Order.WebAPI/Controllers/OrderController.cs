@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace OrderService
@@ -13,6 +14,7 @@ namespace OrderService
             _mapper = mapper;
         }
 
+        [Authorize(Policy = "User")]
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateOrder([FromBody] CreateOrderDTO createOrderDTO, CancellationToken cancellationToken)
         {
@@ -24,6 +26,7 @@ namespace OrderService
             return Ok(resultId);
         }
 
+        [Authorize(Policy = "User")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(Guid id, CancellationToken cancellationToken)
         {
@@ -48,6 +51,7 @@ namespace OrderService
             return Ok(order);
         }
 
+        [Authorize(Policy = "User")]
         [HttpGet]
         public async Task<ActionResult<List<Order>>> GetUserOrders(CancellationToken cancellationToken)
         {

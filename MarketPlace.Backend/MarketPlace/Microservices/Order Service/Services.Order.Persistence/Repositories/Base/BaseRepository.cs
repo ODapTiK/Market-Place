@@ -26,7 +26,7 @@ namespace OrderService
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        public virtual async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _dbSet.FindAsync([id], cancellationToken);
         }

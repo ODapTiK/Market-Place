@@ -49,7 +49,7 @@ namespace ProductService
             {
                 Id = productId,
                 Name = _faker.Commerce.ProductName(),
-                Price = _faker.Finance.Amount()
+                Price = Convert.ToDouble(_faker.Finance.Amount())
             };
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetProductQuery>(), default))
@@ -71,8 +71,8 @@ namespace ProductService
             var manufacturerId = Guid.NewGuid();
             var expectedProducts = new List<Product>
             {
-                new Product { Id = Guid.NewGuid(), Name = "Product 1", Price = 10.0M },
-                new Product { Id = Guid.NewGuid(), Name = "Product 2", Price = 20.0M }
+                new Product { Id = Guid.NewGuid(), Name = "Product 1", Price = 10.0 },
+                new Product { Id = Guid.NewGuid(), Name = "Product 2", Price = 20.0 }
             };
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetManufacturerProductsQuery>(), default))
@@ -93,8 +93,8 @@ namespace ProductService
             // Arrange
             var expectedProducts = new List<Product>
             {
-                new Product { Id = Guid.NewGuid(), Name = "Product 1", Price = 10.0M },
-                new Product { Id = Guid.NewGuid(), Name = "Product 2", Price = 20.0M }
+                new Product { Id = Guid.NewGuid(), Name = "Product 1", Price = 10.0 },
+                new Product { Id = Guid.NewGuid(), Name = "Product 2", Price = 20.0 }
             };
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetAllProductsQuery>(), default))
@@ -116,7 +116,7 @@ namespace ProductService
             var createProductDTO = new CreateProductDTO
             {
                 Name = _faker.Commerce.ProductName(),
-                Price = _faker.Finance.Amount()
+                Price = Convert.ToDouble(_faker.Finance.Amount())
             };
             var command = new CreateProductCommand
             {
@@ -161,7 +161,7 @@ namespace ProductService
             {
                 Id = Guid.NewGuid(),
                 Name = _faker.Commerce.ProductName(),
-                Price = _faker.Finance.Amount()
+                Price = Convert.ToDouble(_faker.Finance.Amount())
             };
             var command = new UpdateProductCommand
             {
@@ -236,6 +236,46 @@ namespace ProductService
             // Assert
             Assert.IsType<OkResult>(result);
             _mediatorMock.Verify(m => m.Send(It.IsAny<DeleteProductReviewCommand>(), default), Times.Once);
+        }
+
+        [Fact]
+        public async Task AddProductToUserCart_ShouldReturnOk()
+        {
+            // Arrange
+            var productId = Guid.NewGuid();
+
+            var command = new AddProductToUserCartCommand
+            {
+                ProductId = productId,
+                UserId = _controller.UserId,
+            };
+
+            // Act
+            var result = await _controller.AddProductToUserCart(productId, CancellationToken.None);
+
+            // Assert
+            Assert.IsType<OkResult>(result);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<AddProductToUserCartCommand>(), default), Times.Once);
+        }
+
+        [Fact]
+        public async Task RemoveProductFromUserCart_ShouldReturnOk()
+        {
+            // Arrange
+            var productId = Guid.NewGuid();
+
+            var command = new RemoveProductFromUserCartCommand
+            {
+                ProductId = productId,
+                UserId = _controller.UserId,
+            };
+
+            // Act
+            var result = await _controller.RemoveProductFromUserCart(productId, CancellationToken.None);
+
+            // Assert
+            Assert.IsType<OkResult>(result);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<RemoveProductFromUserCartCommand>(), default), Times.Once);
         }
     }
 }

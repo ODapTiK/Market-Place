@@ -50,8 +50,8 @@ namespace Services.Order.Persistence.Migrations
                     b.Property<DateTime>("OrderDateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("numeric");
+                    b.Property<double>("TotalPrice")
+                        .HasColumnType("double precision");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -87,13 +87,11 @@ namespace Services.Order.Persistence.Migrations
 
             modelBuilder.Entity("OrderService.OrderPoint", b =>
                 {
-                    b.HasOne("OrderService.Order", "Order")
+                    b.HasOne("OrderService.Order", null)
                         .WithMany("OrderPoints")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("OrderService.Order", b =>

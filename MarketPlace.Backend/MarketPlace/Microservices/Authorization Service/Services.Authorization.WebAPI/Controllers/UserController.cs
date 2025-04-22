@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace AuthorizationService
 {
@@ -15,17 +17,37 @@ namespace AuthorizationService
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateUser([FromBody] UserDTO userDTO, CancellationToken cancellationToken)
+        public async Task<ActionResult<Guid>> CreateUser([FromBody] object userDTO, CancellationToken cancellationToken)
         {
-            var resultId = await Mediator.Send(new CreateUserRequest(userDTO));
+            var json = JsonSerializer.Serialize(userDTO);
+            var role = JsonDocument.Parse(json).RootElement.GetProperty("Role").GetString();
+
+            UserDTO createUserDTO;
+            switch (role)
+            {
+                case nameof(Role.User):
+                    createUserDTO = JsonSerializer.Deserialize<CreateUserDTO>(json);
+                    break;
+                case nameof(Role.Admin):
+                    createUserDTO = JsonSerializer.Deserialize<CreateAdminDTO>(json);
+                    break;
+                case nameof(Role.Manufacturer):
+                    createUserDTO = JsonSerializer.Deserialize<CreateManufacturerDTO>(json);
+                    break;
+                default:
+                    return BadRequest("Invalid role");
+            }
+
+            var resultId = await Mediator.Send(new CreateUserRequest(createUserDTO));
 
             return Ok(resultId);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id, CancellationToken cancellationToken)
+        [Authorize]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser(CancellationToken cancellationToken)
         {
-            await Mediator.Send(new DeleteUserRequest() { Id = id }); 
+            await Mediator.Send(new DeleteUserRequest() { Id = UserId }); 
 
             return Ok();
         }

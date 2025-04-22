@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Proto.OrderProduct;
 using Proto.ProductUser;
 
 namespace ProductService
@@ -7,12 +8,15 @@ namespace ProductService
     {
         private readonly IProductRepository _productRepository;
         private readonly ProductUserService.ProductUserServiceClient _userServiceClient;
+        private readonly OrderProductService.OrderProductServiceClient _orderServiceClient;
 
         public DeleteProductCommandHandler(IProductRepository productRepository, 
-                                           ProductUserService.ProductUserServiceClient userServiceClient)
+                                           ProductUserService.ProductUserServiceClient userServiceClient,
+                                           OrderProductService.OrderProductServiceClient orderServiceClient)
         {
             _productRepository = productRepository;
             _userServiceClient = userServiceClient;
+            _orderServiceClient = orderServiceClient;
         }
 
         public async Task Handle(DeleteProductCommand request, CancellationToken cancellationToken)
@@ -25,16 +29,26 @@ namespace ProductService
 
             await _productRepository.DeleteAsync(product, cancellationToken);
 
-            var rpcRequest = new ProductRequest
+            var deleteProductFromManufacturerRpcRequest = new Proto.ProductUser.ProductRequest
             {
                 ProductId = product.Id.ToString(),
                 ManufacturerId = product.ManufacturerId.ToString()
             };
 
-            var rpcResponse = await _userServiceClient.RemoveManufacturerProductAsync(rpcRequest);
+            var deleteProductFromCartsRpcRequest = new DeleteProductRequest()
+            {
+                ProductId = product.Id.ToString()
+            };
 
-            if(!rpcResponse.Success)
-                throw new GRPCRequestFailException(rpcResponse.Message);
+            var manufacturerRpcResponse = _userServiceClient.RemoveManufacturerProductAsync(deleteProductFromManufacturerRpcRequest).ResponseAsync;
+            var cartsRpcResponse = _orderServiceClient.DeleteProductFromAllCartsAsync(deleteProductFromCartsRpcRequest).ResponseAsync;
+
+            await Task.WhenAll(manufacturerRpcResponse, cartsRpcResponse);
+
+            if(!manufacturerRpcResponse.Result.Success)
+                throw new GRPCRequestFailException(manufacturerRpcResponse.Result.Message);
+            if(!cartsRpcResponse.Result.Success)
+                throw new GRPCRequestFailException(cartsRpcResponse.Result.Message);
         }
     }
 }

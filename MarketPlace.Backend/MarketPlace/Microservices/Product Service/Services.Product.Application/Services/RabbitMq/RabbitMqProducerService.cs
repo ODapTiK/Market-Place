@@ -7,8 +7,8 @@ namespace ProductService
 {
     public class RabbitMqProducerService : IRabbitMqProducerService
     {
-        private readonly IRabbitMqOptions _rabbitMqOptions;
-        public RabbitMqProducerService(IOptions<IRabbitMqOptions> options)
+        private readonly RabbitMqOptions _rabbitMqOptions;
+        public RabbitMqProducerService(IOptions<RabbitMqOptions> options)
         {
             _rabbitMqOptions = options.Value;
         }
@@ -31,7 +31,7 @@ namespace ProductService
             using (var channel = await connection.CreateChannelAsync())
             {
                 await channel.QueueDeclareAsync(queue: queueName,
-                               durable: false,
+                               durable: true,
                                exclusive: false,
                                autoDelete: false,
                                arguments: null);
