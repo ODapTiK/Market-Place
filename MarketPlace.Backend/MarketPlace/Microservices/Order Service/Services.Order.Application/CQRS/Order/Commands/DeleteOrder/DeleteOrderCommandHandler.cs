@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Hangfire;
+using MediatR;
 using Proto.OrderUser;
 
 namespace OrderService
@@ -7,12 +8,18 @@ namespace OrderService
     {
         private readonly IOrderRepository _orderRepository;
         private readonly OrderUserService.OrderUserServiceClient _userServiceClient;
+        private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly IObsoleteOrderCollector _obsoleteOrderCollector;
 
         public DeleteOrderCommandHandler(IOrderRepository orderRepository,
-                                         OrderUserService.OrderUserServiceClient userServiceClient)
+                                         OrderUserService.OrderUserServiceClient userServiceClient,
+                                         IObsoleteOrderCollector obsoleteOrderCollector,
+                                         IBackgroundJobClient backgroundJobClient)
         {
             _orderRepository = orderRepository;
             _userServiceClient = userServiceClient;
+            _obsoleteOrderCollector = obsoleteOrderCollector;
+            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
@@ -33,6 +40,8 @@ namespace OrderService
 
             if (!rpcResponse.Success)
                 throw new GRPCRequestFailException(rpcResponse.Message);
+
+            _backgroundJobClient.Schedule(() => _obsoleteOrderCollector.RemoveObsoleteOrderAsync(order, cancellationToken), TimeSpan.FromDays(2));
         }
     }
 }

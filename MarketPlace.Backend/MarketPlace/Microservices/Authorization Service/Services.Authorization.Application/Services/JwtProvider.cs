@@ -60,7 +60,7 @@ namespace AuthorizationService
             {
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                ValidateLifetime = true,
+                ValidateLifetime = false,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_Options.Key)),
             };
@@ -89,8 +89,9 @@ namespace AuthorizationService
                 user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             }
             await _UserRepository.UpdateAsync(user, cancellationToken);
+            var userRole = (await _UserRepository.GetUserRoleAsync(user)).FirstOrDefault();
 
-            return new TokenDTO(accessToken, refreshToken);
+            return new TokenDTO(accessToken, refreshToken, userRole);
         }
 
         public async Task<TokenDTO> RefreshToken(TokenDTO tokenDto)

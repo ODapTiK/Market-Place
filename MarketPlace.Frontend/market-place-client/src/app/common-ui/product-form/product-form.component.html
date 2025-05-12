@@ -1,0 +1,89 @@
+<div class="modal-overlay" (click)="onCancel()">
+    <div class="modal-content product-form-container" (click)="$event.stopPropagation()">
+      <button class="close-button" (click)="onCancel()">×</button>
+      
+      <h2>{{ editedProduct ? 'Редактирование товара' : 'Создание нового товара' }}</h2>
+    
+        <form (ngSubmit)="onSubmit()" class="product-form">
+        <div class="form-group">
+            <label>Название товара</label>
+            <input type="text" 
+                [(ngModel)]="editedProduct.name" 
+                name="name"
+                [placeholder]="product ? '' : 'Введите название товара'"
+                required>
+        </div>
+        
+        <div class="form-group">
+            <label>Описание</label>
+            <textarea [(ngModel)]="editedProduct.description" 
+                    name="description"
+                    [placeholder]="product ? '' : 'Добавьте описание товара'"></textarea>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+            <label>Тип</label>
+            <input type="text" 
+                    [(ngModel)]="editedProduct.type" 
+                    name="type"
+                    [placeholder]="product ? '' : 'Например: электроника'">
+            </div>
+            
+            <div class="form-group">
+            <label>Категория</label>
+            <input type="text" 
+                    [(ngModel)]="editedProduct.category" 
+                    name="category"
+                    [placeholder]="product ? '' : 'Например: смартфоны'">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Цена</label>
+            <input type="number" 
+                [(ngModel)]="editedProduct.price" 
+                name="price" 
+                min="0" 
+                step="0.01"
+                required>
+        </div>
+        
+        <div class="form-group">
+            <label>Изображение</label>
+            <input type="file" 
+                   id="fileInput"
+                   (change)="onImageChange($event)" 
+                   accept="image/*"
+                   class="image-upload">
+            
+            <div class="image-preview-wrapper" (click)="triggerFileInput()">
+              <div class="image-preview-container" *ngIf="editedProduct.image">
+                <img [src]="editedProduct.image | image:'/assets/default-images/product-default.png'" 
+                     alt="Превью изображения" 
+                     class="image-preview">
+              </div>
+              
+              <div class="image-placeholder" *ngIf="!editedProduct.image">
+                <div class="placeholder-content">
+                  <span>+ Выбрать изображение</span>
+                </div>
+              </div>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="button" 
+                    class="button button-cancel"
+                    (click)="onCancel()">
+            Отмена
+            </button>
+            <button type="submit" 
+                    class="button button-save"
+                    [disabled]="!isFormValid()">
+            {{ editedProduct ? 'Сохранить' : 'Создать' }}
+            </button>
+        </div>
+        </form>
+    </div>
+</div>

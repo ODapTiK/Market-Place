@@ -26,6 +26,33 @@ namespace OrderService
             return Ok(resultId);
         }
 
+        [Authorize]
+        [HttpPut]
+        public async Task<ActionResult<List<Order>>> GetOrdersByIdList([FromBody] GetOrdersByIdListDTO getOrdersByIdListDTO, CancellationToken cancellationToken)
+        {
+            var query = new GetOrdersByIdListQuery()
+            {
+                OrderIds = getOrdersByIdListDTO.OrderIds
+            };
+
+            var orders = await Mediator.Send(query, cancellationToken);
+            return Ok(orders);
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> SetOrderStatusReady(Guid id, CancellationToken cancellationToken)
+        {
+            var command = new SetOrderStatusReadyCommand()
+            {
+                AdminId = UserId,
+                OrderId = id,
+            };
+
+            await Mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
         [Authorize(Policy = "User")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(Guid id, CancellationToken cancellationToken)

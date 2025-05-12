@@ -8,8 +8,8 @@ namespace AuthorizationService
     public class UserController : BaseController
     {
 
-        [HttpGet("auth")]
-        public async Task<ActionResult<TokenDTO>> AuthenticateUser([FromQuery] AuthUserDTO authUserDTO, CancellationToken cancellationToken)
+        [HttpPost("auth")]
+        public async Task<ActionResult<TokenDTO>> AuthenticateUser([FromBody] AuthUserDTO authUserDTO, CancellationToken cancellationToken)
         {
             var token = await Mediator.Send(new AuthUserRequest(authUserDTO));
 

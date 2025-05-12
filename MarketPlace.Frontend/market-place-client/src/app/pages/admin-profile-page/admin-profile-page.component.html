@@ -1,0 +1,155 @@
+<div class="user-profile-container">
+    <!-- Основное содержимое -->
+    <div class="profile-content">
+        <div class="profile-column">
+            <div *ngIf="isLoading" class="loading-state">
+              <div class="spinner"></div>
+              <p>Загрузка ваших заказов...</p>
+            </div>
+
+            <div *ngIf="!isLoading && error" class="error-state">
+              <p>{{ error }}</p>
+              <button class="button button-retry" (click)="loadAdminProfile()">Повторить попытку</button>
+            </div>
+
+            <div *ngIf="!isLoading && !error" class="profile-card">
+              <div class="avatar-section">
+                <img [src]="profile.logo" 
+                      alt="Аватар" 
+                      class="profile-avatar">
+                <input type="file" id="avatar-upload" (change)="onAvatarChange($event)" accept="image/*" hidden>
+                <label for="avatar-upload" class="button edit-button">
+                  Изменить аватар
+                </label>
+              </div>
+      
+              <div class="info-section">
+                <div class="info-item">
+                  <label class="info-label">Имя:</label>
+                  <input type="text" [(ngModel)]="profile.name" [disabled]="!isEditing" class="info-input">
+                </div>
+                <div class="info-item">
+                  <label class="info-label">Фамилия:</label>
+                  <input type="text" [(ngModel)]="profile.surname" [disabled]="!isEditing" class="info-input">
+                </div>
+      
+                <div class="profile-actions">
+                  <button *ngIf="!isEditing" class="button" (click)="startEditing()">Редактировать</button>
+                  <div *ngIf="isEditing" class="edit-buttons">
+                    <button type="button" class="button button-cancel" (click)="cancelEditing()">Отмена</button>
+                    <button type="button" class="button button-save" (click)="saveProfile()">Сохранить</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      
+          <!-- Правая колонка - заказы -->
+          <div class="orders-column">
+            <div class="orders-section">
+              <h2 class="section-title">Управление заказами</h2>
+              
+              <div *ngIf="isLoading && orders.length === 0" class="loading-state">
+                <div class="spinner"></div>
+                <p>Загрузка заказов...</p>
+              </div>
+              
+              <div *ngIf="error" class="error-state">
+                <p>{{ error }}</p>
+                <button class="button button-retry" (click)="loadAdminProfile()">Повторить попытку</button>
+              </div>
+              
+              <div *ngIf="!isLoading && orders.length > 0" class="orders-grid">
+                <div class="order-card" *ngFor="let order of orders" (click)="openOrderModal(order)">
+                    <div class="order-header">
+                      <span class="order-id">Заказ #{{ order.id | slice:0:8 }}</span>
+                      <span class="order-status" [class]="'status-' + order.status.toLowerCase()">
+                        {{ order.status }}
+                      </span>
+                    </div>
+                    <div class="order-date">{{ order.orderDateTime | date: 'dd.MM.yyyy' }}</div>
+                    <div class="order-total">{{ order.totalPrice | currency:'USD':'symbol':'1.2-2' }}</div>
+                    <div class="order-actions" *ngIf="order.status.toLowerCase() === 'pending'">
+                      <button class="button button-ready" (click)="markOrderAsReady(order.id); $event.stopPropagation()">
+                        Готов к выдаче
+                      </button>
+                    </div>
+                  </div>
+              </div>
+              
+              <div *ngIf="!isLoading && orders.length === 0 && !error" class="empty-state">
+                <p>Нет заказов для управления</p>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+    <!-- Модальное окно заказа -->
+    <div class="modal-overlay" *ngIf="selectedOrder" (click)="closeOrderModal()">
+      <div class="modal-content order-modal" (click)="$event.stopPropagation()">
+        
+        <h2>Детали заказа #{{ selectedOrder.id | slice:0:8 }}</h2>
+        
+        <div class="order-details">
+          <!-- Основная информация о заказе -->
+          <div class="order-meta">
+            <div class="meta-item">
+              <span class="meta-label">Дата оформления: </span>
+              <span class="meta-value">{{ selectedOrder.orderDateTime | date:'dd.MM.yyyy HH:mm' }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Статус:</span>
+              <span class="meta-value status-badge" [class]="'status-' + selectedOrder.status.toLowerCase()">
+                {{ selectedOrder.status }}
+              </span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Итого: </span>
+              <span class="meta-value total-price">{{ selectedOrder.totalPrice | currency:'USD':'symbol':'1.2-2' }}</span>
+            </div>
+          </div>
+          
+          <!-- Список товаров -->
+          <h3 class="items-title">Состав заказа ({{ selectedOrder.orderPoints.length }})</h3>
+      
+          <div class="order-items">
+            <div class="order-item" *ngFor="let item of selectedOrder.orderPoints; let i = index">
+              <div class="item-image-container">
+                <img [src]="item.productImage | image:'/assets/default-images/product-default.png'" 
+                     alt="Изображение товара" 
+                     class="item-image"
+                     onerror="this.src='/assets/default-images/product-placeholder.jpg'">
+              </div>
+              
+              <div class="item-main-info">
+                <div class="item-name-row">
+                  <h4 class="item-name">{{ item.productName || 'Товар без названия' }}</h4>
+                  <div class="item-quantity">{{ item.numberOfUnits }} шт.</div>
+                </div>
+                
+                <div class="item-meta" *ngIf="item.productType || item.productCategory">
+                  <span class="item-meta-badge" *ngIf="item.productType">
+                    {{ item.productType }}
+                  </span>
+                  <span class="item-meta-badge" *ngIf="item.productCategory">
+                    {{ item.productCategory }}
+                  </span>
+                </div>
+                
+                <p class="item-description" *ngIf="item.productDescription">
+                  {{ item.productDescription }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <button *ngIf="selectedOrder.status === 'pending'" class="button button-ready" (click)="markOrderAsReady(selectedOrder.id)">
+            Готов к выдаче
+          </button>
+          <button class="button button-close" (click)="closeOrderModal()">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>

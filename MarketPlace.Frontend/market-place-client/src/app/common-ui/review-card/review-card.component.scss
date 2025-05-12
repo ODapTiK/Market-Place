@@ -1,0 +1,65 @@
+.review-card {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+
+    .review-user {
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .review-rating {
+      background: rgba(174, 122, 255, 0.1);
+      color: var(--primary-color);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+  }
+
+  .review-text {
+    margin: 0;
+    line-height: 1.5;
+  }
+  
+  .review-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+    
+    .delete-button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: none;
+      color: #ff6b6b;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      
+      &:hover {
+        background: rgba(255, 107, 107, 0.1);
+      }
+      
+      svg {
+        stroke: #ff6b6b;
+      }
+    }
+  }
+}

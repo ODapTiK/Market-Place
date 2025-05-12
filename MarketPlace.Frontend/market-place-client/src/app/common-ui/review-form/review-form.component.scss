@@ -1,0 +1,115 @@
+.review-form {
+    background: #2d2d2d;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    border: 1px solid #3d3d3d;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeIn 0.3s ease-out forwards;
+  
+    h3 {
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      color: var(--light-color);
+    }
+  
+    .form-group {
+      margin-bottom: 1.5rem;
+  
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #a0a0a0;
+      }
+  
+      .rating-stars {
+        display: flex;
+        gap: 0.5rem;
+        
+        .star {
+          font-size: 1.8rem;
+          color: var(--light-color);
+          cursor: pointer;
+          transition: color 0.2s ease;
+          
+          &.active {
+            color: var(--primary-color);
+          }
+          
+          &:hover {
+            transform: scale(1.1);
+          }
+        }
+      }
+  
+      textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 0.75rem;
+        border: 1px solid #3d3d3d;
+        border-radius: 4px;
+        resize: vertical;
+        font-family: inherit;
+        background-color: #1e1e1e;
+        color: var(--light-color);
+        transition: border-color 0.3s;
+        
+        &:focus {
+          border-color: var(--primary-color);
+          outline: none;
+        }
+        
+        &::placeholder {
+          color: #6d6d6d;
+        }
+      }
+    }
+  
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  
+  &-cancel {
+    background-color: #2d2d2d;
+    color: var(--light-color);
+    border: 1px solid #3d3d3d;
+    
+    &:hover {
+      background-color: #252525;
+    }
+  }
+  
+  &-submit {
+    background-color: var(--primary-color);
+    color: var(--dark-color);
+    
+    &:hover {
+      background-color: #9d6aed;
+    }
+  }
+}

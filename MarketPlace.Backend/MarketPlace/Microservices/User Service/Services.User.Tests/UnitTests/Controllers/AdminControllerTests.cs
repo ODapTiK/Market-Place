@@ -11,12 +11,14 @@ namespace UserService
     {
         private readonly Mock<IUpdateAdminUseCase> _updateAdminUseCaseMock;
         private readonly Mock<IGetAdminInfoUseCase> _getAdminInfoUseCaseMock;
+        private readonly Mock<IUpdateAdminLogoUseCase> _updateAdminLogoUseCaseMock;
         private readonly AdminController _controller;
 
         public AdminControllerTests()
         {
             _updateAdminUseCaseMock = new Mock<IUpdateAdminUseCase>();
             _getAdminInfoUseCaseMock = new Mock<IGetAdminInfoUseCase>();
+            _updateAdminLogoUseCaseMock = new Mock<IUpdateAdminLogoUseCase>();
 
             var httpContext = new DefaultHttpContext();
             var claims = new[] { new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()) };
@@ -26,7 +28,8 @@ namespace UserService
 
             _controller = new AdminController(
                 _updateAdminUseCaseMock.Object,
-                _getAdminInfoUseCaseMock.Object)
+                _getAdminInfoUseCaseMock.Object,
+                _updateAdminLogoUseCaseMock.Object)
             {
                 ControllerContext = new ControllerContext
                 {

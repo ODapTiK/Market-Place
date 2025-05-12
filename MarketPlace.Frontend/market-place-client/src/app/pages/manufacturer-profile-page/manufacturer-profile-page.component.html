@@ -1,0 +1,96 @@
+<div class="manufacturer-profile-container">
+    <!-- Основное содержимое -->
+    <div class="profile-content">
+      <div class="profile-column">
+        <div *ngIf="isLoading" class="loading-state">
+          <div class="spinner"></div>
+          <p>Загрузка профиля...</p>
+        </div>
+  
+        <div *ngIf="!isLoading && error" class="error-state">
+          <p>{{ error }}</p>
+          <button class="button button-retry" (click)="loadData()">Повторить попытку</button>
+        </div>
+  
+        <div *ngIf="!isLoading && !error" class="profile-card">
+          <div class="avatar-section">
+            <img [src]="profile.logo" 
+                  alt="Логотип" 
+                  class="profile-logo">
+            <input type="file" id="logo-upload" (change)="onAvatarChange($event)" accept="image/*" hidden>
+            <label for="logo-upload" class="button edit-button">
+              Изменить логотип
+            </label>
+          </div>
+      
+          <div class="info-section">
+            <div class="info-item">
+              <label class="info-label">Название:</label>
+              <input type="text" [(ngModel)]="profile.organization" [disabled]="!isEditing" class="info-input">
+            </div>
+      
+            <div class="profile-actions">
+              <button *ngIf="!isEditing" class="button" (click)="startEditing()">Редактировать</button>
+              <div *ngIf="isEditing" class="edit-buttons">
+                <button type="button" class="button button-cancel" (click)="cancelEditing()">Отмена</button>
+                <button type="button" class="button button-save" (click)="saveProfile()">Сохранить</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Правая колонка - товары -->
+      <div class="products-column">
+        <div class="products-section">
+          <div class="section-header">
+            <h2 class="section-title">Мои товары</h2>
+            <button class="button button-add" (click)="navigateToProductCreation()">
+              + Добавить товар
+            </button>
+          </div>
+          
+          <div *ngIf="isLoading && products.length === 0" class="loading-state">
+            <div class="spinner"></div>
+            <p>Загрузка товаров...</p>
+          </div>
+          
+          <div *ngIf="error" class="error-state">
+            <p>{{ error }}</p>
+            <button class="button button-retry" (click)="loadProducts()">Повторить попытку</button>
+          </div>
+          
+          <div *ngIf="!isLoading && products.length > 0" class="products-grid">
+            <app-product-card 
+              *ngFor="let product of products" 
+              [product]="product"
+              (click)="openProductModal(product)">
+            </app-product-card>
+          </div>
+          
+          <div *ngIf="!isLoading && products.length === 0 && !error" class="empty-state">
+            <p>У вас пока нет товаров</p>
+            <button class="button" (click)="navigateToProductCreation()">Добавить товар</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Модальное окно товара -->
+    <app-product-modal 
+      *ngIf="selectedProduct && !isEditMode && !isCreateMode"
+      [product]="selectedProduct"
+      (close)="closeProductModal()"
+      [isManufacturerView]="true"
+      (edit)="enterEditMode(selectedProduct)"
+      (delete)="deleteProduct($event)">
+    </app-product-modal>
+
+    <!-- Форма создания и редактирования -->
+    <app-product-form 
+      *ngIf="isEditMode || isCreateMode"
+      [product]="isEditMode ? selectedProduct : null"
+      (submit)="handleProductSubmit($event)"
+      (cancel)="exitFormMode()">
+    </app-product-form>
+  </div>

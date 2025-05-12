@@ -3,6 +3,8 @@ using Grpc.Core;
 using Moq;
 using Proto.OrderProduct;
 using FluentAssertions;
+using System.Reflection.Metadata;
+using System.Linq.Expressions;
 
 namespace ProductService
 {
@@ -112,6 +114,28 @@ namespace ProductService
             // Assert
             response.Should().NotBeNull();
             response.Success.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Handle_ReturnsProduct_WhenIdExist()
+        {
+            // Arrange
+            var productId = Guid.NewGuid();
+            var expectedProduct = new Product { Name = "Test", Id = productId };
+
+            _productRepositoryMock.Setup(x => x.GetByIdAsync(
+                It.IsAny<Guid>(),
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedProduct);
+
+            var query = new GetProductInfoRequest { ProductId = productId.ToString() };
+
+            // Act
+            var result = await _service.GetProductInfo(query, TestServerCallContext.Create());
+
+            // Assert
+            result.Should().NotBeNull();
+            result.ProductName.Should().Be(expectedProduct.Name);
         }
     }
 }
