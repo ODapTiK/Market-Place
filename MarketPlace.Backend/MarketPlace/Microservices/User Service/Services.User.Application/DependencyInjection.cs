@@ -15,11 +15,16 @@ namespace UserService
 
             services.AddScoped<ICreateAdminUseCase, CreateAdminUseCase>();
             services.AddScoped<IUpdateAdminUseCase, UpdateAdminUseCase>();
+            services.AddScoped<IUpdateAdminLogoUseCase, UpdateAdminLogoUseCase>();
             services.AddScoped<IDeleteAdminUseCase, DeleteAdminUseCase>();
             services.AddScoped<IGetAdminInfoUseCase, GetAdminInfoUseCase>();
+            services.AddScoped<IGetAllAdminsUseCase, GetAllAdminsUseCase>();
+            services.AddScoped<IAddOrderToControlAdminUseCase, AddOrderToControlAdminUseCase>();
+            services.AddScoped<IRemoveControlAdminOrderUseCase, RemoveControlAdminOrderUseCase>();
 
             services.AddScoped<ICreateManufacturerUseCase, CreateManufacturerUseCase>();
             services.AddScoped<IUpdateManufacturerUseCase, UpdateManufacturerUseCase>();
+            services.AddScoped<IUpdateManufacturerLogoUseCase, UpdateManufacturerLogoUseCase>();
             services.AddScoped<IDeleteManufacturerUseCase, DeleteManufacturerUseCase>();
             services.AddScoped<IGetManufacturerInfoUseCase, GetManufacturerInfoUseCase>();
             services.AddScoped<IAddManufacturerProductUseCase, AddManufacturerProductUseCase>();
@@ -28,6 +33,7 @@ namespace UserService
 
             services.AddScoped<ICreateUserUseCase, CreateUserUseCase>();
             services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
+            services.AddScoped<IUpdateUserLogoUseCase, UpdateUserLogoUseCase>();
             services.AddScoped<IDeleteUserUseCase, DeleteUserUseCase>();
             services.AddScoped<IGetUserInfoUseCase, GetUserInfoUseCase>();
             services.AddScoped<IAddUserOrderUseCase, AddUserOrderUseCase>();

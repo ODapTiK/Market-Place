@@ -12,6 +12,7 @@ namespace UserService
     {
         private readonly Mock<IUpdateUserUseCase> _updateUserUseCaseMock;
         private readonly Mock<IGetUserInfoUseCase> _getUserInfoUseCaseMock;
+        private readonly Mock<IUpdateUserLogoUseCase> _updateUserLogoUseCaseMock;
         private readonly UserController _controller;
         private readonly Faker _faker;
 
@@ -19,6 +20,7 @@ namespace UserService
         {
             _updateUserUseCaseMock = new Mock<IUpdateUserUseCase>();
             _getUserInfoUseCaseMock = new Mock<IGetUserInfoUseCase>();
+            _updateUserLogoUseCaseMock = new Mock<IUpdateUserLogoUseCase>();
 
             var httpContext = new DefaultHttpContext();
             var claims = new[] { new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()) };
@@ -28,7 +30,8 @@ namespace UserService
 
             _controller = new UserController(
                 _updateUserUseCaseMock.Object,
-                _getUserInfoUseCaseMock.Object)
+                _getUserInfoUseCaseMock.Object,
+                _updateUserLogoUseCaseMock.Object)
             {
                 ControllerContext = new ControllerContext
                 {

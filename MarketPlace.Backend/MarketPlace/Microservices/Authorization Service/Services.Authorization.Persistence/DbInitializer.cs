@@ -13,7 +13,8 @@ namespace AuthorizationService
 
         public async Task InitializeAsync()
         {
-            foreach (var role in Enum.GetValues(typeof(Role)))
+            var roles = Enum.GetValues(typeof(Role));
+            foreach (var role in roles)
             {
                 var roleName = role.ToString();
                 if (!await _roleRepository.RoleExistsAsync(roleName))

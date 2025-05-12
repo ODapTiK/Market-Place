@@ -8,14 +8,18 @@ namespace UserService
     {
         private readonly IUpdateUserUseCase _updateUserUseCase;
         private readonly IGetUserInfoUseCase _getUserInfoUseCase;
+        private readonly IUpdateUserLogoUseCase _updateUserLogoUseCase;
 
         public UserController(IUpdateUserUseCase updateUserUseCase, 
-                              IGetUserInfoUseCase getUserInfoUseCase)
+                              IGetUserInfoUseCase getUserInfoUseCase,
+                              IUpdateUserLogoUseCase updateUserLogoUseCase)
         {
             _updateUserUseCase = updateUserUseCase;
             _getUserInfoUseCase = getUserInfoUseCase;
+            _updateUserLogoUseCase = updateUserLogoUseCase;
         }
 
+        [Authorize(Policy = "User")]
         [HttpGet]
         public async Task<ActionResult<User>> GetUser(CancellationToken cancellationToken)
         {
@@ -30,6 +34,15 @@ namespace UserService
         {
             userDTO.Id = UserId;
             await _updateUserUseCase.Execute(userDTO, cancellationToken);
+
+            return Ok();
+        }
+
+        [Authorize(Policy = "User")]
+        [HttpPut("logo")]
+        public async Task<IActionResult> UpdateUserLogo([FromBody] UserLogoDTO logo, CancellationToken cancellationToken)
+        {
+            await _updateUserLogoUseCase.Execute(UserId, logo.base64Logo, cancellationToken);
 
             return Ok();
         }

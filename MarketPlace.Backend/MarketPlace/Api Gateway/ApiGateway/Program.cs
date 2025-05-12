@@ -67,25 +67,6 @@ namespace ApiGateway
 
             services.AddControllers();
 
-            //services.AddHttpClient("SwaggerClient")
-            //    .ConfigurePrimaryHttpMessageHandler(() => 
-            //    {
-            //        var handler = new HttpClientHandler();
-            //        handler.ServerCertificateCustomValidationCallback = (msg, cert, chain, errors) =>
-            //        {
-            //            if (cert?.Subject.Contains("CN=localhost") ?? false) return true;
-            //            return errors == System.Net.Security.SslPolicyErrors.None;
-            //        };
-            //        handler.SslProtocols = System.Security.Authentication.SslProtocols.Tls12 |
-            //                              System.Security.Authentication.SslProtocols.Tls13;
-
-            //        return handler;
-            //    })
-            //    .ConfigureHttpClient(client =>
-            //    {
-            //        client.Timeout = TimeSpan.FromSeconds(30);
-            //    });
-
             LoggingService.Configure(configuration);
             builder.Host.UseSerilog();
 

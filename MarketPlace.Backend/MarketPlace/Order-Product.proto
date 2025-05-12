@@ -9,6 +9,7 @@ service OrderProductService {
     rpc RemoveProductFromCart(ProductRequest) returns (Response);
     rpc DeleteProductFromAllCarts(DeleteProductRequest) returns (Response);
     rpc CalculateTotalPrice(OrderRequest) returns (OrderResponse);
+    rpc GetProductInfo(GetProductInfoRequest) returns (ProductInfoResponse);
 }
 
 message ProductRequest{
@@ -37,5 +38,19 @@ message OrderResponse {
     bool success = 1;
     string message = 2;
     double total_price = 3;
+}
+
+message GetProductInfoRequest {
+    string product_id = 1;
+}
+
+message ProductInfoResponse {
+    bool success = 1;
+    string message = 2;
+    string product_name = 3;
+    string product_description = 4;
+    string product_category = 5;
+    string product_type = 6;
+    string product_image = 7;
 }
 

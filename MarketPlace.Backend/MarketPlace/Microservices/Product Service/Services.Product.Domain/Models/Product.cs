@@ -12,6 +12,7 @@
         public string? Image { get; set; } 
         public double Price { get; set; }
         public double Raiting { get; set; }
+        public DateTime CreationDateTime { get; set; }
         public List<DateTime> ViewAt { get; set; } = [];
 
     }

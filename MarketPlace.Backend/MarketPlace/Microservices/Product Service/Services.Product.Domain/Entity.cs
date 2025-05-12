@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace ProductService
+﻿namespace ProductService
 {
     public class Entity
     {

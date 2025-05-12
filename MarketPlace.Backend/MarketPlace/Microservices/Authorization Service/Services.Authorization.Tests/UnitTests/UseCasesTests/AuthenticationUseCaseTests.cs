@@ -10,7 +10,6 @@ namespace AuthorizationService
     {
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IValidator<AuthUserDTO>> _validatorMock;
-        //private readonly Mock<IPasswordEncryptor> _passwordEncryptorMock;
         private readonly Mock<IJwtProvider> _jwtProviderMock;
         private readonly AuthenticationUseCase _authenticationUseCase;
 
@@ -18,13 +17,11 @@ namespace AuthorizationService
         {
             _userRepositoryMock = new Mock<IUserRepository>();
             _validatorMock = new Mock<IValidator<AuthUserDTO>>();
-            //_passwordEncryptorMock = new Mock<IPasswordEncryptor>();
             _jwtProviderMock = new Mock<IJwtProvider>();
 
             _authenticationUseCase = new AuthenticationUseCase(
                 _userRepositoryMock.Object,
                 _validatorMock.Object,
-                //_passwordEncryptorMock.Object,
                 _jwtProviderMock.Object
             );
         }
@@ -47,7 +44,7 @@ namespace AuthorizationService
                 PasswordHash = "hashedPassword" 
             }; 
 
-            var token = new TokenDTO("access_token", "refresh_token");
+            var token = new TokenDTO("access_token", "refresh_token", "User");
 
             _validatorMock.Setup(v => v.ValidateAsync(authUserDTO, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ValidationResult());
@@ -55,8 +52,6 @@ namespace AuthorizationService
                 .ReturnsAsync(user);
             _userRepositoryMock.Setup(repo => repo.VerifyUserPassword(user, authUserDTO.Password))
                 .ReturnsAsync(true);
-            //_passwordEncryptorMock.Setup(pe => pe.VerifyPassword(user.PasswordHash, authUserDTO.Password))
-                //.Returns(true);
             _jwtProviderMock.Setup(j => j.GenerateToken(user, true, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(token);
 
@@ -142,9 +137,6 @@ namespace AuthorizationService
                .ReturnsAsync(new ValidationResult());
             _userRepositoryMock.Setup(repo => repo.FindByEmailAsync(authUserDTO.Email, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user); 
-
-            //_passwordEncryptorMock.Setup(pe => pe.VerifyPassword(user.PasswordHash, authUserDTO.Password))
-                //.Returns(false); 
 
             // Act
             var act = async () => await _authenticationUseCase.Handle(request, CancellationToken.None);

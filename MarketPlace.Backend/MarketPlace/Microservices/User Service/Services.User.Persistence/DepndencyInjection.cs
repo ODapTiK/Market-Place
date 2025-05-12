@@ -19,12 +19,6 @@ namespace UserService
                 ?? throw new InvalidOperationException("USER_HANGFIRE_DB_CONNECTION_STRING is not set in environment variables");
             services.AddEntityFrameworkNpgsql().AddDbContext<HangfireUserDbContext>(options =>
                 options.UseNpgsql(connectionString));
-            //GlobalConfiguration.Configuration.UsePostgreSqlStorage(c => 
-            //    c.UseNpgsqlConnection(connectionString),
-            //    new PostgreSqlStorageOptions
-            //    { 
-            //        PrepareSchemaIfNecessary = true
-            //    });   
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                 .UseSimpleAssemblyNameTypeSerializer()

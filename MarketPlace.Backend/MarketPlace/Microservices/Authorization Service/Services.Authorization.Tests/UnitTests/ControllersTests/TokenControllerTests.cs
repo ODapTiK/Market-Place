@@ -18,8 +18,8 @@ namespace AuthorizationService
         public async Task RefreshToken_ReturnsOk_WithUpdatedToken_WhenSuccessful()
         {
             // Arrange
-            var tokenDTO = new TokenDTO("access_token", "refresh_token");
-            var updatedTokenDTO = new TokenDTO("updated_access_token", "updated_refresh_token");
+            var tokenDTO = new TokenDTO("access_token", "refresh_token", "User");
+            var updatedTokenDTO = new TokenDTO("updated_access_token", "updated_refresh_token", "User");
 
             _jwtProviderMock.Setup(m => m.RefreshToken(tokenDTO))
                             .ReturnsAsync(updatedTokenDTO);
