@@ -36,6 +36,11 @@ namespace AuthorizationService
             return await _userManager.FindByEmailAsync(email);
         }
 
+        public async Task<bool> VerifyUserPassword(User user, string password)
+        {
+            return await _userManager.CheckPasswordAsync(user, password);
+        }
+
         public async Task UpdateAsync(User user, CancellationToken cancellationToken)
         {
             await _userManager.UpdateAsync(user);

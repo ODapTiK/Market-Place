@@ -26,7 +26,7 @@ namespace UserService
             if(manufacturer == null)
                 throw new EntityNotFoundException(nameof(Manufacturer), manufacturerDTO.Id);
 
-            manufacturer = _mapper.Map<Manufacturer>(manufacturerDTO);
+            manufacturer.Organization = manufacturerDTO.Organization;
 
             await _manufacturerRepository.UpdateAsync(cancellationToken);
         }

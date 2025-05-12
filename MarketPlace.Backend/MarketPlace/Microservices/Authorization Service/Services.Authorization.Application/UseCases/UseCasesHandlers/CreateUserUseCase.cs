@@ -8,19 +8,19 @@ namespace AuthorizationService
     public class CreateUserUseCase : IRequestHandler<CreateUserRequest, Guid>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IPasswordEncryptor _passwordEncryptor;
+        //private readonly IPasswordEncryptor _passwordEncryptor;
         private readonly IValidator<UserDTO> _validator;
         private readonly IRoleRepository _roleRepository;
         private readonly AuthUserService.AuthUserServiceClient _userServiceClient;
 
         public CreateUserUseCase(IUserRepository userRepository, 
-                                 IPasswordEncryptor passwordEncryptor, 
+                                 //IPasswordEncryptor passwordEncryptor, 
                                  IValidator<UserDTO> validator, 
                                  IRoleRepository roleRepository,
                                  AuthUserService.AuthUserServiceClient userServiceClient)
         {
             _userRepository = userRepository;
-            _passwordEncryptor = passwordEncryptor;
+            //_passwordEncryptor = passwordEncryptor;
             _validator = validator;
             _roleRepository = roleRepository;
             _userServiceClient = userServiceClient;
@@ -40,7 +40,9 @@ namespace AuthorizationService
             {
                 Id = Guid.NewGuid(),
                 Email = request.userDTO.Email,
-                PasswordHash = _passwordEncryptor.GenerateEncryptedPassword(request.userDTO.Password),
+                UserName = request.userDTO.Email,
+                PasswordHash = request.userDTO.Password
+                //_passwordEncryptor.GenerateEncryptedPassword(request.userDTO.Password),
             };
 
             var userId = await _userRepository.CreateAsync(user, cancellationToken);

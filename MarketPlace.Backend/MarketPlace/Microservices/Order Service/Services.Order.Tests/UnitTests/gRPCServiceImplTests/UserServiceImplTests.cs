@@ -26,7 +26,7 @@ namespace OrderService
                 .Returns(Task.CompletedTask);
 
             // Act
-            var response = await _userService.DeleteUserOrders(request, null);
+            var response = await _userService.DeleteUserOrders(request, TestServerCallContext.Create());
 
             // Assert
             response.Should().NotBeNull();
@@ -44,7 +44,7 @@ namespace OrderService
                 .ThrowsAsync(new Exception("Some error occurred"));
 
             // Act
-            var response = await _userService.DeleteUserOrders(request, null);
+            var response = await _userService.DeleteUserOrders(request, TestServerCallContext.Create());
 
             // Assert
             response.Should().NotBeNull();
@@ -63,7 +63,7 @@ namespace OrderService
                 .ReturnsAsync(cartId);
 
             // Act
-            var response = await _userService.CreateCart(request, null);
+            var response = await _userService.CreateCart(request, TestServerCallContext.Create());
 
             // Assert
             response.Should().NotBeNull();
@@ -82,7 +82,7 @@ namespace OrderService
                 .ThrowsAsync(new Exception("Some error occurred"));
 
             // Act
-            var response = await _userService.CreateCart(request, null);
+            var response = await _userService.CreateCart(request, TestServerCallContext.Create());
 
             // Assert
             response.Should().NotBeNull();
@@ -100,7 +100,7 @@ namespace OrderService
                 .Returns(Task.CompletedTask);
 
             // Act
-            var response = await _userService.DeleteCart(request, null);
+            var response = await _userService.DeleteCart(request, TestServerCallContext.Create());
 
             // Assert
             response.Should().NotBeNull();
@@ -118,7 +118,7 @@ namespace OrderService
                 .ThrowsAsync(new Exception("Some error occurred"));
 
             // Act
-            var response = await _userService.DeleteCart(request, null);
+            var response = await _userService.DeleteCart(request, TestServerCallContext.Create());
 
             // Assert
             response.Should().NotBeNull();

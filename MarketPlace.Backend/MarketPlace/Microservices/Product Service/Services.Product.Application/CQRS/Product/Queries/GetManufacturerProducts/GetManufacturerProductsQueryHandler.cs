@@ -13,6 +13,7 @@ namespace ProductService
 
         public async Task<List<Product>> Handle(GetManufacturerProductsQuery request, CancellationToken cancellationToken)
         {
+
             return await _productRepository.GetManyProductsAsync(x => x.ManufacturerId.Equals(request.ManufacturerId), cancellationToken);
         }
     }

@@ -88,6 +88,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common Protos", "Common Protos", "{61DDE966-9AF6-4540-9144-04126B02F15F}"
 	ProjectSection(SolutionItems) = preProject
 		Authorization-User.proto = Authorization-User.proto
+		Order-Product.proto = Order-Product.proto
 		Order-User.proto = Order-User.proto
 		Product-User.proto = Product-User.proto
 	EndProjectSection
@@ -95,6 +96,19 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api Gateway", "Api Gateway", "{1AA222F5-BF25-4ADC-8F49-EDEAD2C0469F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "Api Gateway\ApiGateway\ApiGateway.csproj", "{21E42213-BCBD-491C-9422-14662CF18FA4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logstash", "logstash", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pipeline", "pipeline", "{9DFCD56C-7A5C-4A92-AA7A-E8AB244F241D}"
+	ProjectSection(SolutionItems) = preProject
+		logstash.conf = logstash.conf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B9E39DF8-0651-415F-A597-E6B64951D846}"
+	ProjectSection(SolutionItems) = preProject
+		.env = .env
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -233,5 +247,9 @@ Global
 		{49AC1479-2B14-47E4-8900-D2959E03F918} = {F1B9DAC3-FCCC-4D81-ADD4-DA293E299B4D}
 		{61DDE966-9AF6-4540-9144-04126B02F15F} = {169D1AD9-F705-4AD9-B4A9-764ED04A85C2}
 		{21E42213-BCBD-491C-9422-14662CF18FA4} = {1AA222F5-BF25-4ADC-8F49-EDEAD2C0469F}
+		{9DFCD56C-7A5C-4A92-AA7A-E8AB244F241D} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {24D29CA9-736A-43F1-8B8A-33DAAD33213D}
 	EndGlobalSection
 EndGlobal

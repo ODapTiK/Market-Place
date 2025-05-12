@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ProductService
@@ -46,6 +47,7 @@ namespace ProductService
             return Ok(products);
         }
 
+        [Authorize(Policy = "Manufacturer")]
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateProduct([FromBody] CreateProductDTO createProductDTO, CancellationToken cancellationToken)
         {
@@ -56,6 +58,7 @@ namespace ProductService
             return Ok(productId);
         }
 
+        [Authorize(Policy = "User")]
         [HttpPost("{productId}/reviews")]
         public async Task<ActionResult<Guid>> CreateProductReview(Guid productId, [FromBody] CreateProductReviewDTO createProductReviewDTO, CancellationToken cancellationToken)
         {
@@ -67,6 +70,7 @@ namespace ProductService
             return Ok(reviewId);
         }
 
+        [Authorize(Policy = "Manufacturer")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(Guid id, CancellationToken cancellationToken)
         {
@@ -80,6 +84,7 @@ namespace ProductService
             return Ok();
         }
 
+        [Authorize(Policy = "User")]
         [HttpDelete("{productId}/reviews/{reviewId}")]
         public async Task<IActionResult> DeleteProductReview(Guid productId, Guid reviewId, CancellationToken cancellationToken)
         {
@@ -94,6 +99,7 @@ namespace ProductService
             return Ok();
         }
 
+        [Authorize(Policy = "Manufacturer")]
         [HttpPut]
         public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductDTO updateProductDTO, CancellationToken cancellationToken)
         {
@@ -101,6 +107,34 @@ namespace ProductService
             command.ManufacturerId = UserId;
 
             await Mediator.Send(command, cancellationToken);
+            return Ok();
+        }
+
+        [Authorize(Policy = "User")]
+        [HttpPost("{productId}/user")]
+        public async Task<IActionResult> AddProductToUserCart(Guid productId, CancellationToken cancellationToken)
+        {
+            var command = new AddProductToUserCartCommand()
+            {
+                ProductId = productId,
+                UserId = UserId
+            };
+
+            await Mediator.Send(command);
+            return Ok();
+        }
+
+        [Authorize(Policy = "User")]
+        [HttpDelete("{productId}/user")]
+        public async Task<IActionResult> RemoveProductFromUserCart(Guid productId, CancellationToken cancellationToken)
+        {
+            var command = new RemoveProductFromUserCartCommand()
+            {
+                ProductId = productId,
+                UserId = UserId
+            };
+
+            await Mediator.Send(command);
             return Ok();
         }
     }

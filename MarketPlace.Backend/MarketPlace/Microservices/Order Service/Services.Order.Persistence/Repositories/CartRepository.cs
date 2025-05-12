@@ -22,5 +22,16 @@ namespace OrderService
             cart.Products.Remove(productId);
             await _context.SaveChangesAsync(cancellationToken); 
         }
+
+        public async Task RemoveProductFromCartsAsync(Guid productId, CancellationToken cancellationToken)
+        {
+            var carts = await _context.Carts.Where(x => x.Products.Contains(productId)).ToListAsync(cancellationToken);
+            foreach (var cart in carts)
+            {
+                cart.Products.Remove(productId);
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
     }
 }

@@ -1,0 +1,256 @@
+﻿version: '3.8'
+
+services:
+  authservicedb:
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${AUTH_DB_NAME}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${AUTH_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  userservicedb:
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${USER_DB_NAME}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${USER_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  userservicehangfiredb:
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${USER_HANGFIRE_DB_NAME}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${USER_HANGFIRE_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  orderservicedb:
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${ORDER_DB_NAME}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${ORDER_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+  
+  orderservicehangfiredb:
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${ORDER_HANGFIRE_DB_NAME}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${ORDER_HANGFIRE_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  productservicehangfiredb:
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${PRODUCT_HANGFIRE_DB_NAME}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${PRODUCT_HANGFIRE_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672" 
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  authservice:
+    image: authservice:release
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Microservices/Authorization Service/Services.Authorization.WebAPI/Dockerfile
+    ports:
+      - "6001:6001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - AUTH_DB_CONNECTION_STRING=${AUTH_DB_CONNECTION_STRING}
+      - JWT_KEY=${JWT_KEY}
+      - JWT_EXPIRED_TIME=${JWT_EXPIRED_TIME}
+    depends_on:
+      authservicedb:
+        condition: service_healthy
+
+  userservice:
+    image: userservice:release
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Microservices/User Service/Services.User.WebAPI/Dockerfile
+    ports:
+      - "6002:6002"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - USER_DB_CONNECTION_STRING=${USER_DB_CONNECTION_STRING}
+      - USER_HANGFIRE_DB_CONNECTION_STRING=${USER_HANGFIRE_DB_CONNECTION_STRING}
+      - JWT_KEY=${JWT_KEY}
+      - JWT_EXPIRED_TIME=${JWT_EXPIRED_TIME}
+    depends_on:
+      userservicedb:
+        condition: service_healthy
+      userservicehangfiredb:
+        condition: service_healthy
+
+  orderservice:
+    image: orderservice:release
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Microservices/Order Service/Services.Order.WebAPI/Dockerfile
+    ports:
+      - "6003:6003"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ORDER_DB_CONNECTION_STRING=${ORDER_DB_CONNECTION_STRING}
+      - ORDER_HANGFIRE_DB_CONNECTION_STRING=${ORDER_HANGFIRE_DB_CONNECTION_STRING}
+      - JWT_KEY=${JWT_KEY}
+      - JWT_EXPIRED_TIME=${JWT_EXPIRED_TIME}
+    depends_on:
+      orderservicedb:
+        condition: service_healthy
+      orderservicehangfiredb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+
+  productservice:
+    image: productservice:release
+    build:
+      context: .
+      dockerfile: Microservices/Product Service/Services.Product.WebAPI/Dockerfile
+    ports:
+      - "6004:6004"
+    env_file:
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - PRODUCT_HANGFIRE_DB_CONNECTION_STRING=${PRODUCT_HANGFIRE_DB_CONNECTION_STRING}
+      - MongoDb__ConnectionString=mongodb://mongodb:27017
+      - Redis__ConnectionString=redis
+      - RabbitMqOptions__UserName=guest
+      - RabbitMqOptions__Password=guest
+      - RabbitMqOptions__HostName=rabbitmq
+      - JWT_KEY=${JWT_KEY}
+      - JWT_EXPIRED_TIME=${JWT_EXPIRED_TIME}
+    depends_on:
+      productservicehangfiredb:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+    container_name: elasticsearch
+    env_file:
+      - .env
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xms512m
+      - xpack.security.http.ssl.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 10s
+      retries: 3
+      start_period: 10s
+      timeout: 5s
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.14.3
+    container_name: kibana
+    env_file:
+      - .env
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.14.3
+    container_name: logstash
+    env_file:
+      - .env
+    ports:
+      - "5044:5044"
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    depends_on:
+      - elasticsearch
+
+volumes:
+  postgres_data:
+  mongo_data:
+  elasticsearch-data:

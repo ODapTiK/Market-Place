@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace UserService
 {
@@ -23,6 +24,7 @@ namespace UserService
             return Ok(admin);
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateAdmin([FromBody] AdminDTO adminDTO, CancellationToken cancellationToken)
         {

@@ -17,6 +17,9 @@ namespace OrderService
             if (cart == null) 
                 throw new EntityNotFoundException(nameof(Cart), request.CartId);
 
+            if(cart.Products.Contains(request.ProductId)) 
+                throw new EntityAlreadyExistsException("Cart-point", request.ProductId);
+
             await _cartRepository.AddOrderPointAsync(cart, request.ProductId, cancellationToken);
         }
     }

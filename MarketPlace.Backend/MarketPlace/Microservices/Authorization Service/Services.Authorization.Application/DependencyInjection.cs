@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -14,7 +15,6 @@ namespace AuthorizationService
             services.AddScoped<IPasswordEncryptor, PasswordEncryptor>();
             services.AddScoped<IJwtProvider, JwtProvider>();
             services.AddScoped<IJwtOptions, JwtOptions>();
-
 
             return services;
         }

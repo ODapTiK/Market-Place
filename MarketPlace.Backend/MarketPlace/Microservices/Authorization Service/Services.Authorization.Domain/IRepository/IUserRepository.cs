@@ -8,6 +8,7 @@ namespace AuthorizationService
         Task DeleteAsync(User user, CancellationToken cancellationToken);
         Task<User?> FindByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken);
+        public Task<bool> VerifyUserPassword(User user, string password);
         Task UpdateAsync(User user, CancellationToken cancellationToken);
         Task<List<string>> GetUserRoleAsync(User user);
         Task<IdentityResult> AddUserToRoleAsync(User user, string roleName);

@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<Protobuf Include="../../../Product-User.proto" ProtoCompile="true" />
+		<Protobuf Include="../../../Order-Product.proto" ProtoCompile="true" />
 	</ItemGroup>
 
 	<PropertyGroup>

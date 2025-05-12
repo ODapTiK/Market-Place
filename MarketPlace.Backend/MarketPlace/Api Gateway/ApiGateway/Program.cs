@@ -4,13 +4,15 @@ using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using MMLib.SwaggerForOcelot.DependencyInjection;
+using Serilog;
 
 namespace ApiGateway
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
+            DotNetEnv.Env.Load("../../.env");
             var builder = WebApplication.CreateBuilder(args);
 
             var services = builder.Services;
@@ -65,6 +67,28 @@ namespace ApiGateway
 
             services.AddControllers();
 
+            //services.AddHttpClient("SwaggerClient")
+            //    .ConfigurePrimaryHttpMessageHandler(() => 
+            //    {
+            //        var handler = new HttpClientHandler();
+            //        handler.ServerCertificateCustomValidationCallback = (msg, cert, chain, errors) =>
+            //        {
+            //            if (cert?.Subject.Contains("CN=localhost") ?? false) return true;
+            //            return errors == System.Net.Security.SslPolicyErrors.None;
+            //        };
+            //        handler.SslProtocols = System.Security.Authentication.SslProtocols.Tls12 |
+            //                              System.Security.Authentication.SslProtocols.Tls13;
+
+            //        return handler;
+            //    })
+            //    .ConfigureHttpClient(client =>
+            //    {
+            //        client.Timeout = TimeSpan.FromSeconds(30);
+            //    });
+
+            LoggingService.Configure(configuration);
+            builder.Host.UseSerilog();
+
             var app = builder.Build();
 
             app.UseCors("AllowAll");
@@ -72,12 +96,18 @@ namespace ApiGateway
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/docs/v1/aggregated", "API Gateway");
+                c.RoutePrefix = string.Empty;
+            });
+
             app.UseSwaggerForOcelotUI(options =>
             {
                 options.PathToSwaggerGenerator = "/swagger/docs";
             });
 
-            app.UseOcelot().Wait();
+            await app.UseOcelot();
 
             app.MapControllers();
 

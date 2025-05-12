@@ -21,13 +21,13 @@ namespace OrderService
         }
 
         [Fact]
-        public async Task Handle_ShouldAddOrderPoint_WhenCartExists()
+        public async Task Handle_ShouldAddOrderPoint_WhenCartExistsAndProductNotInCart()
         {
             // Arrange
             var cartId = _faker.Random.Guid();
             var productId = _faker.Random.Guid();
             var command = new AddOrderPointCommand { CartId = cartId, ProductId = productId };
-            var existingCart = new Cart { Id = cartId }; 
+            var existingCart = new Cart { Id = cartId, Products = new List<Guid>() };
 
             _cartRepositoryMock.Setup(repo => repo.GetByIdAsync(cartId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(existingCart);
@@ -36,7 +36,9 @@ namespace OrderService
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _cartRepositoryMock.Verify(repo => repo.AddOrderPointAsync(existingCart, productId, It.IsAny<CancellationToken>()), Times.Once);
+            _cartRepositoryMock.Verify(repo =>
+                repo.AddOrderPointAsync(existingCart, productId, It.IsAny<CancellationToken>()),
+                Times.Once);
         }
 
         [Fact]
@@ -48,13 +50,32 @@ namespace OrderService
             var command = new AddOrderPointCommand { CartId = cartId, ProductId = productId };
 
             _cartRepositoryMock.Setup(repo => repo.GetByIdAsync(cartId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync((Cart?)null); 
+                .ReturnsAsync((Cart?)null);
 
-            // Act
-            Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
+            // Act & Assert
+            await _handler.Invoking(x => x.Handle(command, CancellationToken.None))
+                .Should().ThrowAsync<EntityNotFoundException>();
+        }
 
-            // Assert
-            await act.Should().ThrowAsync<EntityNotFoundException>();
+        [Fact]
+        public async Task Handle_ShouldThrowEntityAlreadyExistsException_WhenProductAlreadyInCart()
+        {
+            // Arrange
+            var cartId = _faker.Random.Guid();
+            var productId = _faker.Random.Guid();
+            var command = new AddOrderPointCommand { CartId = cartId, ProductId = productId };
+            var existingCart = new Cart
+            {
+                Id = cartId,
+                Products = new List<Guid> { productId }
+            };
+
+            _cartRepositoryMock.Setup(repo => repo.GetByIdAsync(cartId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(existingCart);
+
+            // Act & Assert
+            await _handler.Invoking(x => x.Handle(command, CancellationToken.None))
+                .Should().ThrowAsync<EntityAlreadyExistsException>();
         }
 
         [Fact]
@@ -73,6 +94,24 @@ namespace OrderService
             // Assert
             result.ShouldHaveValidationErrorFor(x => x.ProductId);
             result.ShouldHaveValidationErrorFor(x => x.CartId);
+        }
+
+        [Fact]
+        public void Validate_ShouldPass_WhenCommandIsValid()
+        {
+            // Arrange
+            var command = new AddOrderPointCommand
+            {
+                ProductId = _faker.Random.Guid(),
+                CartId = _faker.Random.Guid()
+            };
+
+            // Act
+            var result = _validator.TestValidate(command);
+
+            // Assert
+            result.ShouldNotHaveValidationErrorFor(x => x.ProductId);
+            result.ShouldNotHaveValidationErrorFor(x => x.CartId);
         }
     }
 }

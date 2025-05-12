@@ -29,7 +29,7 @@ namespace OrderService
             var existingOrder = new Order 
             { 
                 Id = orderId, 
-                TotalPrice = _faker.Random.Decimal() 
+                TotalPrice = _faker.Random.Double() 
             }; 
 
             _orderRepositoryMock.Setup(repo => repo.GetByIdAsync(orderId, It.IsAny<CancellationToken>()))

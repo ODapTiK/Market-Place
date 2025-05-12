@@ -88,7 +88,7 @@ namespace AuthorizationService
                          .Returns(Task.CompletedTask);
 
             // Act
-            var result = await _controller.DeleteUser(userId, CancellationToken.None);
+            var result = await _controller.DeleteUser(CancellationToken.None);
 
             // Assert
             Assert.IsType<OkResult>(result);

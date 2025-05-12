@@ -24,5 +24,10 @@ namespace OrderService
 
             await _context.SaveChangesAsync(cancellationToken);
         }
+
+        public override async Task<Order?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Orders.Include(x => x.OrderPoints).FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
+        }
     }
 }

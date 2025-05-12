@@ -14,6 +14,7 @@ namespace OrderService
         private readonly Mock<IMediator> _mediatorMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly OrderController _controller;
+        private readonly Faker<OrderPointDTO> _orderPointDTOFaker;
         private readonly Faker<OrderPoint> _orderPointFaker;
         private readonly Faker _faker;
 
@@ -23,11 +24,13 @@ namespace OrderService
             _mapperMock = new Mock<IMapper>();
 
             _faker = new Faker();
-            _orderPointFaker = new Faker<OrderPoint>()
-                .RuleFor(o => o.Id, f => f.Random.Guid())
-                .RuleFor(o => o.OrderId, f => f.Random.Guid())
+            _orderPointDTOFaker = new Faker<OrderPointDTO>()
                 .RuleFor(o => o.ProductId, f => f.Random.Guid())
                 .RuleFor(o => o.NumberOfUnits, f => f.Random.Int(1, 5));
+            _orderPointFaker = new Faker<OrderPoint>()
+                .RuleFor(o => o.ProductId, f => f.Random.Guid())
+                .RuleFor(o => o.NumberOfUnits, f => f.Random.Int(1, 5))
+                .RuleFor(o => o.Id, f => f.Random.Guid());
 
             var httpContext = new DefaultHttpContext();
             httpContext.RequestServices = new ServiceCollection()
@@ -49,14 +52,12 @@ namespace OrderService
             // Arrange
             var createOrderDTO = new CreateOrderDTO
             {
-                Points = (List<OrderPoint>)_faker.Make(_faker.Random.Int(1, 10), () => _orderPointFaker.Generate()),
-                TotalPrice = _faker.Random.Decimal()
+                Points = (List<OrderPointDTO>)_faker.Make(_faker.Random.Int(1, 10), () => _orderPointDTOFaker.Generate())
             };
             var command = new CreateOrderCommand 
             { 
                 UserId = _faker.Random.Guid(),
-                Points = (List<OrderPoint>)_faker.Make(_faker.Random.Int(1, 10), () => _orderPointFaker.Generate()),
-                TotalPrice = _faker.Random.Decimal()
+                Points = (List<OrderPointDTO>)_faker.Make(_faker.Random.Int(1, 10), () => _orderPointDTOFaker.Generate())
             };
             var expectedOrderId = _faker.Random.Guid();
 
@@ -100,7 +101,7 @@ namespace OrderService
                 UserId = _faker.Random.Guid(),
                 OrderDateTime = _faker.Date.Past(),
                 OrderPoints = (List<OrderPoint>)_faker.Make(_faker.Random.Int(1, 10), () => _orderPointFaker.Generate()),
-                TotalPrice = _faker.Random.Decimal()
+                TotalPrice = _faker.Random.Double()
             };
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetOrderQuery>(), default))
@@ -126,7 +127,7 @@ namespace OrderService
                 UserId = userId,
                 OrderDateTime = _faker.Date.Past(),
                 OrderPoints = (List<OrderPoint>)_faker.Make(_faker.Random.Int(1, 10), () => _orderPointFaker.Generate()),
-                TotalPrice = _faker.Random.Decimal()
+                TotalPrice = _faker.Random.Double()
             });
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetUserOrdersQuery>(), default))

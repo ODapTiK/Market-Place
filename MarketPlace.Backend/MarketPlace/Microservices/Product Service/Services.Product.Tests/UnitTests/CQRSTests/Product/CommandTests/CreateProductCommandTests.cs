@@ -35,7 +35,7 @@ namespace ProductService
                 Category = faker.Commerce.Department(),
                 Type = faker.Commerce.ProductMaterial(),
                 Image = Convert.ToBase64String(faker.Random.Bytes(64)),
-                Price = Convert.ToDecimal(faker.Commerce.Price())
+                Price = Convert.ToDouble(faker.Commerce.Price())
             };
 
             // Act
@@ -69,7 +69,7 @@ namespace ProductService
             var command = new CreateProductCommand
             {
                 ManufacturerId = userId,
-                Price = 100m,
+                Price = 100,
                 Description = "Product description"
             };
 
@@ -100,7 +100,7 @@ namespace ProductService
             var command = new CreateProductCommand
             {
                 ManufacturerId = Guid.Empty,
-                Price = -10m    
+                Price = -10    
             };
 
             // Act

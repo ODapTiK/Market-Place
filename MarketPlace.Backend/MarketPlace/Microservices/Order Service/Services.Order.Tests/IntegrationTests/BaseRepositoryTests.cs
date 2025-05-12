@@ -3,6 +3,7 @@ using FluentAssertions;
 
 namespace OrderService
 {
+    [Collection("Database Collection")]
     public class BaseRepositoryTests : IClassFixture<TestOrderDatabaseFixture>
     {
         private readonly TestBaseRepository _testRepository;

@@ -8,17 +8,17 @@ namespace AuthorizationService
     {
         private readonly IUserRepository _userRepository;
         private readonly IValidator<AuthUserDTO> _validator;
-        private readonly IPasswordEncryptor _passwordEncryptor;
+        //private readonly IPasswordEncryptor _passwordEncryptor;
         private readonly IJwtProvider _jwtProvider;
 
         public AuthenticationUseCase(IUserRepository userRepository,
                                      IValidator<AuthUserDTO> validator,
-                                     IPasswordEncryptor passwordEncryptor,
+                                     //IPasswordEncryptor passwordEncryptor,
                                      IJwtProvider jwtProvider)
         {
             _userRepository = userRepository;
             _validator = validator;
-            _passwordEncryptor = passwordEncryptor;
+            //_passwordEncryptor = passwordEncryptor;
             _jwtProvider = jwtProvider;
         }
         public async Task<TokenDTO> Handle(AuthUserRequest request, CancellationToken cancellationToken)
@@ -33,7 +33,7 @@ namespace AuthorizationService
             {
                 throw new EntityNotFoundException(nameof(User), request.authUserDTO.Email);
             }
-            else if (_passwordEncryptor.VerifyPassword(user.PasswordHash, request.authUserDTO.Password))
+            else if (await _userRepository.VerifyUserPassword(user, request.authUserDTO.Password))
             {
                 return await _jwtProvider.GenerateToken(user, true, cancellationToken);
             }

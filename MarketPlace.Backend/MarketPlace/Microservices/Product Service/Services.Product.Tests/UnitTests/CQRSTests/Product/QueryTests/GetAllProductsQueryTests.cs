@@ -20,8 +20,8 @@ namespace ProductService
             // Arrange
             var products = new List<Product>
             {
-                new Product { Id = Guid.NewGuid(), Name = "Product 1", Price = 10.0M },
-                new Product { Id = Guid.NewGuid(), Name = "Product 2", Price = 20.0M }
+                new Product { Id = Guid.NewGuid(), Name = "Product 1", Price = 10.0 },
+                new Product { Id = Guid.NewGuid(), Name = "Product 2", Price = 20.0 }
             };
 
             var query = new GetAllProductsQuery();

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using FluentValidation.TestHelper;
 using Moq;
+using Proto.OrderProduct;
 using Proto.ProductUser;
 
 namespace ProductService
@@ -9,13 +10,17 @@ namespace ProductService
     {
         private readonly Mock<IProductRepository> _productRepositoryMock;
         private readonly Mock<ProductUserService.ProductUserServiceClient> _userServiceClientMock;
+        private readonly Mock<OrderProductService.OrderProductServiceClient> _orderProductServiceMock;
         private readonly DeleteProductCommandHandler _handler;
 
         public DeleteProductCommandTests()
         {
             _productRepositoryMock = new Mock<IProductRepository>();
             _userServiceClientMock = new Mock<ProductUserService.ProductUserServiceClient>();
-            _handler = new DeleteProductCommandHandler(_productRepositoryMock.Object, _userServiceClientMock.Object);
+            _orderProductServiceMock = new Mock<OrderProductService.OrderProductServiceClient>();
+            _handler = new DeleteProductCommandHandler(_productRepositoryMock.Object, 
+                                                       _userServiceClientMock.Object,
+                                                       _orderProductServiceMock.Object);
         }
 
         [Fact]
@@ -46,8 +51,18 @@ namespace ProductService
             });
             _userServiceClientMock
                 .Setup(m => m.RemoveManufacturerProductAsync(
-                    It.IsAny<ProductRequest>(), null, null, CancellationToken.None))
+                    It.IsAny<Proto.ProductUser.ProductRequest>(), null, null, CancellationToken.None))
                 .Returns(mockCall);
+
+            var orderProductServiceMockCall = CallHelpers.CreateAsyncUnaryCall(new Response
+            {
+                Message = "Test",
+                Success = true
+            });
+            _orderProductServiceMock
+                .Setup(m => m.DeleteProductFromAllCartsAsync(
+                    It.IsAny<DeleteProductRequest>(), null, null, CancellationToken.None))
+                .Returns(orderProductServiceMockCall);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
@@ -131,7 +146,7 @@ namespace ProductService
             });
             _userServiceClientMock
                 .Setup(m => m.RemoveManufacturerProductAsync(
-                    It.IsAny<ProductRequest>(), null, null, CancellationToken.None))
+                    It.IsAny<Proto.ProductUser.ProductRequest>(), null, null, CancellationToken.None))
                 .Returns(mockCall);
 
             // Act
