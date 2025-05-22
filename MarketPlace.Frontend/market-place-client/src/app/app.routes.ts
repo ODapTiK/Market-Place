@@ -32,5 +32,7 @@ export const routes: Routes = [
         {path:'notifications', component: AdminNotificationPageComponent}
     ]},
     {path:'login', component: LoginPageComponent},
-    {path:'register', component: RegisterPageComponent}
+    {path:'register', component: RegisterPageComponent},
+    {path: '', redirectTo: '/login', pathMatch: 'full'},
+    {path: '**', redirectTo: '/login'}
 ];

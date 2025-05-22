@@ -1,0 +1,10 @@
+node.name: "marketplace-logstash"
+path:
+  config: /usr/share/logstash/pipeline
+  logs: /usr/share/logstash/logs
+  data: /usr/share/logstash/data
+
+config.reload.automatic: true
+config.reload.interval: 3s
+
+queue.type: persisted 

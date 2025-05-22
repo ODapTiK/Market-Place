@@ -15,6 +15,10 @@ namespace UserService
             _getUsersWithBirthdayUseCaseMock = new Mock<IGetUsersWithBirthdayUseCase>();
             _addUserNotificationUseCaseMock = new Mock<IAddUserNotificationUseCase>();
             _hubContext = new Mock<IHubContext<NotificationHub>>();
+
+            var groupMock = new Mock<IGroupManager>();
+            _hubContext.Setup(x => x.Groups).Returns(groupMock.Object);
+
             _birthdayGreetingsGenerator = new BirthdayGreetingsGenerator(_getUsersWithBirthdayUseCaseMock.Object, 
                                                                          _addUserNotificationUseCaseMock.Object,
                                                                          _hubContext.Object);
@@ -34,13 +38,15 @@ namespace UserService
             _getUsersWithBirthdayUseCaseMock.Setup(x => x.Execute(cancellationToken))
                 .ReturnsAsync(users);
 
+            var clientGroupMock = new Mock<IClientProxy>();
+            _hubContext.Setup(x => x.Clients.Group(It.IsAny<string>()))
+                          .Returns(clientGroupMock.Object);
+
             // Act
             await _birthdayGreetingsGenerator.GenerateBirthdayGreetings(cancellationToken);
 
             // Assert
             _getUsersWithBirthdayUseCaseMock.Verify(x => x.Execute(cancellationToken), Times.Once);
-            // TO DO
-            // Add greetings logic assertion when it will be implemented
         }
 
         [Fact]

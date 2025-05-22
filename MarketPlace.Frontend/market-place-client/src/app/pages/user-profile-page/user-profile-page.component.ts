@@ -12,13 +12,15 @@ import { ImagePipe } from '../../data/pipes/image.pipe';
 import { ProductService } from '../../data/services/product.service';
 import { Review } from '../../data/interfaces/review';
 import { ReviewFormComponent } from '../../common-ui/review-form/review-form.component';
+import { ErrorHandlerService } from '../../data/services/error-handler.service';
+import { Router, RouterModule } from '@angular/router';
 
 const MAX_RETRY_ATTEMPTS = 3;
 
 @Component({
   selector: 'app-user-profile-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, TruncatePipe, ImagePipe, ReviewFormComponent],
+  imports: [CommonModule, FormsModule, DatePipe, TruncatePipe, ImagePipe, ReviewFormComponent, RouterModule],
   templateUrl: './user-profile-page.component.html',
   styleUrls: ['./user-profile-page.component.scss']
 })
@@ -26,6 +28,8 @@ export class UserProfilePageComponent {
   private userService = inject(UserService);
   private orderService = inject(OrderService);
   private productService = inject(ProductService);
+  private errorHandler = inject(ErrorHandlerService);
+  private router = inject(Router);
 
   profile: UserProfile = {
     id: '',
@@ -67,8 +71,7 @@ export class UserProfilePageComponent {
         this.error = null;
       },
       error: (err) => {
-        console.error('Failed to load profile', err);
-        this.error = 'Не удалось загрузить профиль';
+        this.errorHandler.handleError(err, "Unable to load profile");
         this.isLoading = false;
       }
     });
@@ -96,8 +99,7 @@ export class UserProfilePageComponent {
         this.error = null;
       },
       error: (err) => {
-        console.error('Failed to load orders', err);
-        this.error = 'Не удалось загрузить историю заказов';
+        this.errorHandler.handleError(err, "Unable to load orders");
       }
     });
   }
@@ -121,7 +123,7 @@ export class UserProfilePageComponent {
           }
         },
         error: (err) => {
-          console.error('Ошибка при отмене заказа:', err);
+          this.errorHandler.handleError(err, "Cancellation order error");
         }
       });
     }
@@ -150,11 +152,7 @@ export class UserProfilePageComponent {
           this.isLoading = false;
         },
         error: (err) => {
-          console.error('Failed to update profile', err);
-          this.error = 'Не удалось сохранить изменения';
-          if (err.error?.message) {
-            this.error += `: ${err.error.message}`;
-          }
+          this.errorHandler.handleError(err, "Unable to update profile");
           this.isLoading = false;
         }
       });
@@ -188,11 +186,7 @@ export class UserProfilePageComponent {
           this.isLoading = false;
         },
         error: (err) => {
-          console.error('Avatar upload failed', err);
-          this.error = 'Не удалось загрузить аватар';
-          if (err.error?.message) {
-            this.error += `: ${err.error.message}`;
-          }
+          this.errorHandler.handleError(err, "Unable to update logo");
           this.isLoading = false;
         }
       });
@@ -238,9 +232,12 @@ export class UserProfilePageComponent {
         this.closeReviewForm(orderPoint.id);
       },
       error: (err) => {
-        console.error('Ошибка при сохранении отзыва:', err);
-        this.error = 'Не удалось сохранить отзыв';
+        this.errorHandler.handleError(err, "Unable to create review");
       }
     });
+  }
+
+  navigateToCatalog() {
+    this.router.navigate(['/user/catalog']);
   }
 }

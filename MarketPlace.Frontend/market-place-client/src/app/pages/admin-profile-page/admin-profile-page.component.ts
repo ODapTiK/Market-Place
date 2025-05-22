@@ -9,6 +9,7 @@ import { TruncatePipe } from '../../data/pipes/truncate.pipe';
 import { ImagePipe } from '../../data/pipes/image.pipe';
 import { UserService } from '../../data/services/user.service';
 import { retry } from 'rxjs';
+import { ErrorHandlerService } from '../../data/services/error-handler.service';
 
 const MAX_RETRY_ATTEMPTS = 3;
 
@@ -22,6 +23,7 @@ const MAX_RETRY_ATTEMPTS = 3;
 export class AdminProfilePageComponent {
   private adminService = inject(UserService);
   private orderService = inject(OrderService);
+  private errorHandler = inject(ErrorHandlerService)
 
   profile: AdminProfile = {
     id: '',
@@ -63,16 +65,14 @@ export class AdminProfilePageComponent {
             }));
           },
           error: (err) => {
-            console.error('Failed to load orders', err);
-            this.error = 'Не удалось загрузить заказы';
+            this.errorHandler.handleError(err, "Unable to load profile")
           }
         });
         this.isLoading = false;
         this.error = null;
       },
       error: (err) => {
-        console.error('Failed to load profile', err);
-        this.error = 'Не удалось загрузить профиль';
+        this.errorHandler.handleError(err, "Unable to load profile")
         this.isLoading = false;
       }
     });
@@ -101,7 +101,7 @@ export class AdminProfilePageComponent {
           }
         },
         error: (err) => {
-          console.error('Ошибка при изменении статуса заказа:', err);
+          this.errorHandler.handleError(err, "Order status error")
         }
       });
     }
@@ -128,11 +128,7 @@ export class AdminProfilePageComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to update profile', err);
-        this.error = 'Не удалось сохранить изменения';
-        if (err.error?.message) {
-          this.error += `: ${err.error.message}`;
-        }
+        this.errorHandler.handleError(err, "Unable to update profile")
         this.isLoading = false;
       }
     });
@@ -166,11 +162,7 @@ export class AdminProfilePageComponent {
           this.isLoading = false;
         },
         error: (err) => {
-          console.error('Avatar upload failed', err);
-          this.error = 'Не удалось загрузить аватар';
-          if (err.error?.message) {
-            this.error += `: ${err.error.message}`;
-          }
+          this.errorHandler.handleError(err, "Unable to update logo")
           this.isLoading = false;
         }
       });

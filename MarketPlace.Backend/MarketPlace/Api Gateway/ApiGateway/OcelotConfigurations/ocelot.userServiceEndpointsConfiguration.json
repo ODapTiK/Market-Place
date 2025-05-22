@@ -2,11 +2,11 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/api/user",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/user",
@@ -15,11 +15,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/user/notifications/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/user/notifications/{id}",
@@ -28,11 +28,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/user/notifications/unread-count",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/user/notifications/unread-count",
@@ -41,11 +41,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/user/logo",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/user/logo",
@@ -54,11 +54,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Admin/logo",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/admin/logo",
@@ -67,11 +67,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Admin",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/admin",
@@ -80,11 +80,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/admin/notifications/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/admin/notifications/{id}",
@@ -93,11 +93,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/admin/notifications/unread-count",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/admin/notifications/unread-count",
@@ -106,11 +106,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/Admins",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/admins",
@@ -119,11 +119,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/manufacturer",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/manufacturer",
@@ -132,24 +132,24 @@
     },
     {
       "DownstreamPathTemplate": "/api/manufacturer/logo",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/manufacturer/logo",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [ "PATCH" ],
       "SwaggerKey": "User"
     },
     {
       "DownstreamPathTemplate": "/api/manufacturer/notifications/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/manufacturer/notifications/{id}",
@@ -158,11 +158,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/manufacturer/notifications/unread-count",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6012
+          "Host": "userservice",
+          "Port": 6002
         }
       ],
       "UpstreamPathTemplate": "/manufacturer/notifications/unread-count",

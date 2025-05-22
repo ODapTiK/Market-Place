@@ -1,6 +1,7 @@
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Proto.OrderProduct;
@@ -21,6 +22,8 @@ namespace OrderService
             var configuration = builder.Configuration;
 
             configuration.AddEnvironmentVariables();
+
+            services.Configure<ObsoleteOrdersClearingSettings>(configuration.GetSection(nameof(ObsoleteOrdersClearingSettings)));
 
             var connectionString = Environment.GetEnvironmentVariable("ORDER_DB_CONNECTION_STRING")
                 ?? throw new InvalidOperationException("ORDER_DB_CONNECTION_STRING is not set in environment variables");
@@ -89,7 +92,7 @@ namespace OrderService
             services.AddGrpc();
             services.AddGrpcClient<OrderUserService.OrderUserServiceClient>(options =>
             {
-                options.Address = new Uri("https://localhost:6012");
+                options.Address = new Uri("https://userservice:6012");
             }).ConfigurePrimaryHttpMessageHandler(() =>
             {
                 var handler = new HttpClientHandler();
@@ -101,7 +104,7 @@ namespace OrderService
             });
             services.AddGrpcClient<OrderProductService.OrderProductServiceClient>(options =>
             {
-                options.Address = new Uri("https://localhost:6014");
+                options.Address = new Uri("https://productservice:6014");
             }).ConfigurePrimaryHttpMessageHandler(() =>
             {
                 var handler = new HttpClientHandler();
@@ -178,7 +181,7 @@ namespace OrderService
             app.UseSwaggerUI(config =>
             {
                 config.RoutePrefix = string.Empty;
-                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Event App API V1");
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Market Place API V1");
             });
             app.UseHangfireDashboard();
 

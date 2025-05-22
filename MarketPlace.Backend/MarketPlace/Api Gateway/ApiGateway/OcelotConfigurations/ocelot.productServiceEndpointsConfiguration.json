@@ -2,11 +2,11 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/api/products",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6014
+          "Host": "productservice",
+          "Port": 6004
         }
       ],
       "UpstreamPathTemplate": "/products",
@@ -15,11 +15,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products/ids",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6014
+          "Host": "productservice",
+          "Port": 6004
         }
       ],
       "UpstreamPathTemplate": "/products/ids",
@@ -28,11 +28,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6014
+          "Host": "productservice",
+          "Port": 6004
         }
       ],
       "UpstreamPathTemplate": "/products/{id}",
@@ -41,11 +41,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products/manufacturers/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6014
+          "Host": "productservice",
+          "Port": 6004
         }
       ],
       "UpstreamPathTemplate": "/products/manufacturers/{id}",
@@ -54,11 +54,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6014
+          "Host": "productservice",
+          "Port": 6004
         }
       ],
       "UpstreamPathTemplate": "/products",
@@ -71,11 +71,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6014
+          "Host": "productservice",
+          "Port": 6004
         }
       ],
       "UpstreamPathTemplate": "/products/{id}",
@@ -88,11 +88,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products/{productId}/reviews",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6014
+          "Host": "productservice",
+          "Port": 6004
         }
       ],
       "UpstreamPathTemplate": "/products/{productId}/reviews",
@@ -105,11 +105,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products/{productId}/reviews/{reviewId}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6014
+          "Host": "productservice",
+          "Port": 6004
         }
       ],
       "UpstreamPathTemplate": "/products/{productId}/reviews/{reviewId}",
@@ -122,11 +122,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/products/{productId}/user",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6014
+          "Host": "productservice",
+          "Port": 6004
         }
       ],
       "UpstreamPathTemplate": "/products/{productId}/user",

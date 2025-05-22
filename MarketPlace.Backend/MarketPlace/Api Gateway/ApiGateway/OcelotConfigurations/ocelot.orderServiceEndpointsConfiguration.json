@@ -2,11 +2,11 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/api/orders",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6013
+          "Host": "orderservice",
+          "Port": 6003
         }
       ],
       "UpstreamPathTemplate": "/orders",
@@ -15,11 +15,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/orders/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6013
+          "Host": "orderservice",
+          "Port": 6003
         }
       ],
       "UpstreamPathTemplate": "/orders/{id}",
@@ -28,11 +28,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/carts",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6013
+          "Host": "orderservice",
+          "Port": 6003
         }
       ],
       "UpstreamPathTemplate": "/carts",
@@ -41,11 +41,11 @@
     },
     {
       "DownstreamPathTemplate": "/api/carts/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 6013
+          "Host": "orderservice",
+          "Port": 6003
         }
       ],
       "UpstreamPathTemplate": "/carts/{id}",

@@ -5,6 +5,7 @@ import { catchError, Subject, tap, throwError } from 'rxjs';
 import { ManufacturerProfile } from '../interfaces/manufacturer-profile';
 import { AdminProfile } from '../interfaces/admin-profile';
 import { Notification } from '../interfaces/notification';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ import { Notification } from '../interfaces/notification';
 export class UserService {
   httpClient = inject(HttpClient);
 
-  baseApiUserServiceUrl = 'https://localhost:6010';
+  baseApiUserServiceUrl = environment.apiUrls.baseApiUrl;
 
   userProfile = signal<UserProfile | null>(null);
   manufacturerProfile = signal<ManufacturerProfile | null>(null);

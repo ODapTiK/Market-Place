@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { tap } from 'rxjs';
 import { Order } from '../interfaces/order';
 import { Cart } from '../interfaces/cart';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { Cart } from '../interfaces/cart';
 export class OrderService {
   httpClient = inject(HttpClient);
 
-  baseApiOrderServiceUrl = 'https://localhost:6010';
+  baseApiOrderServiceUrl = environment.apiUrls.baseApiUrl;
 
   userOrders = signal<Order[] | null>(null);
   userCart = signal<Cart | null>(null);

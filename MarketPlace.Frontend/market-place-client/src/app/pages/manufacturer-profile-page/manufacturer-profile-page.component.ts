@@ -10,6 +10,7 @@ import { ProductService } from '../../data/services/product.service';
 import { retry } from 'rxjs';
 import { ProductFormComponent } from '../../common-ui/product-form/product-form.component';
 import { ProductDto } from '../../data/interfaces/product-dto';
+import { ErrorHandlerService } from '../../data/services/error-handler.service';
 
 const MAX_RETRY_ATTEMPTS = 3;
 
@@ -23,6 +24,7 @@ const MAX_RETRY_ATTEMPTS = 3;
 export class ManufacturerProfilePageComponent {
   private userService = inject(UserService);
   private productService = inject(ProductService);
+  private errorHandler = inject(ErrorHandlerService);
 
   profile: ManufacturerProfile = {
     id: '',
@@ -59,8 +61,7 @@ export class ManufacturerProfilePageComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to load profile', err);
-        this.error = 'Не удалось загрузить профиль';
+        this.errorHandler.handleError(err, "Unable to load profile");
         this.isLoading = false;
       }
     });
@@ -76,8 +77,7 @@ export class ManufacturerProfilePageComponent {
         this.error = null;
       },
       error: (err) => {
-        console.error('Failed to load products', err);
-        this.error = 'Не удалось загрузить товары';
+        this.errorHandler.handleError(err, "Unable to load products");
       }
     });
   }
@@ -106,11 +106,7 @@ export class ManufacturerProfilePageComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to update profile', err);
-        this.error = 'Не удалось сохранить изменения';
-        if (err.error?.message) {
-          this.error += `: ${err.error.message}`;
-        }
+        this.errorHandler.handleError(err, "Unable to save profile changes");
         this.isLoading = false;
       }
     });
@@ -143,7 +139,7 @@ export class ManufacturerProfilePageComponent {
       this.isLoading = false;
     },
     error: (err) => {
-      console.error('Ошибка операции', err);
+      this.errorHandler.handleError(err, "Operations error");
       this.isLoading = false;
     }
   });
@@ -155,7 +151,7 @@ export class ManufacturerProfilePageComponent {
         this.loadProducts(); 
         this.selectedProduct = null; 
       },
-      error: (err) => console.error('Ошибка удаления', err)
+      error: (err) => this.errorHandler.handleError(err, "Unable to delete product")
     });
   }
 
@@ -187,11 +183,7 @@ export class ManufacturerProfilePageComponent {
           this.isLoading = false;
         },
         error: (err) => {
-          console.error('Logo upload failed', err);
-          this.error = 'Не удалось загрузить логотип';
-          if (err.error?.message) {
-            this.error += `: ${err.error.message}`;
-          }
+          this.errorHandler.handleError(err, "Unable to update logo");
           this.isLoading = false;
         }
       });

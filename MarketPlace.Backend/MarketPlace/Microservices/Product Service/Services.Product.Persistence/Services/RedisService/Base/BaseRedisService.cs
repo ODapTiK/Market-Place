@@ -22,7 +22,7 @@ namespace ProductService
             await _redisDatabase.HashSetAsync(key, hashEntries);
         }
 
-        public async Task<T> GetCacheValue(string key)
+        public async Task<T?> GetCacheValue(string key)
         {
             if (await _redisDatabase.KeyExistsAsync(key))
             {
@@ -31,7 +31,7 @@ namespace ProductService
             }
             else
             {
-                throw new EntityNotFoundException(typeof(T).Name, key);
+                return null;
             }
         }
 

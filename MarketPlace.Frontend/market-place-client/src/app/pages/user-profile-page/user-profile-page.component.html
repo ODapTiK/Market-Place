@@ -83,7 +83,7 @@
               
               <div *ngIf="!isLoading && orders.length === 0 && !error" class="empty-state">
                 <p>У вас пока нет заказов</p>
-                <a routerLink="/catalog" class="button">Перейти в каталог</a>
+                <a (click)="navigateToCatalog()" class="button">Перейти в каталог</a>
               </div>
             </div>
           </div>

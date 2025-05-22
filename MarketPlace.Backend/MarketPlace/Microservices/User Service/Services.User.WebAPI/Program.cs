@@ -91,7 +91,7 @@ namespace UserService
             services.AddGrpc();
             services.AddGrpcClient<OrderUserService.OrderUserServiceClient>(options =>
             {
-                options.Address = new Uri("https://localhost:6013");
+                options.Address = new Uri("https://orderservice:6013");
             }).ConfigurePrimaryHttpMessageHandler(() =>
             {
                 var handler = new HttpClientHandler();
@@ -172,18 +172,17 @@ namespace UserService
             app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(config =>
             {
                 config.RoutePrefix = string.Empty;
-                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Event App API V1");
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Market Place API V1");
             });
 
             app.UseHangfireDashboard();
 
             var manager = new RecurringJobManager();
-            manager.AddOrUpdate<BirthdayGreetingsGenerator>("birthday-greetings", x => x.GenerateBirthdayGreetings(default), Cron.Minutely());
+            manager.AddOrUpdate<BirthdayGreetingsGenerator>("birthday-greetings", x => x.GenerateBirthdayGreetings(default), Cron.Daily());
 
             app.MapControllers();
             app.MapGrpcService<AuthServiceImpl>();

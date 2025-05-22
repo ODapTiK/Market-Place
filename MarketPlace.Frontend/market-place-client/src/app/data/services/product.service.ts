@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Product } from '../interfaces/product';
 import { ProductDto } from '../interfaces/product-dto';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { ProductDto } from '../interfaces/product-dto';
 export class ProductService {
   httpClient = inject(HttpClient);
 
-  baseApiUrl = 'https://localhost:6010'
+  baseApiUrl = environment.apiUrls.baseApiUrl;
 
   getManufacturerProducts(manufacturerId: string) {
     return this.httpClient.get<Product[]>(`${this.baseApiUrl}/products/manufacturers/${manufacturerId}`);

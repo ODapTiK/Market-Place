@@ -7,6 +7,7 @@ import { ProductCardComponent } from '../../common-ui/product-card/product-card.
 import { ProductModalComponent } from '../../common-ui/product-modal/product-modal.component';
 import { OrderService } from '../../data/services/order.service';
 import { Cart } from '../../data/interfaces/cart';
+import { ErrorHandlerService } from '../../data/services/error-handler.service';
 
 @Component({
   selector: 'app-catalog-page',
@@ -18,6 +19,7 @@ import { Cart } from '../../data/interfaces/cart';
 export class CatalogPageComponent {
   private productService = inject(ProductService);
   private orderService = inject(OrderService);
+  private errorHandler = inject(ErrorHandlerService);
 
   products: Product[] = [];
   cart: Cart | null = null;
@@ -56,8 +58,7 @@ export class CatalogPageComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to load products', err);
-        this.error = 'Не удалось загрузить товары';
+        this.errorHandler.handleError(err, "Unable to load products")
         this.isLoading = false;
       }
     });
@@ -74,8 +75,7 @@ export class CatalogPageComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to load cart', err);
-        this.error = 'Не удалось загрузить карзину';
+        this.errorHandler.handleError(err, "Unable to load cart")
         this.isLoading = false;
       }
     }); 
@@ -139,8 +139,7 @@ export class CatalogPageComponent {
         this.loadProducts();
       },
       error: (err) => {
-        console.error('Failed to load products', err);
-        this.error = 'Не удалось загрузить товары';
+        this.errorHandler.handleError(err, "Unable to load product")
         this.isLoading = false;
       }
     });
@@ -169,15 +168,13 @@ export class CatalogPageComponent {
             this.isLoading = false;
           },
           error: (err) => {
-            console.error('Failed to load cart', err);
-            this.error = 'Не удалось загрузить карзину';
+            this.errorHandler.handleError(err, "Unable to load cart")
             this.isLoading = false;
           }
         })
       },
       error: (err) => {
-        console.error('Failed to add product to cart', err);
-        this.error = 'Не удалось добавить товар в карзину';
+        this.errorHandler.handleError(err, "Unable to add product to cart")
         this.isLoading = false;
       }
     });
@@ -195,15 +192,13 @@ export class CatalogPageComponent {
             this.isLoading = false;
           },
           error: (err) => {
-            console.error('Failed to load cart', err);
-            this.error = 'Не удалось загрузить карзину';
+            this.errorHandler.handleError(err, "Unable to load cart")
             this.isLoading = false;
           }
         })
       },
       error: (err) => {
-        console.error('Failed to add product to cart', err);
-        this.error = 'Не удалось добавить товар в карзину';
+        this.errorHandler.handleError(err, "Unable to remove product from cart")
         this.isLoading = false;
       }
     });
@@ -216,7 +211,7 @@ export class CatalogPageComponent {
         this.loadProducts();
       },
       error: (err) => {
-        console.error('Ошибка при удалении отзыва:', err);
+        this.errorHandler.handleError(err, "Unable to remove product review")
       }
     });
   }

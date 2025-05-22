@@ -5,6 +5,7 @@ import { AuthService } from '../../data/services/auth.service';
 import { UserRegistrationForm } from '../../data/interfaces/user-registration-form';
 import { ManufacturerRegistrationForm } from '../../data/interfaces/manufacturer-registration-form';
 import { Router } from '@angular/router';
+import { ErrorHandlerService } from '../../data/services/error-handler.service';
 
 @Component({
   selector: 'app-registration',
@@ -13,8 +14,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./register-page.component.scss']
 })
 export class RegisterPageComponent {
-  authService = inject(AuthService);
-  router = inject(Router);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private errorHandler = inject(ErrorHandlerService);
 
   isProducerForm = false;
   switching = false;
@@ -88,8 +90,8 @@ export class RegisterPageComponent {
         next: (response) => {
           this.router.navigate(['/profile']);
         },
-        error: (error) => {
-          console.error(error);
+        error: (err) => {
+          this.errorHandler.handleError(err, "Unable to create user");
         }
       });
     }
@@ -107,7 +109,7 @@ export class RegisterPageComponent {
       const userData = {
         Email: formValue.Email as string,
         Password: formValue.Password as string,
-        Role: 'User' as const, 
+        Role: 'Manufacturer' as const, 
         Organization: formValue.Organization as string
       };
 
@@ -115,8 +117,8 @@ export class RegisterPageComponent {
         next: (response) => {
           this.router.navigate(['']);
         },
-        error: (error) => {
-          console.error(error);
+        error: (err) => {
+          this.errorHandler.handleError(err, "Unable to create manufacturer");
         }
       });
     }

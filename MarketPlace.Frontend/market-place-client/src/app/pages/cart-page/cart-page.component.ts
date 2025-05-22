@@ -11,6 +11,7 @@ import { Cart } from '../../data/interfaces/cart';
 import { Product } from '../../data/interfaces/product';
 import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { ErrorHandlerService } from '../../data/services/error-handler.service';
 
 @Component({
   selector: 'app-cart-page',
@@ -24,6 +25,7 @@ export class CartPageComponent {
   private productService = inject(ProductService);
   private orderService = inject(OrderService);
   private router = inject(Router);
+  private errorHandler = inject(ErrorHandlerService);
 
   admins: AdminProfile[] = [];
   cart: Cart | null = null;
@@ -54,8 +56,7 @@ export class CartPageComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to load admins', err);
-        this.error = 'Не удалось загрузить контрольных администраторов';
+        this.errorHandler.handleError(err, "Unable to control admins")
         this.isLoading = false;
       }
     })
@@ -78,16 +79,14 @@ export class CartPageComponent {
             });
           },
           error: (err) => {
-            console.error('Failed to load products', err);
-            this.error = 'Не удалось загрузить продукты';
+            this.errorHandler.handleError(err, "Unable to products")
             this.isLoading = false;
           }
         });
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to load cart', err);
-        this.error = 'Не удалось загрузить корзину';
+        this.errorHandler.handleError(err, "Unable to load cart")
         this.isLoading = false;
       }
     })
@@ -175,8 +174,7 @@ export class CartPageComponent {
             this.isLoading = false;
           },
           error: (err) => {
-            console.error('Failed to update cart', err);
-            this.error = 'Не удалось загрузить корзину';
+            this.errorHandler.handleError(err, "Unable to create order")
             this.isCreatingOrder = false;
             this.selectedAdminId = null;
             this.isLoading = false;
@@ -184,8 +182,7 @@ export class CartPageComponent {
         });
       },
       error: (err) => {
-        console.error('Failed to create order', err);
-        this.error = 'Не удалось создать заказ';
+        this.errorHandler.handleError(err, "Unable to create order")
         this.isLoading = false;
       }
     });
@@ -201,8 +198,7 @@ export class CartPageComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to add product to cart', err);
-        this.error = 'Не удалось добавить товар в карзину';
+        this.errorHandler.handleError(err, "Unable to remove product from cart")
         this.isLoading = false;
       }
     });
