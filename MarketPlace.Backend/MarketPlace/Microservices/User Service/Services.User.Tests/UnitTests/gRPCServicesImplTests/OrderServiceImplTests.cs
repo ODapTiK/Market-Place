@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Proto.OrderUser;
 using Bogus;
+using Grpc.Core;
 
 namespace UserService
 {
@@ -9,19 +10,25 @@ namespace UserService
     {
         private readonly Mock<IAddUserOrderUseCase> _addUserOrderUseCaseMock;
         private readonly Mock<IRemoveUserOrderUseCase> _removeUserOrderUseCaseMock;
+        private readonly Mock<IAddOrderToControlAdminUseCase> _addOrderToControlAdminUseCaseMock;
+        private readonly Mock<IRemoveControlAdminOrderUseCase> _removeControlAdminOrderUseCaseMock;
         private readonly OrderServiceImpl _orderService;
         private readonly Faker<OrderRequest> _requestFaker;
         public OrderServiceImplTests()
         {
             _addUserOrderUseCaseMock = new Mock<IAddUserOrderUseCase>();
             _removeUserOrderUseCaseMock = new Mock<IRemoveUserOrderUseCase>();
+            _addOrderToControlAdminUseCaseMock = new Mock<IAddOrderToControlAdminUseCase>();
+            _removeControlAdminOrderUseCaseMock = new Mock<IRemoveControlAdminOrderUseCase>();
             _requestFaker = new Faker<OrderRequest>()
                 .RuleFor(x => x.UserId, Guid.NewGuid().ToString())
                 .RuleFor(x => x.OrderId, Guid.NewGuid().ToString());
 
             _orderService = new OrderServiceImpl(
                 _addUserOrderUseCaseMock.Object,
-                _removeUserOrderUseCaseMock.Object);
+                _removeUserOrderUseCaseMock.Object,
+                _addOrderToControlAdminUseCaseMock.Object,
+                _removeControlAdminOrderUseCaseMock.Object);
         }
 
         [Fact]
@@ -102,6 +109,95 @@ namespace UserService
             response.Should().NotBeNull();
             response.Success.Should().BeFalse();
             response.Message.Should().Be("Failed to remove order");
+        }
+
+        [Fact]
+        public async Task AddOrderToControlAdmin_Success_ReturnsSuccessResponse()
+        {
+            // Arrange
+            var request = new AddOrderToControlAdminRequest
+            {
+                AdminId = Guid.NewGuid().ToString(),
+                OrderId = Guid.NewGuid().ToString()
+            };
+            var context = new Mock<ServerCallContext>();
+
+            // Act
+            var response = await _orderService.AddOrderToControlAdmin(request, context.Object);
+
+            // Assert
+            Assert.True(response.Success);
+            Assert.Contains($"Order \"{request.OrderId}\" added to admin \"{request.AdminId}\" successfully", response.Message);
+            _addOrderToControlAdminUseCaseMock.Verify(useCase => useCase.Execute(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task AddOrderToControlAdmin_Exception_ReturnsFailureResponse()
+        {
+            // Arrange
+            var request = new AddOrderToControlAdminRequest
+            {
+                AdminId = Guid.NewGuid().ToString(),
+                OrderId = Guid.NewGuid().ToString()
+            };
+            var context = new Mock<ServerCallContext>();
+            _addOrderToControlAdminUseCaseMock
+                .Setup(useCase => useCase.Execute(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Error adding order"));
+
+            // Act
+            var response = await _orderService.AddOrderToControlAdmin(request, context.Object);
+
+            // Assert
+            Assert.False(response.Success);
+            Assert.Equal("Error adding order", response.Message);
+        }
+
+        [Fact]
+        public async Task RemoveObsoleteOrderFromUserAndAdmin_Success_ReturnsSuccessResponse()
+        {
+            // Arrange
+            var request = new RemoveObsoleteOrderFromUserAndAdminRequest
+            {
+                AdminId = Guid.NewGuid().ToString(),
+                UserId = Guid.NewGuid().ToString(),
+                OrderId = Guid.NewGuid().ToString()
+            }
+            ;
+            var context = new Mock<ServerCallContext>();
+
+            // Act
+            var response = await _orderService.RemoveObsoleteOrderFromUserAndAdmin(request, context.Object);
+
+            // Assert
+            Assert.True(response.Success);
+            Assert.Contains($"Order \"{request.OrderId}\" removed from admin \"{request.AdminId}\" and user \"{request.UserId}\" successfully", response.Message);
+            _removeControlAdminOrderUseCaseMock.Verify(useCase => useCase.Execute(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+            _removeUserOrderUseCaseMock.Verify(useCase => useCase.Execute(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task RemoveObsoleteOrderFromUserAndAdmin_Exception_ReturnsFailureResponse()
+        {
+            // Arrange
+            var request = new RemoveObsoleteOrderFromUserAndAdminRequest
+            {
+                AdminId = Guid.NewGuid().ToString(),
+                UserId = Guid.NewGuid().ToString(),
+                OrderId = Guid.NewGuid().ToString()
+            }
+            ;
+            var context = new Mock<ServerCallContext>();
+            _removeControlAdminOrderUseCaseMock
+                .Setup(useCase => useCase.Execute(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception("Error removing order"));
+
+            // Act
+            var response = await _orderService.RemoveObsoleteOrderFromUserAndAdmin(request, context.Object);
+
+            // Assert
+            Assert.False(response.Success);
+            Assert.Equal("Error removing order", response.Message);
         }
     }
 }

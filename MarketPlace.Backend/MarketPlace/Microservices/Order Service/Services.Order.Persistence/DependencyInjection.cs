@@ -13,6 +13,7 @@ namespace OrderService
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IJwtOptions, JwtOptions>();
+            services.AddScoped<IObsoleteOrdersClearingSettings, ObsoleteOrdersClearingSettings>();
 
             var connectionString = Environment.GetEnvironmentVariable("ORDER_HANGFIRE_DB_CONNECTION_STRING") 
                 ?? throw new InvalidOperationException("ORDER_HANGFIRE_DB_CONNECTION_STRING is not set in environment variables"); 

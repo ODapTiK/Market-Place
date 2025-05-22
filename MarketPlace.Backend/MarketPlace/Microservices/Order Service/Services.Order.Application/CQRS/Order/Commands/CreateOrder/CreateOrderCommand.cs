@@ -6,5 +6,6 @@ namespace OrderService
     {
         public Guid UserId { get; set; }
         public List<OrderPointDTO> Points { get; set; } = [];
+        public Guid ControlAdminId { get; set; }
     }
 }

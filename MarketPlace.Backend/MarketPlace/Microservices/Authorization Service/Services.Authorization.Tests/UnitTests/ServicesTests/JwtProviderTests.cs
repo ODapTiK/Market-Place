@@ -86,7 +86,7 @@ namespace AuthorizationService
             _mockUserRepository.Setup(repo => repo.FindByIdAsync(It.IsAny<Guid>(), CancellationToken.None)).ReturnsAsync(user);
 
             var expiredToken = await _jwtProvider.GenerateToken(user, false, CancellationToken.None);
-            var tokenDto = new TokenDTO(expiredToken.accessToken, "invalidRefreshToken");
+            var tokenDto = new TokenDTO(expiredToken.accessToken, "invalidRefreshToken", "User");
 
             // Act 
             var act = async () => await _jwtProvider.RefreshToken(tokenDto);
@@ -112,7 +112,7 @@ namespace AuthorizationService
             _mockUserRepository.Setup(repo => repo.FindByIdAsync(It.IsAny<Guid>(), CancellationToken.None)).ReturnsAsync(user);
 
             var expiredToken = await _jwtProvider.GenerateToken(user, false, CancellationToken.None);
-            var tokenDto = new TokenDTO(expiredToken.accessToken, "validRefreshToken");
+            var tokenDto = new TokenDTO(expiredToken.accessToken, "validRefreshToken", "Admin");
 
             // Act 
             var act = async () => await _jwtProvider.RefreshToken(tokenDto);

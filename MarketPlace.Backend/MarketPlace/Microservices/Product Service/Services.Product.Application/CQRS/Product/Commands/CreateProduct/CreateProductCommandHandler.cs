@@ -20,6 +20,7 @@ namespace ProductService
             var product = new Product()
             {
                 Id = Guid.NewGuid(),
+                CreationDateTime = DateTime.Now.ToUniversalTime(),
                 ManufacturerId = request.ManufacturerId,
                 Name = request.Name,
                 Description = request.Description,

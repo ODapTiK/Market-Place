@@ -47,8 +47,15 @@ namespace Services.Order.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("ControlAdminId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("OrderDateTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<double>("TotalPrice")
                         .HasColumnType("double precision");
@@ -77,6 +84,21 @@ namespace Services.Order.Persistence.Migrations
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("productCategory")
+                        .HasColumnType("text");
+
+                    b.Property<string>("productDescription")
+                        .HasColumnType("text");
+
+                    b.Property<string>("productImage")
+                        .HasColumnType("text");
+
+                    b.Property<string>("productName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("productType")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

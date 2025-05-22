@@ -1,0 +1,24 @@
+<div class="review-form">
+    <h3>Оставить отзыв</h3>
+    <div class="form-group">
+      <label>Оценка:</label>
+      <div class="rating-stars">
+        <span *ngFor="let star of [1,2,3,4,5]" 
+              class="star"
+              [class.active]="star <= review.raiting"
+              (click)="setRating(star)">
+          ★
+        </span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Комментарий:</label>
+      <textarea [(ngModel)]="review.description" 
+                name="description"
+                placeholder="Ваш отзыв о товаре"></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="button button-cancel" (click)="onCancel.emit()">Отмена</button>
+      <button class="button button-submit" (click)="submitReview()">Отправить</button>
+    </div>
+</div>

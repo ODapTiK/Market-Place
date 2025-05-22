@@ -1,6 +1,4 @@
 ﻿using FluentValidation;
-using Hangfire;
-using Hangfire.PostgreSql;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

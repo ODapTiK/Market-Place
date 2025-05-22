@@ -13,7 +13,7 @@ namespace UserService
         {
             profile.CreateMap<UserDTO, User>()
                 .ForMember(u => u.Id, opt => opt.MapFrom(dto => dto.Id))
-                .ForMember(u => u.BirthDate, opt => opt.MapFrom(dto => dto.BirthDate))
+                .ForMember(u => u.BirthDate, opt => opt.MapFrom(dto => dto.BirthDate.ToUniversalTime()))
                 .ForMember(u => u.Name, opt => opt.MapFrom(dto => dto.Name))
                 .ForMember(u => u.Surname, opt => opt.MapFrom(dto => dto.Surname));
         }

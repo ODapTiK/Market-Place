@@ -30,7 +30,7 @@ namespace OrderService
             switch (ex)
             {
                 case ValidationException validationExeption:
-                    code = HttpStatusCode.Forbidden;
+                    code = HttpStatusCode.BadRequest;
                     result = JsonSerializer.Serialize(validationExeption.Errors);
                     break;
                 case EntityNotFoundException:

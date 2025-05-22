@@ -42,7 +42,7 @@ namespace AuthorizationService
                 Password = faker.Internet.Password(),
             };
 
-            var token = new TokenDTO("access_token", "refresh_token");
+            var token = new TokenDTO("access_token", "refresh_token", "User");
             _mediatorMock.Setup(m => m.Send(It.IsAny<AuthUserRequest>(), default))
                          .ReturnsAsync(token);
 
