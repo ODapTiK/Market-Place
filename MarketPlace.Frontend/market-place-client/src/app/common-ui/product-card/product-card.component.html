@@ -32,7 +32,7 @@
       {{ product.description || '&nbsp;' | truncate:100 }}
     </p>
 
-    <div class="product-actions">
+    <div *ngIf="!isManufacturerView" class="product-actions">
       <button *ngIf="!isInCart" 
               class="button button-add" 
               (click)="addToCart.emit(); $event.stopPropagation()">

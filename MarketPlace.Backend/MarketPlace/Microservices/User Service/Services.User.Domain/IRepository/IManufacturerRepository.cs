@@ -5,5 +5,6 @@
         public Task AddProductAsync(Manufacturer manufacturer, Guid productId, CancellationToken cancellationToken);
         public Task RemoveProductAsync(Manufacturer manufactorer, Guid productId, CancellationToken cancellationToken);
         public Task<List<Manufacturer>> GetAllAsync(CancellationToken cancellationToken);
+        public Task AddNotificationAsync(Manufacturer manufacturer, Notification notification, CancellationToken cancellationToken);
     }
 }

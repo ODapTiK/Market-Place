@@ -3,6 +3,7 @@ using FluentAssertions;
 using Proto.OrderUser;
 using Bogus;
 using Grpc.Core;
+using Microsoft.AspNetCore.SignalR;
 
 namespace UserService
 {
@@ -12,6 +13,8 @@ namespace UserService
         private readonly Mock<IRemoveUserOrderUseCase> _removeUserOrderUseCaseMock;
         private readonly Mock<IAddOrderToControlAdminUseCase> _addOrderToControlAdminUseCaseMock;
         private readonly Mock<IRemoveControlAdminOrderUseCase> _removeControlAdminOrderUseCaseMock;
+        private readonly Mock<IAddUserNotificationUseCase> _addUserNotificationUseCase;
+        private readonly Mock<IHubContext<NotificationHub>> _notificationHub;
         private readonly OrderServiceImpl _orderService;
         private readonly Faker<OrderRequest> _requestFaker;
         public OrderServiceImplTests()
@@ -20,6 +23,8 @@ namespace UserService
             _removeUserOrderUseCaseMock = new Mock<IRemoveUserOrderUseCase>();
             _addOrderToControlAdminUseCaseMock = new Mock<IAddOrderToControlAdminUseCase>();
             _removeControlAdminOrderUseCaseMock = new Mock<IRemoveControlAdminOrderUseCase>();
+            _addUserNotificationUseCase = new Mock<IAddUserNotificationUseCase>();
+            _notificationHub = new Mock<IHubContext<NotificationHub>>();
             _requestFaker = new Faker<OrderRequest>()
                 .RuleFor(x => x.UserId, Guid.NewGuid().ToString())
                 .RuleFor(x => x.OrderId, Guid.NewGuid().ToString());
@@ -28,7 +33,9 @@ namespace UserService
                 _addUserOrderUseCaseMock.Object,
                 _removeUserOrderUseCaseMock.Object,
                 _addOrderToControlAdminUseCaseMock.Object,
-                _removeControlAdminOrderUseCaseMock.Object);
+                _removeControlAdminOrderUseCaseMock.Object,
+                _addUserNotificationUseCase.Object,
+                _notificationHub.Object);
         }
 
         [Fact]

@@ -4,6 +4,7 @@ using Hangfire;
 using Hangfire.Common;
 using Hangfire.States;
 using Moq;
+using Proto.OrderUser;
 
 namespace OrderService
 {
@@ -12,6 +13,7 @@ namespace OrderService
         private readonly Mock<IOrderRepository> _orderRepositoryMock;
         private readonly Mock<IObsoleteOrderCollector> _obsoleteOrderCollectorMock;
         private readonly Mock<IBackgroundJobClient> _backgroundJobClientMock;
+        private readonly Mock<OrderUserService.OrderUserServiceClient> _orderUserServiceMock;
         private readonly SetOrderStatusReadyCommandHandler _handler;
         private readonly Faker<Order> _orderFaker;
 
@@ -20,11 +22,13 @@ namespace OrderService
             _orderRepositoryMock = new Mock<IOrderRepository>();
             _obsoleteOrderCollectorMock = new Mock<IObsoleteOrderCollector>();
             _backgroundJobClientMock = new Mock<IBackgroundJobClient>();
+            _orderUserServiceMock = new Mock<OrderUserService.OrderUserServiceClient>();
 
             _handler = new SetOrderStatusReadyCommandHandler(
                 _orderRepositoryMock.Object,
                 _obsoleteOrderCollectorMock.Object,
-                _backgroundJobClientMock.Object);
+                _backgroundJobClientMock.Object,
+                _orderUserServiceMock.Object);
 
             _orderFaker = new Faker<Order>()
                 .RuleFor(o => o.Id, f => f.Random.Guid())

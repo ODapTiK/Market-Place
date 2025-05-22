@@ -13,6 +13,8 @@ namespace UserService
         private readonly Mock<IUpdateUserUseCase> _updateUserUseCaseMock;
         private readonly Mock<IGetUserInfoUseCase> _getUserInfoUseCaseMock;
         private readonly Mock<IUpdateUserLogoUseCase> _updateUserLogoUseCaseMock;
+        private readonly Mock<IReadUserNotificationUseCase> _readUserNotificationUseCaseMock;
+        private readonly Mock<IGetUserUnreadNotificationsCountUseCase> _getUserUnreadNotificationsCountUseCaseMock;
         private readonly UserController _controller;
         private readonly Faker _faker;
 
@@ -21,6 +23,8 @@ namespace UserService
             _updateUserUseCaseMock = new Mock<IUpdateUserUseCase>();
             _getUserInfoUseCaseMock = new Mock<IGetUserInfoUseCase>();
             _updateUserLogoUseCaseMock = new Mock<IUpdateUserLogoUseCase>();
+            _readUserNotificationUseCaseMock = new Mock<IReadUserNotificationUseCase>();
+            _getUserUnreadNotificationsCountUseCaseMock = new Mock<IGetUserUnreadNotificationsCountUseCase>();
 
             var httpContext = new DefaultHttpContext();
             var claims = new[] { new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()) };
@@ -31,7 +35,9 @@ namespace UserService
             _controller = new UserController(
                 _updateUserUseCaseMock.Object,
                 _getUserInfoUseCaseMock.Object,
-                _updateUserLogoUseCaseMock.Object)
+                _updateUserLogoUseCaseMock.Object,
+                _readUserNotificationUseCaseMock.Object,
+                _getUserUnreadNotificationsCountUseCaseMock.Object)
             {
                 ControllerContext = new ControllerContext
                 {

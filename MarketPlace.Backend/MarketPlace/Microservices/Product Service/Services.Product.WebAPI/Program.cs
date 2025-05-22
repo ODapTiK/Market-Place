@@ -169,11 +169,10 @@ namespace ProductService
                 config.SwaggerEndpoint("/swagger/v1/swagger.json", "Event App API V1");
             });
 
-            //app.UseHangfireServer();
             app.UseHangfireDashboard();
 
             var manager = new RecurringJobManager();
-            manager.AddOrUpdate<DailyProductsReportsGenerator>("daily-report", x => x.GenerateDailyReports(default), Cron.Daily);
+            manager.AddOrUpdate<DailyProductsReportsGenerator>("daily-report", x => x.GenerateDailyReports(default), Cron.Minutely);
 
             app.MapControllers();
             app.MapGrpcService<OrderServiceImpl>();

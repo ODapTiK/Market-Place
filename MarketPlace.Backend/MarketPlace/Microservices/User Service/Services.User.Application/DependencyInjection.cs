@@ -12,6 +12,7 @@ namespace UserService
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddValidatorsFromAssemblies([Assembly.GetExecutingAssembly()]);
+            services.AddSignalR();
 
             services.AddScoped<ICreateAdminUseCase, CreateAdminUseCase>();
             services.AddScoped<IUpdateAdminUseCase, UpdateAdminUseCase>();
@@ -21,6 +22,9 @@ namespace UserService
             services.AddScoped<IGetAllAdminsUseCase, GetAllAdminsUseCase>();
             services.AddScoped<IAddOrderToControlAdminUseCase, AddOrderToControlAdminUseCase>();
             services.AddScoped<IRemoveControlAdminOrderUseCase, RemoveControlAdminOrderUseCase>();
+            services.AddScoped<IReadAdminNotificationUseCase, ReadAdminNotificationUseCase>();
+            services.AddScoped<IGetAdminUnreadNotificationsCountUseCase, GetAdminUnreadNotificationsCountUseCase>();
+            services.AddScoped<IAddAdminNotificationUseCase,  AddAdminNotificationUseCase>();
 
             services.AddScoped<ICreateManufacturerUseCase, CreateManufacturerUseCase>();
             services.AddScoped<IUpdateManufacturerUseCase, UpdateManufacturerUseCase>();
@@ -30,6 +34,9 @@ namespace UserService
             services.AddScoped<IAddManufacturerProductUseCase, AddManufacturerProductUseCase>();
             services.AddScoped<IRemoveManufacturerProductUseCase, RemoveManufacturerProductUseCase>();
             services.AddScoped<IGetManufacturersIdUseCase, GetManufacturersIdUseCase>();
+            services.AddScoped<IGetManufacturerUnreadNotificationsCountUseCase, GetManufacturerUnreadNotificationsCountUseCase>();
+            services.AddScoped<IReadManufacturerNotificationUseCase, ReadManufacturerNotificationUseCase>();
+            services.AddScoped<IAddManufacturerNotificationUseCase, AddManufacturerNotificationUseCase>();
 
             services.AddScoped<ICreateUserUseCase, CreateUserUseCase>();
             services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
@@ -39,6 +46,10 @@ namespace UserService
             services.AddScoped<IAddUserOrderUseCase, AddUserOrderUseCase>();
             services.AddScoped<IRemoveUserOrderUseCase, RemoveUserOrderUseCase>();
             services.AddScoped<IGetUsersWithBirthdayUseCase, GetUsersWithBirthdayUseCase>();
+            services.AddScoped<IGetUserUnreadNotificationsCountUseCase, GetUserUreadNotificationsCountUseCase>();
+            services.AddScoped<IAddUserNotificationUseCase, AddUserNotificationUseCase>();
+            services.AddScoped<IReadUserNotificationUseCase, ReadUserNotificationUseCase>();
+
 
             return services;
         }

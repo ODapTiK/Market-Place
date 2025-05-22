@@ -27,7 +27,8 @@ export class ManufacturerProfilePageComponent {
   profile: ManufacturerProfile = {
     id: '',
     organization: '',
-    logo: null
+    logo: null,
+    manufacturerNotifications: []
   };
   
   originalProfile: ManufacturerProfile = { ...this.profile };

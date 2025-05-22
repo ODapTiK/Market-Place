@@ -20,7 +20,7 @@ export class ProductService {
   }
 
   getProductsByIdList(payload: {productIds: string[]}) {
-    return this.httpClient.put<Product[]>(`${this.baseApiUrl}/products/ids`, payload)
+    return this.httpClient.patch<Product[]>(`${this.baseApiUrl}/products/ids`, payload)
   }
 
   getProduct(id: string) {
@@ -32,7 +32,7 @@ export class ProductService {
   }
 
   updateProduct(updatedProduct: ProductDto) {
-    return this.httpClient.put(`${this.baseApiUrl}/products`, updatedProduct);
+    return this.httpClient.patch(`${this.baseApiUrl}/products`, updatedProduct);
   }
 
   createProduct(updatedProduct: ProductDto) {

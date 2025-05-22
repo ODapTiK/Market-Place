@@ -39,7 +39,7 @@ namespace ProductService
             return Ok(products);
         }
         [Authorize]
-        [HttpPut("ids")]
+        [HttpPatch("ids")]
         public async Task<ActionResult<List<Product>>> GetProductsByIdList([FromBody] GetProductsByIdListDTO getProductsByIdListDTO, CancellationToken cancellationToken)
         {
             var query = new GetProductsByIdListQuery()
@@ -114,7 +114,7 @@ namespace ProductService
         }
 
         [Authorize(Policy = "Manufacturer")]
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductDTO updateProductDTO, CancellationToken cancellationToken)
         {
             var command = _mapper.Map<UpdateProductCommand>(updateProductDTO);

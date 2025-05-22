@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { EventEmitter, inject, Injectable, signal } from '@angular/core';
 import { UserProfile } from '../interfaces/user-profile';
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, Subject, tap, throwError } from 'rxjs';
 import { ManufacturerProfile } from '../interfaces/manufacturer-profile';
 import { AdminProfile } from '../interfaces/admin-profile';
+import { Notification } from '../interfaces/notification';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,10 @@ export class UserService {
   userProfile = signal<UserProfile | null>(null);
   manufacturerProfile = signal<ManufacturerProfile | null>(null);
   adminProfile = signal<AdminProfile | null>(null);
+
+  public notificationReceived = new Subject<Notification>();
+  private userNotificationRead = new EventEmitter<void>();
+  private manufacturerNotificationRead = new EventEmitter<void>();
 
   getAdmins() {
     return this.httpClient.get<AdminProfile[]>(`${this.baseApiUserServiceUrl}/admins`);
@@ -37,23 +42,39 @@ export class UserService {
       )
   }
 
+  readUserNotification(notificationId: string){
+    return this.httpClient.put(`${this.baseApiUserServiceUrl}/user/notifications/${notificationId}`, null);
+  }
+
+  getUserUnreadCount() {
+    return this.httpClient.get<number>(`${this.baseApiUserServiceUrl}/user/notifications/unread-count`);
+  }
+
+  readAdminNotification(notificationId: string){
+    return this.httpClient.patch(`${this.baseApiUserServiceUrl}/admin/notifications/${notificationId}`, null);
+  }
+
+  getAdminUnreadCount() {
+    return this.httpClient.get<number>(`${this.baseApiUserServiceUrl}/admin/notifications/unread-count`);
+  }
+
   updateUserProfile(userData: {
     Name?: string;
     Surname?: string;
     BirthDate?: string;
   }) {
-    return this.httpClient.put(`${this.baseApiUserServiceUrl}/user`, userData);
+    return this.httpClient.patch(`${this.baseApiUserServiceUrl}/user`, userData);
   }
 
   updateAdminProfile(adminData: {
     Name?: string;
     Surname?: string;
   }) {
-    return this.httpClient.put(`${this.baseApiUserServiceUrl}/admin`, adminData);
+    return this.httpClient.patch(`${this.baseApiUserServiceUrl}/admin`, adminData);
   }
 
   updateUserLogo(base64Logo: string) {
-    return this.httpClient.put(`${this.baseApiUserServiceUrl}/user/logo`, 
+    return this.httpClient.patch(`${this.baseApiUserServiceUrl}/user/logo`, 
       { base64Logo },
       { headers: { 'Content-Type': 'application/json' } }
     )
@@ -75,7 +96,7 @@ export class UserService {
   }
 
   updateAdminLogo(base64Logo: string) {
-    return this.httpClient.put(`${this.baseApiUserServiceUrl}/admin/logo`, 
+    return this.httpClient.patch(`${this.baseApiUserServiceUrl}/admin/logo`, 
       { base64Logo },
       { headers: { 'Content-Type': 'application/json' } }
     )
@@ -108,11 +129,19 @@ export class UserService {
   updateManufacturerProfile(manufacturerData: { 
     organization: string 
   }) {
-    return this.httpClient.put(`${this.baseApiUserServiceUrl}/manufacturer`, manufacturerData);
+    return this.httpClient.patch(`${this.baseApiUserServiceUrl}/manufacturer`, manufacturerData);
+  }
+
+  readManufacturerNotification(notificationId: string){
+    return this.httpClient.patch(`${this.baseApiUserServiceUrl}/manufacturer/notifications/${notificationId}`, null);
+  }
+
+  getManufacturerUnreadCount() {
+    return this.httpClient.get<number>(`${this.baseApiUserServiceUrl}/manufacturer/notifications/unread-count`);
   }
 
   updateManufacturerLogo(base64Logo: string) {
-    return this.httpClient.put(`${this.baseApiUserServiceUrl}/manufacturer/logo`, 
+    return this.httpClient.patch(`${this.baseApiUserServiceUrl}/manufacturer/logo`, 
       { base64Logo },
       { headers: { 'Content-Type': 'application/json' } }
     )
@@ -162,5 +191,33 @@ export class UserService {
     }
 
     return 'jpeg';
+  }
+
+  notifyNewNotification(notification: Notification) {
+    this.notificationReceived.next(notification);
+  }
+
+  notifyUserNotificationRead() {
+    this.userNotificationRead.emit();
+  }
+  
+  onUserNotificationRead() {
+    return this.userNotificationRead.asObservable();
+  }
+
+  notifyManufacturerNotificationRead() {
+    this.manufacturerNotificationRead.emit();
+  }
+  
+  onManufacturerNotificationRead() {
+    return this.manufacturerNotificationRead.asObservable();
+  }
+
+  notifyAdminNotificationRead() {
+    this.manufacturerNotificationRead.emit();
+  }
+  
+  onAdminNotificationRead() {
+    return this.manufacturerNotificationRead.asObservable();
   }
 }

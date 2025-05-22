@@ -12,8 +12,10 @@ namespace UserService
 
         public async Task<List<User>> Execute(CancellationToken cancellationToken)
         {
-            return await _userRepository.GetManyAsync(x => x.BirthDate.Day == DateTime.Now.ToUniversalTime().Day &&
-                                                           x.BirthDate.Month == DateTime.Now.ToUniversalTime().Month, 
+            var today = DateTime.UtcNow.Date;
+
+            return await _userRepository.GetManyAsync(x => x.BirthDate.ToLocalTime().Day == today.Day &&
+                                                           x.BirthDate.ToLocalTime().Month == today.Month, 
                                                            cancellationToken);   
         }
     }

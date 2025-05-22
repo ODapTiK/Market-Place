@@ -68,7 +68,7 @@ namespace AuthorizationService
                         Surname = rpcUser.Surname,
                         BirthDate = new Google.Protobuf.WellKnownTypes.Timestamp
                         {
-                            Seconds = new DateTimeOffset(rpcUser.BirthDate).ToUnixTimeSeconds()
+                            Seconds = new DateTimeOffset(rpcUser.BirthDate.ToUniversalTime()).ToUnixTimeSeconds()
                         }
                     };
 

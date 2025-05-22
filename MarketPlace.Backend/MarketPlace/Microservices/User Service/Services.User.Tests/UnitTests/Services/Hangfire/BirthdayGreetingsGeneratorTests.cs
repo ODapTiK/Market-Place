@@ -1,16 +1,23 @@
-﻿using Moq;
+﻿using Microsoft.AspNetCore.SignalR;
+using Moq;
 
 namespace UserService
 {
     public class BirthdayGreetingsGeneratorTests
     {
         private readonly Mock<IGetUsersWithBirthdayUseCase> _getUsersWithBirthdayUseCaseMock;
+        private readonly Mock<IAddUserNotificationUseCase> _addUserNotificationUseCaseMock;
         private readonly BirthdayGreetingsGenerator _birthdayGreetingsGenerator;
+        private readonly Mock<IHubContext<NotificationHub>> _hubContext;
 
         public BirthdayGreetingsGeneratorTests()
         {
             _getUsersWithBirthdayUseCaseMock = new Mock<IGetUsersWithBirthdayUseCase>();
-            _birthdayGreetingsGenerator = new BirthdayGreetingsGenerator(_getUsersWithBirthdayUseCaseMock.Object);
+            _addUserNotificationUseCaseMock = new Mock<IAddUserNotificationUseCase>();
+            _hubContext = new Mock<IHubContext<NotificationHub>>();
+            _birthdayGreetingsGenerator = new BirthdayGreetingsGenerator(_getUsersWithBirthdayUseCaseMock.Object, 
+                                                                         _addUserNotificationUseCaseMock.Object,
+                                                                         _hubContext.Object);
         }
 
         [Fact]

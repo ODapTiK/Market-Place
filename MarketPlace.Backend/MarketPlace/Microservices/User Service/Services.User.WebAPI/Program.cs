@@ -158,12 +158,21 @@ namespace UserService
                     Log.Fatal(exception, "An error occured while app initialization");
                 }
             }
+            var webSocketOptions = new WebSocketOptions
+            {
+                KeepAliveInterval = TimeSpan.FromMinutes(2)
+            };
+
+            webSocketOptions.AllowedOrigins.Add("http://localhost:4200");
+
+            app.UseWebSockets(webSocketOptions);
 
             app.UseExceptionHandler();
             app.UseRouting();
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseCors("AllowAll");
+            app.UseHttpsRedirection();
             app.UseSwagger();
             app.UseSwaggerUI(config =>
             {
@@ -171,17 +180,16 @@ namespace UserService
                 config.SwaggerEndpoint("/swagger/v1/swagger.json", "Event App API V1");
             });
 
-            //app.UseHangfireServer();
             app.UseHangfireDashboard();
 
             var manager = new RecurringJobManager();
-            manager.AddOrUpdate<BirthdayGreetingsGenerator>("birthday-greetings", x => x.GenerateBirthdayGreetings(default), Cron.Daily);
+            manager.AddOrUpdate<BirthdayGreetingsGenerator>("birthday-greetings", x => x.GenerateBirthdayGreetings(default), Cron.Minutely());
 
             app.MapControllers();
             app.MapGrpcService<AuthServiceImpl>();
             app.MapGrpcService<OrderServiceImpl>();
             app.MapGrpcService<ProductServiceImpl>();
-
+            app.MapHub<NotificationHub>("/notificationHub");
 
             app.Run();
         }

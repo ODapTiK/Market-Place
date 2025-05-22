@@ -93,7 +93,6 @@
             <select [(ngModel)]="selectedAdminId" class="form-select">
               <option *ngFor="let admin of admins" [value]="admin.id">
                 {{ admin.name }} {{ admin.surname }}
-                <span *ngIf="admin.logo">({{ admin.logo }})</span>
               </option>
             </select>
           </div>

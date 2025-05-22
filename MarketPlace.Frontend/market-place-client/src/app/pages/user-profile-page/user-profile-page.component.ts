@@ -33,7 +33,8 @@ export class UserProfilePageComponent {
     surname: '',
     logo: null,
     birthDate: '',
-    userOrdersId: []
+    userOrdersId: [],
+    userNotifications: []
   };
   
   showReviewForm: { [key: string]: boolean } = {};

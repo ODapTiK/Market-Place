@@ -10,7 +10,33 @@
         }
       ],
       "UpstreamPathTemplate": "/user",
-      "UpstreamHttpMethod": [ "GET", "PUT" ],
+      "UpstreamHttpMethod": [ "GET", "PATCH" ],
+      "SwaggerKey": "User"
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/notifications/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6012
+        }
+      ],
+      "UpstreamPathTemplate": "/user/notifications/{id}",
+      "UpstreamHttpMethod": [ "PATCH" ],
+      "SwaggerKey": "User"
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/notifications/unread-count",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6012
+        }
+      ],
+      "UpstreamPathTemplate": "/user/notifications/unread-count",
+      "UpstreamHttpMethod": [ "GET" ],
       "SwaggerKey": "User"
     },
     {
@@ -23,7 +49,7 @@
         }
       ],
       "UpstreamPathTemplate": "/user/logo",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [ "PATCH" ],
       "SwaggerKey": "User"
     },
     {
@@ -36,7 +62,7 @@
         }
       ],
       "UpstreamPathTemplate": "/admin/logo",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [ "PATCH" ],
       "SwaggerKey": "User"
     },
     {
@@ -49,7 +75,33 @@
         }
       ],
       "UpstreamPathTemplate": "/admin",
-      "UpstreamHttpMethod": [ "GET", "PUT" ],
+      "UpstreamHttpMethod": [ "GET", "PATCH" ],
+      "SwaggerKey": "User"
+    },
+    {
+      "DownstreamPathTemplate": "/api/admin/notifications/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6012
+        }
+      ],
+      "UpstreamPathTemplate": "/admin/notifications/{id}",
+      "UpstreamHttpMethod": [ "PATCH" ],
+      "SwaggerKey": "User"
+    },
+    {
+      "DownstreamPathTemplate": "/api/admin/notifications/unread-count",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6012
+        }
+      ],
+      "UpstreamPathTemplate": "/admin/notifications/unread-count",
+      "UpstreamHttpMethod": [ "GET" ],
       "SwaggerKey": "User"
     },
     {
@@ -75,7 +127,7 @@
         }
       ],
       "UpstreamPathTemplate": "/manufacturer",
-      "UpstreamHttpMethod": [ "GET", "PUT" ],
+      "UpstreamHttpMethod": [ "GET", "PATCH" ],
       "SwaggerKey": "User"
     },
     {
@@ -89,6 +141,32 @@
       ],
       "UpstreamPathTemplate": "/manufacturer/logo",
       "UpstreamHttpMethod": [ "PUT" ],
+      "SwaggerKey": "User"
+    },
+    {
+      "DownstreamPathTemplate": "/api/manufacturer/notifications/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6012
+        }
+      ],
+      "UpstreamPathTemplate": "/manufacturer/notifications/{id}",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "SwaggerKey": "User"
+    },
+    {
+      "DownstreamPathTemplate": "/api/manufacturer/notifications/unread-count",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6012
+        }
+      ],
+      "UpstreamPathTemplate": "/manufacturer/notifications/unread-count",
+      "UpstreamHttpMethod": [ "GET" ],
       "SwaggerKey": "User"
     }
   ],

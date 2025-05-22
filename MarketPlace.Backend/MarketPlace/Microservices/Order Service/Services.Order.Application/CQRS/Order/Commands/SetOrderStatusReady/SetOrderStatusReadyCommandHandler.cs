@@ -1,5 +1,6 @@
 ﻿using Hangfire;
 using MediatR;
+using Proto.OrderUser;
 
 namespace OrderService
 {
@@ -8,14 +9,17 @@ namespace OrderService
         private readonly IOrderRepository _orderRepository;
         private readonly IObsoleteOrderCollector _obsoleteOrderCollector;
         private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly OrderUserService.OrderUserServiceClient _orderUserServiceClient;
 
         public SetOrderStatusReadyCommandHandler(IOrderRepository orderRepository,
                                                  IObsoleteOrderCollector obsoleteOrderCollector,
-                                                 IBackgroundJobClient backgroundJobClient)
+                                                 IBackgroundJobClient backgroundJobClient,
+                                                 OrderUserService.OrderUserServiceClient orderUserServiceClient)
         {
             _orderRepository = orderRepository;
             _obsoleteOrderCollector = obsoleteOrderCollector;
             _backgroundJobClient = backgroundJobClient;
+            _orderUserServiceClient = orderUserServiceClient;
         }
 
         public async Task Handle(SetOrderStatusReadyCommand request, CancellationToken cancellationToken)
@@ -28,6 +32,17 @@ namespace OrderService
 
             order.Status = OrderStatus.Ready.GetDisplayName();
             await _orderRepository.UpdateAsync(cancellationToken);
+
+            var notificationRpcRequest = new OrderReadyRequest()
+            {
+                UserId = order.UserId.ToString(),
+                OrderId = order.Id.ToString()
+            };
+
+            var notificationRpcResponse = await _orderUserServiceClient.CreateOrderReadyNotificationAsync(notificationRpcRequest);
+
+            if (!notificationRpcResponse.Success)
+                throw new GRPCRequestFailException(notificationRpcResponse.Message);
 
             _backgroundJobClient.Schedule(() => _obsoleteOrderCollector.RemoveObsoleteOrderAsync(order, cancellationToken), TimeSpan.FromDays(2));
         }

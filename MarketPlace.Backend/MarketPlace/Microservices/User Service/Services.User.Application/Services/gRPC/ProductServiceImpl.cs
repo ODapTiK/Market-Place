@@ -1,5 +1,7 @@
 ﻿using Grpc.Core;
+using Microsoft.AspNetCore.SignalR;
 using Proto.ProductUser;
+using System.Text;
 
 namespace UserService
 {
@@ -8,14 +10,64 @@ namespace UserService
         private readonly IAddManufacturerProductUseCase _addManufacturerProductUseCase;
         private readonly IRemoveManufacturerProductUseCase _removeManufacturerProductUseCase;
         private readonly IGetManufacturersIdUseCase _getManufacturersIdUseCase;
+        private readonly IAddManufacturerNotificationUseCase _addManufacturerNotificationUseCase;
+        private readonly IHubContext<NotificationHub> _notificationHub;
 
         public ProductServiceImpl(IAddManufacturerProductUseCase addManufacturerProductUseCase, 
                                   IRemoveManufacturerProductUseCase removeManufacturerProductUseCase,
-                                  IGetManufacturersIdUseCase getManufacturersIdUseCase)
+                                  IGetManufacturersIdUseCase getManufacturersIdUseCase,
+                                  IAddManufacturerNotificationUseCase addManufacturerNotificationUseCase,
+                                  IHubContext<NotificationHub> hubContext)
         {
             _addManufacturerProductUseCase = addManufacturerProductUseCase;
             _removeManufacturerProductUseCase = removeManufacturerProductUseCase;
             _getManufacturersIdUseCase = getManufacturersIdUseCase;
+            _addManufacturerNotificationUseCase = addManufacturerNotificationUseCase;
+            _notificationHub = hubContext;
+        }
+
+        public override async Task<ProductResponse> CreateManufacturersDailyReport(ManufacturersDailyReportRequest request, ServerCallContext context)
+        {
+            try
+            {
+                foreach (var manufacturer in request.Reports)
+                {
+                        var message = new StringBuilder();
+                        foreach (var view in manufacturer.ProductsViews)
+                        {
+                            message.AppendLine($"Product {view.Key}: {view.Value} views");
+                        }
+                        message.AppendLine($"Total views: {manufacturer.ProductsViews.Select(x => x.Value).Sum()}");
+                        var notification = new Notification
+                        {
+                            Title = "Daily report",
+                            Message = message.ToString(),
+                            CreatedAt = DateTime.Now.ToUniversalTime(),
+                            IsRead = false
+                        };
+
+                    await _addManufacturerNotificationUseCase.Execute(Guid.Parse(manufacturer.ManufacturerId), notification, context.CancellationToken);
+
+                    await _notificationHub.Clients.Group(manufacturer.ManufacturerId)
+                        .SendAsync("ReceiveNotification", notification);
+                }
+
+                return new ProductResponse()
+                {
+                    Success = true,
+                    Message = "Notofications send successfully"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ProductResponse
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+
+                throw;
+            }
         }
 
         public override async Task<ManufacturerResponse> GetManufacturers(ManufacturersRequest request, ServerCallContext context)

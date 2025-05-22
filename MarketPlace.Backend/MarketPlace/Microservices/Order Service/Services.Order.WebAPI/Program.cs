@@ -180,7 +180,6 @@ namespace OrderService
                 config.RoutePrefix = string.Empty;
                 config.SwaggerEndpoint("/swagger/v1/swagger.json", "Event App API V1");
             });
-            //app.UseHangfireServer();
             app.UseHangfireDashboard();
 
             app.MapControllers();

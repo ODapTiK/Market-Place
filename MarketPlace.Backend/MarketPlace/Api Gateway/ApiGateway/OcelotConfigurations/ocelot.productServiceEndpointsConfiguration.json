@@ -23,7 +23,7 @@
         }
       ],
       "UpstreamPathTemplate": "/products/ids",
-      "UpstreamHttpMethod": [ "PUT" ],
+      "UpstreamHttpMethod": [ "PATCH" ],
       "SwaggerKey": "Product"
     },
     {
@@ -62,7 +62,7 @@
         }
       ],
       "UpstreamPathTemplate": "/products",
-      "UpstreamHttpMethod": [ "POST", "PUT" ],
+      "UpstreamHttpMethod": [ "POST", "PATCH" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "AllowedScopes": []

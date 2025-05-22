@@ -6,5 +6,6 @@
         public string Surname { get; set; } = string.Empty;
         public DateTime BirthDate { get; set; }
         public List<Guid> UserOrdersId { get; set; } = [];
+        public List<Notification> UserNotifications { get; set; } = [];
     }
 }
