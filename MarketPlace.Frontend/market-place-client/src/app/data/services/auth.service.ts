@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ import { Observable } from 'rxjs';
 export class AuthService {
   httpClient = inject(HttpClient);
 
-  baseApiAuthServiceUrl = 'https://localhost:6011/api';
+  baseApiAuthServiceUrl = environment.apiUrls.auth;
 
   createUser(userData: {
     Email: string;
