@@ -1,0 +1,100 @@
+<div class="modal-overlay" (click)="close.emit()">
+  <div class="modal-content product-modal" (click)="$event.stopPropagation()">
+    <button class="close-button" (click)="close.emit()">×</button>
+    
+    <h2>{{ product.name || 'Без названия' }}</h2>
+    
+    <div class="product-details">
+      <div class="product-main">
+        <div class="product-image-container">
+          <img [src]="product.image | image:'/assets/default-images/product-default.png'" 
+               alt="Изображение товара" 
+               class="product-image"
+               onerror="this.src='/assets/default-images/product-default.png'">
+        </div>
+        
+        <div class="product-meta">
+          <div class="meta-item">
+            <span class="meta-label">Цена:</span>
+            <span class="meta-value">{{ product.price | currency:'USD':'symbol':'1.2-2' }}</span>
+          </div>
+          
+          <div class="meta-item">
+            <span class="meta-label">Рейтинг:</span>
+            <span class="meta-value rating-badge">
+              ★ {{ product.raiting | number:'1.1-1' }}
+            </span>
+          </div>
+          
+          <div class="meta-item" *ngIf="product.type">
+            <span class="meta-label">Тип:</span>
+            <span class="meta-value">{{ product.type }}</span>
+          </div>
+          
+          <div class="meta-item" *ngIf="product.category">
+            <span class="meta-label">Категория:</span>
+            <span class="meta-value">{{ product.category }}</span>
+          </div>
+          
+          <div class="views-stats">
+            <div class="views-item">
+              <span class="views-count">{{ getViewsCount('hour') }}</span>
+              <span class="views-label">час</span>
+            </div>
+            <div class="views-item">
+              <span class="views-count">{{ getViewsCount('day') }}</span>
+              <span class="views-label">день</span>
+            </div>
+            <div class="views-item">
+              <span class="views-count">{{ getViewsCount('week') }}</span>
+              <span class="views-label">неделя</span>
+            </div>
+          </div>
+
+          <div class="cart-actions">
+            <button *ngIf="!isInCart" 
+                    class="button button-add" 
+                    (click)="addToCart.emit()">
+              Добавить в корзину
+            </button>
+            <button *ngIf="isInCart" 
+                    class="button button-remove" 
+                    (click)="removeFromCart.emit()">
+              Удалить из корзины
+            </button>
+          </div>
+          
+        </div>
+      </div>
+      
+      <div class="product-description" *ngIf="product.description">
+        <h3>Описание</h3>
+        <p>{{ product.description }}</p>
+      </div>
+
+      <div class="manufacturer-actions" *ngIf="isManufacturerView">
+        <button class="button button-edit" (click)="onEdit()">Редактировать</button>
+        <button class="button button-delete" (click)="onDelete()">Удалить</button>
+      </div>
+      
+      <div class="product-reviews" *ngIf="product.reviews && product.reviews.length > 0">
+        <div class="reviews-header">
+          <h3>Отзывы ({{ product.reviews.length }})</h3>
+        </div>
+        
+        <div class="reviews-list">
+          <app-review-card 
+            *ngFor="let review of product.reviews" 
+            [review]="review"
+            [currentUserId]="userId"
+            (onDelete)="handleDeleteReview($event)">
+          </app-review-card>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="button button-close" (click)="close.emit()">Закрыть</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,138 @@
+<div class="user-profile-container">
+    <!-- Основное содержимое -->
+    <div class="profile-content">
+      <div class="profile-column">
+        <div *ngIf="isLoading" class="loading-state">
+          <div class="spinner"></div>
+          <p>Загрузка корзины...</p>
+        </div>
+  
+        <div *ngIf="!isLoading && error" class="error-state">
+          <p>{{ error }}</p>
+          <button class="button button-retry" (click)="loadPageData()">Повторить попытку</button>
+        </div>
+  
+        <div *ngIf="!isLoading && !error" class="profile-card">
+          <h2 class="section-title">Моя корзина</h2>
+          
+          <div *ngIf="products.length === 0" class="empty-state">
+            <p>Ваша корзина пуста</p>
+            <a (click)="navigateToCatalog()" class="button">Перейти в каталог</a>
+          </div>
+  
+          <div *ngIf="products.length > 0" class="cart-items">
+            <div class="cart-item" *ngFor="let product of products">
+              <div class="item-select">
+                <input type="checkbox" 
+                       [(ngModel)]="selectedProducts[product.id]" 
+                       [id]="'select-' + product.id">
+              </div>
+              
+              <div class="item-image-container">
+                <img [src]="product.image | image:'/assets/default-images/product-default.png'" 
+                     alt="Изображение товара" 
+                     class="item-image"
+                     onerror="this.src='/assets/default-images/product-placeholder.jpg'">
+              </div>
+              
+              <div class="item-main-info">
+                <h4 class="item-name">{{ getProductName(product) }}</h4>
+                
+                <div class="item-meta">
+                  <span class="item-meta-badge">{{ getProductCategory(product) }}</span>
+                  <span class="item-meta-badge">{{ getProductType(product) }}</span>
+                </div>
+                
+                <p class="item-description">{{ getProductDescription(product) | truncate:100 }}</p>
+                
+                <div class="item-price">{{ product.price | currency:'USD':'symbol':'1.2-2' }}</div>
+              </div>
+              
+              <div class="item-quantity" *ngIf="selectedProducts[product.id]">
+                <label>Кол-во:</label>
+                <input type="number" 
+                       [(ngModel)]="quantities[product.id]" 
+                       min="1" 
+                       class="quantity-input">
+              </div>
+              
+              <div class="item-actions">
+                <button class="button button-remove" (click)="removeFromCart(product.id)">
+                  Удалить
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="products.length > 0" class="cart-summary">
+            <div class="summary-row">
+              <span>Выбрано товаров:</span>
+              <span>{{ getSelectedProducts().length }}</span>
+            </div>
+            <div class="summary-row total">
+              <span>Итого:</span>
+              <span>{{ getTotalPrice() | currency:'USD':'symbol':'1.2-2' }}</span>
+            </div>
+            
+            <button class="button button-create-order" (click)="startOrderCreation()">
+              Оформить заказ
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Модальное окно оформления заказа -->
+    <div class="modal-overlay" *ngIf="isCreatingOrder" (click)="cancelOrderCreation()">
+      <div class="modal-content order-modal" (click)="$event.stopPropagation()">
+        <h2>Оформление заказа</h2>
+        
+        <div class="order-details">
+          <div class="form-group">
+            <label>Выберите администратора:</label>
+            <select [(ngModel)]="selectedAdminId" class="form-select">
+              <option *ngFor="let admin of admins" [value]="admin.id">
+                {{ admin.name }} {{ admin.surname }}
+                <span *ngIf="admin.logo">({{ admin.logo }})</span>
+              </option>
+            </select>
+          </div>
+          
+          <h3>Состав заказа</h3>
+          <div class="order-items-list">
+            <div class="order-item" *ngFor="let product of getSelectedProducts()">
+              <div class="item-image-container">
+                <img [src]="product.image | image:'/assets/default-images/product-default.png'" 
+                     alt="Изображение товара" 
+                     class="item-image">
+              </div>
+              
+              <div class="item-info">
+                <h4>{{ product.name }}</h4>
+                <div class="item-meta">
+                  <span>{{ product.category }}</span>
+                  <span>{{ product.type }}</span>
+                </div>
+                <div class="item-quantity">
+                  Количество: {{ quantities[product.id] || 1 }} шт.
+                </div>
+                <div class="item-price">
+                  {{ (product.price * (quantities[product.id] || 1)) | currency:'USD':'symbol':'1.2-2' }}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="order-total">
+            <span>Общая сумма:</span>
+            <span class="total-price">{{ getTotalPrice() | currency:'USD':'symbol':'1.2-2' }}</span>
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <button class="button button-cancel" (click)="cancelOrderCreation()">Отмена</button>
+          <button class="button button-confirm" (click)="createOrder()">Подтвердить заказ</button>
+        </div>
+      </div>
+    </div>
+  </div>

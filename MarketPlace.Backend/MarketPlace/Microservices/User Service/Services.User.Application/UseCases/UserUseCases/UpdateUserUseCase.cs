@@ -29,7 +29,7 @@ namespace UserService
             if (user == null) 
                 throw new EntityNotFoundException(nameof(User), userDTO.Id);
 
-            user.BirthDate = userDTO.BirthDate;
+            user.BirthDate = userDTO.BirthDate.ToUniversalTime();
             user.Name = userDTO.Name;
             user.Surname = userDTO.Surname;
 

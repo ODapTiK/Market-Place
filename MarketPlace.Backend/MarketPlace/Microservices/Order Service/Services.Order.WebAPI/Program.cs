@@ -1,6 +1,7 @@
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Proto.OrderProduct;
@@ -21,6 +22,8 @@ namespace OrderService
             var configuration = builder.Configuration;
 
             configuration.AddEnvironmentVariables();
+
+            services.Configure<ObsoleteOrdersClearingSettings>(configuration.GetSection(nameof(ObsoleteOrdersClearingSettings)));
 
             var connectionString = Environment.GetEnvironmentVariable("ORDER_DB_CONNECTION_STRING")
                 ?? throw new InvalidOperationException("ORDER_DB_CONNECTION_STRING is not set in environment variables");

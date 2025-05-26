@@ -1,0 +1,96 @@
+<div class="catalog-page">
+    <div class="catalog-container">
+      
+      <div class="filters-sidebar">
+        <h2>Фильтры</h2>
+        
+        <div class="filter-section">
+          <input type="text" 
+                 [(ngModel)]="searchQuery" 
+                 placeholder="Поиск товаров..." 
+                 class="search-input"
+                 (input)="applyFilters()">
+        </div>
+        
+        <div class="filter-section">
+          <h3>Категории</h3>
+          <select [(ngModel)]="selectedCategory" 
+                  class="filter-select"
+                  (change)="applyFilters()">
+            <option value="">Все категории</option>
+            <option *ngFor="let category of categories" [value]="category">
+              {{ category }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="filter-section">
+          <h3>Типы</h3>
+          <select [(ngModel)]="selectedType" 
+                  class="filter-select"
+                  (change)="applyFilters()">
+            <option value="">Все типы</option>
+            <option *ngFor="let type of types" [value]="type">
+              {{ type }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="filter-section">
+          <h3>Сортировка</h3>
+          <select [(ngModel)]="sortOption" 
+                  class="filter-select"
+                  (change)="applySorting()">
+            <option value="price-asc">Цена по возрастанию</option>
+            <option value="price-desc">Цена по убыванию</option>
+            <option value="rating-desc">По рейтингу</option>
+            <option value="newest">Сначала новые</option>
+          </select>
+        </div>
+        
+        <button class="reset-filters" (click)="resetFilters()">Сбросить фильтры</button>
+      </div>
+      
+      <!-- Основной контент с товарами -->
+      <div class="products-content">
+        <div *ngIf="isLoading" class="loading-state">
+          <div class="spinner"></div>
+          <p>Загрузка товаров...</p>
+        </div>
+        
+        <div *ngIf="!isLoading && error" class="error-state">
+          <p>{{ error }}</p>
+          <button class="button button-retry" (click)="loadProducts()">Повторить попытку</button>
+        </div>
+        
+        <div *ngIf="!isLoading && !error" class="products-grid">
+          <app-product-card 
+            *ngFor="let product of filteredProducts" 
+            [product]="product"
+            [isInCart]="isInCart(product.id)"
+            (click)="openProductModal(product)"
+            (addToCart)="addToCart(product)"
+            (removeFromCart)="removeFromCart(product.id)"
+            (openModal)="openProductModal(product)">
+          </app-product-card>
+        </div>
+        
+        <div *ngIf="!isLoading && filteredProducts.length === 0" class="empty-state">
+          <p>Товары не найдены</p>
+          <button class="button" (click)="resetFilters()">Показать все товары</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Модальное окно товара -->
+    <app-product-modal 
+      *ngIf="selectedProduct"
+      [product]="selectedProduct"
+      [isInCart]="isInCart(selectedProduct.id)"
+      [userId]="userId"
+      (close)="closeProductModal()"
+      (deleteReview)="onDeleteReview($event.productId, $event.reviewId)"
+      (addToCart)="addToCart(selectedProduct)"
+      (removeFromCart)="removeFromCart(selectedProduct.id)">
+    </app-product-modal>
+  </div>

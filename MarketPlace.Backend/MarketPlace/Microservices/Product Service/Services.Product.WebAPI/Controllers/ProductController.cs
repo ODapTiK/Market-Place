@@ -35,15 +35,29 @@ namespace ProductService
             };
 
             var products = await Mediator.Send(query, cancellationToken);
+
             return Ok(products);
         }
+        [Authorize]
+        [HttpPut("ids")]
+        public async Task<ActionResult<List<Product>>> GetProductsByIdList([FromBody] GetProductsByIdListDTO getProductsByIdListDTO, CancellationToken cancellationToken)
+        {
+            var query = new GetProductsByIdListQuery()
+            {
+                ProductIds = getProductsByIdListDTO.ProductIds
+            };
 
+            var products = await Mediator.Send(query, cancellationToken);
+
+            return Ok(products);
+        }
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetAllProducts(CancellationToken cancellationToken)
         {
             var query = new GetAllProductsQuery();
 
             var products = await Mediator.Send(query, cancellationToken);
+
             return Ok(products);
         }
 

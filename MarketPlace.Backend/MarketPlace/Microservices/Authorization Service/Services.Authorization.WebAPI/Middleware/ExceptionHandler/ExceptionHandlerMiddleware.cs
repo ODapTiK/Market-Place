@@ -31,14 +31,14 @@ namespace AuthorizationService
             switch (ex)
             {
                 case ValidationException validationExeption:
-                    code = HttpStatusCode.Forbidden;
+                    code = HttpStatusCode.BadRequest;
                     result = JsonSerializer.Serialize(validationExeption.Errors);
                     break;
                 case EntityNotFoundException:
                     code = HttpStatusCode.NotFound;
                     break;
                 case AuthenticationException:
-                    code = HttpStatusCode.Unauthorized;
+                    code = HttpStatusCode.Forbidden;
                     break;
                 case RefreshTokenBadRequestException:
                     code = HttpStatusCode.NotAcceptable;

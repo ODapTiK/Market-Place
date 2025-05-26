@@ -3,6 +3,7 @@
 **/obj/
 
 # Дополнительные игнорируемые файлы и каталоги
+*.env
 *.user
 *.suo
 *.sln.ide
@@ -17,3 +18,13 @@
 *.log
 *.tlog
 *.cache
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.woff
+*.woff2
+*.ttf
+*.eot
+*.bin

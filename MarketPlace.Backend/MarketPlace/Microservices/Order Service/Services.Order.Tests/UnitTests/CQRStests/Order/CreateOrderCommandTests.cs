@@ -1,12 +1,9 @@
 ﻿using Bogus;
-using FluentValidation.TestHelper;
 using FluentAssertions;
+using FluentValidation.TestHelper;
 using Moq;
-using Proto.OrderUser;
-using Hangfire;
-using Hangfire.Common;
-using Hangfire.States;
 using Proto.OrderProduct;
+using Proto.OrderUser;
 
 namespace OrderService
 {
@@ -18,22 +15,16 @@ namespace OrderService
         private readonly CreateOrderCommandValidator _validator;
         private readonly Mock<OrderUserService.OrderUserServiceClient> _orderUserServiceClientMock;
         private readonly Mock<OrderProductService.OrderProductServiceClient> _orderProductServiceClientMock;
-        private readonly Mock<IObsoleteOrderCollector> _ordersCollectorMock;    
-        private readonly Mock<IBackgroundJobClient> _backgroundJobClientMock;
 
         public CreateOrderCommandTests()
         {
             _orderRepositoryMock = new Mock<IOrderRepository>();
             _orderUserServiceClientMock = new Mock<OrderUserService.OrderUserServiceClient>();
             _orderProductServiceClientMock = new Mock<OrderProductService.OrderProductServiceClient>();
-            _ordersCollectorMock = new Mock<IObsoleteOrderCollector>();
-            _backgroundJobClientMock = new Mock<IBackgroundJobClient>();
 
             _handler = new CreateOrderCommandHandler(_orderRepositoryMock.Object, 
                                                      _orderUserServiceClientMock.Object, 
-                                                     _orderProductServiceClientMock.Object,
-                                                     _ordersCollectorMock.Object,
-                                                     _backgroundJobClientMock.Object);
+                                                     _orderProductServiceClientMock.Object);
 
             _validator = new CreateOrderCommandValidator();
 
@@ -47,17 +38,17 @@ namespace OrderService
         {
             // Arrange
             var userId = Guid.NewGuid();
+            var controlAdminId = Guid.NewGuid();
             var orderPoints = _orderPointFaker.Generate(5); 
             var command = new CreateOrderCommand
             {
                 UserId = userId,
+                ControlAdminId = controlAdminId,
                 Points = orderPoints,
             };
 
             _orderRepositoryMock.Setup(repo => repo.CreateAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Guid.NewGuid());
-            _ordersCollectorMock.Setup(repo => repo.RemoveObsoleteOrderAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
 
             var mockCall = CallHelpers.CreateAsyncUnaryCall(new Proto.OrderUser.Response
             {
@@ -67,6 +58,10 @@ namespace OrderService
             _orderUserServiceClientMock
                 .Setup(m => m.AddUserOrderAsync(
                     It.IsAny<Proto.OrderUser.OrderRequest>(), null, null, CancellationToken.None))
+                .Returns(mockCall);
+            _orderUserServiceClientMock
+                .Setup(m => m.AddOrderToControlAdminAsync(
+                    It.IsAny<AddOrderToControlAdminRequest>(), null, null, CancellationToken.None))
                 .Returns(mockCall);
 
             var orderProductServiceMockCall = CallHelpers.CreateAsyncUnaryCall(new OrderResponse
@@ -80,13 +75,23 @@ namespace OrderService
                     It.IsAny<Proto.OrderProduct.OrderRequest>(), null, null, CancellationToken.None))
                 .Returns(orderProductServiceMockCall);
 
+            var productsInfo = CallHelpers.CreateAsyncUnaryCall(new ProductInfoResponse
+            {
+                Message = "Test",
+                Success = true,
+                ProductCategory = "Test category",
+                ProductDescription = "Test description",
+                ProductImage = "base64 image",
+                ProductName = "Test name",
+                ProductType = "Test type"
+            });
+            _orderProductServiceClientMock
+                .Setup(m => m.GetProductInfoAsync(
+                    It.IsAny<GetProductInfoRequest>(), null, null, CancellationToken.None))
+                .Returns(productsInfo);
+
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
-
-            // Assert
-            _backgroundJobClientMock.Verify(x => x.Create(
-                It.Is<Job>(job => job.Method.Name == nameof(IObsoleteOrderCollector.RemoveObsoleteOrderAsync)),
-                It.IsAny<IState>()));
 
             result.Should().NotBe(Guid.Empty);
 

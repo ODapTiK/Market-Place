@@ -30,7 +30,7 @@ namespace ProductService
             switch (ex)
             {
                 case ValidationException validationExeption:
-                    code = HttpStatusCode.NotAcceptable;
+                    code = HttpStatusCode.BadRequest;
                     result = JsonSerializer.Serialize(validationExeption.Errors);
                     break;
                 case EntityNotFoundException:

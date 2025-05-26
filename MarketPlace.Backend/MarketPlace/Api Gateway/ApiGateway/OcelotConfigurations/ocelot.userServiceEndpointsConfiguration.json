@@ -14,6 +14,32 @@
       "SwaggerKey": "User"
     },
     {
+      "DownstreamPathTemplate": "/api/user/logo",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6012
+        }
+      ],
+      "UpstreamPathTemplate": "/user/logo",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "SwaggerKey": "User"
+    },
+    {
+      "DownstreamPathTemplate": "/api/Admin/logo",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6012
+        }
+      ],
+      "UpstreamPathTemplate": "/admin/logo",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "SwaggerKey": "User"
+    },
+    {
       "DownstreamPathTemplate": "/api/Admin",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -27,6 +53,19 @@
       "SwaggerKey": "User"
     },
     {
+      "DownstreamPathTemplate": "/api/Admins",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6012
+        }
+      ],
+      "UpstreamPathTemplate": "/admins",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "User"
+    },
+    {
       "DownstreamPathTemplate": "/api/manufacturer",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -37,6 +76,19 @@
       ],
       "UpstreamPathTemplate": "/manufacturer",
       "UpstreamHttpMethod": [ "GET", "PUT" ],
+      "SwaggerKey": "User"
+    },
+    {
+      "DownstreamPathTemplate": "/api/manufacturer/logo",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 6012
+        }
+      ],
+      "UpstreamPathTemplate": "/manufacturer/logo",
+      "UpstreamHttpMethod": [ "PUT" ],
       "SwaggerKey": "User"
     }
   ],

@@ -1,0 +1,117 @@
+<div class="registration-container">
+    <div class="panel left-panel">
+      <!-- Форма пользователя -->
+      <form 
+        class="registration-form user-form"
+        [class.hidden]="isProducerForm"
+        [class.animate-out]="switching && !isProducerForm"
+        [formGroup]="userForm"
+        (ngSubmit)="onUserSubmit()">
+        <h1 class="h1 mb60">Регистрация пользователя</h1>
+        
+        <label class="control-label mb16">
+          Email
+          <input 
+            formControlName="Email" 
+            class="control-input" 
+            type="email" 
+            placeholder="Введите ваш email">
+        </label>
+        
+        <label class="control-label mb16">
+          Пароль
+          <input 
+            formControlName="Password"
+            class="control-input" 
+            type="password" 
+            placeholder="Введите ваш пароль">
+        </label>
+        
+        <label class="control-label mb16">
+          Имя
+          <input 
+            formControlName="Name" 
+            class="control-input" 
+            type="text" 
+            placeholder="Введите ваше имя">
+        </label>
+        
+        <label class="control-label mb16">
+          Фамилия
+          <input 
+            formControlName="Surname" 
+            class="control-input" 
+            type="text" 
+            placeholder="Введите вашу фамилию">
+        </label>
+        
+        <label class="control-label mb32">
+          Дата рождения
+          <input 
+            formControlName="BirthDate" 
+            class="control-input" 
+            type="date">
+        </label>
+        
+        <button class="button mb16" type="submit">Зарегистрироваться</button>
+        <button class="switch-button" type="button" (click)="switchForm()">Я производитель</button>
+        <button class="switch-button" type="button" (click)="navigateToLogin()">Уже есть аккаунт? Войти</button>
+      </form>
+      <img 
+        src="/assets/logos/main-logo.png" 
+        alt="QuickDeal"
+        class="logo-image left-logo"
+        [class.hidden]="!isProducerForm"
+        [class.animate-in]="switching && isProducerForm"/>
+    </div>
+      <!-- Форма производителя -->
+    <div class="panel right-panel">
+      <img 
+        src="/assets/logos/main-logo.png" 
+        alt="QuickDeal"
+        class="logo-image right-logo"
+        [class.hidden]="isProducerForm"
+        [class.animate-out]="switching && !isProducerForm"/>
+      <form 
+        class="registration-form producer-form"
+        [class.hidden]="!isProducerForm"
+        [class.animate-in]="switching && isProducerForm"
+        [formGroup]="manufacturerForm"
+        (ngSubmit)="onProducerSubmit()">
+        <h1 class="h1 mb60">Регистрация производителя</h1>
+        
+        <label class="control-label mb16">
+          Email
+          <input 
+            formControlName="Email" 
+            class="control-input" 
+            type="email" 
+            placeholder="Введите email организации">
+        </label>
+        
+        <label class="control-label mb16">
+          Пароль
+          <input 
+            formControlName="Password"
+            class="control-input" 
+            type="password" 
+            placeholder="Введите пароль">
+        </label>
+        
+        <label class="control-label mb32">
+          Название организации
+          <input 
+            formControlName="Organization" 
+            class="control-input" 
+            type="text" 
+            placeholder="Введите название организации">
+        </label>
+        
+        <button class="button mb16" type="submit">Зарегистрироваться</button>
+        <div class="switch-buttons">
+          <button class="switch-button" type="button" (click)="switchForm()">Я пользователь</button>
+          <button class="switch-button" type="button" (click)="navigateToLogin()">Уже есть аккаунт? Войти</button>
+        </div>
+      </form>
+    </div>
+</div>

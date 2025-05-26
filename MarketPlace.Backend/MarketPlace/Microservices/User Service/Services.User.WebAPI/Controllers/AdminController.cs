@@ -8,14 +8,18 @@ namespace UserService
     {
         private readonly IUpdateAdminUseCase _updateAdminUseCase;
         private readonly IGetAdminInfoUseCase _getAdminInfoUseCase;
+        private readonly IUpdateAdminLogoUseCase _updateAdminLogoUseCase;
 
         public AdminController(IUpdateAdminUseCase updateAdminUseCase, 
-                               IGetAdminInfoUseCase getAdminInfoUseCase)
+                               IGetAdminInfoUseCase getAdminInfoUseCase,
+                               IUpdateAdminLogoUseCase updateAdminLogoUseCase)
         {
             _updateAdminUseCase = updateAdminUseCase;
             _getAdminInfoUseCase = getAdminInfoUseCase;
+            _updateAdminLogoUseCase = updateAdminLogoUseCase;
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpGet]
         public async Task<ActionResult<Admin>> GetAdmin(CancellationToken cancellationToken)
         {
@@ -28,7 +32,17 @@ namespace UserService
         [HttpPut]
         public async Task<IActionResult> UpdateAdmin([FromBody] AdminDTO adminDTO, CancellationToken cancellationToken)
         {
+            adminDTO.Id = UserId;
             await _updateAdminUseCase.Execute(adminDTO, cancellationToken);
+
+            return Ok();
+        }
+
+        [Authorize(Policy = "Admin")]
+        [HttpPut("logo")]
+        public async Task<IActionResult> UpdateAdminLogo([FromBody] AdminLogoDTO logo, CancellationToken cancellationToken)
+        {
+            await _updateAdminLogoUseCase.Execute(UserId, logo.base64Logo, cancellationToken);
 
             return Ok();
         }

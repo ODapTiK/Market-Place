@@ -8,22 +8,16 @@ namespace OrderService
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Guid>
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IObsoleteOrderCollector _obsoleteOrderCollector;
         private readonly OrderUserService.OrderUserServiceClient _orderUserServiceClient;
         private readonly OrderProductService.OrderProductServiceClient _orderProductServiceClient;
-        private readonly IBackgroundJobClient _backgroundJobClient;
 
         public CreateOrderCommandHandler(IOrderRepository orderRepository,
                                          OrderUserService.OrderUserServiceClient orderUserServiceClient,
-                                         OrderProductService.OrderProductServiceClient orderProductServiceClient,
-                                         IObsoleteOrderCollector obsoleteOrderCollector,
-                                         IBackgroundJobClient backgroundJobClient)
+                                         OrderProductService.OrderProductServiceClient orderProductServiceClient)
         {
             _orderRepository = orderRepository;
             _orderUserServiceClient = orderUserServiceClient;
             _orderProductServiceClient = orderProductServiceClient;
-            _obsoleteOrderCollector = obsoleteOrderCollector;
-            _backgroundJobClient = backgroundJobClient;
         }
 
         public async Task<Guid> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -32,16 +26,36 @@ namespace OrderService
             {
                 Id = Guid.NewGuid(),
                 UserId = request.UserId,
-                OrderDateTime = DateTime.Now.ToUniversalTime()
+                ControlAdminId = request.ControlAdminId,
+                OrderDateTime = DateTime.Now.ToUniversalTime(),
+                Status = OrderStatus.InProgress.GetDisplayName()
             };
 
-            var orderPoints = request.Points.Select(x => new OrderPoint()
-            {
-                Id = Guid.NewGuid(),
-                OrderId = order.Id,
-                ProductId = x.ProductId,
-                NumberOfUnits = x.NumberOfUnits
-            }).ToList();
+            var orderPoints = new List<OrderPoint>();
+            foreach (var orderPoint in request.Points) {
+                var productInfoRequest = new GetProductInfoRequest()
+                {
+                    ProductId = orderPoint.ProductId.ToString()
+                };
+
+                var productInfoResponse = await _orderProductServiceClient.GetProductInfoAsync(productInfoRequest);
+
+                if(!productInfoResponse.Success) 
+                    throw new GRPCRequestFailException(productInfoResponse.Message);
+
+                orderPoints.Add(new OrderPoint()
+                {
+                    Id = Guid.NewGuid(),
+                    OrderId = order.Id,
+                    ProductId = orderPoint.ProductId,
+                    productCategory = productInfoResponse.ProductCategory == "" ? null : productInfoResponse.ProductCategory,
+                    productDescription = productInfoResponse.ProductDescription == "" ? null : productInfoResponse.ProductDescription,
+                    productImage = productInfoResponse.ProductImage == "" ? null : productInfoResponse.ProductImage,
+                    productName = productInfoResponse.ProductName == "" ? null : productInfoResponse.ProductName,
+                    productType = productInfoResponse.ProductType == "" ? null : productInfoResponse.ProductType,
+                    NumberOfUnits = orderPoint.NumberOfUnits
+                });
+            }
 
             order.OrderPoints = orderPoints;
 
@@ -71,7 +85,16 @@ namespace OrderService
             if(!rpcResponse.Success)
                 throw new GRPCRequestFailException(rpcResponse.Message);
 
-            _backgroundJobClient.Schedule(() => _obsoleteOrderCollector.RemoveObsoleteOrderAsync(order, cancellationToken), TimeSpan.FromDays(2));
+            var controlAdminRpcRequest = new AddOrderToControlAdminRequest()
+            {
+                AdminId = order.ControlAdminId.ToString(),
+                OrderId = order.Id.ToString()
+            };
+
+            var controlAdminRpcResponse = await _orderUserServiceClient.AddOrderToControlAdminAsync(controlAdminRpcRequest);
+
+            if (!controlAdminRpcResponse.Success)
+                throw new GRPCRequestFailException(controlAdminRpcResponse.Message);
 
             return orderId;
         }

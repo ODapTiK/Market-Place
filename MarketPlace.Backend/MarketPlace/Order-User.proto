@@ -10,6 +10,8 @@ service OrderUserService {
     rpc CreateCart(CartRequest) returns (Response);
     rpc DeleteCart(CartRequest) returns (Response);
     rpc DeleteUserOrders(DeleteUserOrdersRequest) returns (Response);
+    rpc AddOrderToControlAdmin(AddOrderToControlAdminRequest) returns (Response);
+    rpc RemoveObsoleteOrderFromUserAndAdmin(RemoveObsoleteOrderFromUserAndAdminRequest) returns (Response);
 }
 
 message OrderRequest {
@@ -23,6 +25,17 @@ message CartRequest{
 
 message DeleteUserOrdersRequest{
     string user_id = 1;
+}
+
+message AddOrderToControlAdminRequest{
+    string admin_id = 1;
+    string order_id = 2;
+}
+
+message RemoveObsoleteOrderFromUserAndAdminRequest{
+    string user_id = 1;
+    string admin_id = 2;
+    string order_id = 3;
 }
 
 message Response {

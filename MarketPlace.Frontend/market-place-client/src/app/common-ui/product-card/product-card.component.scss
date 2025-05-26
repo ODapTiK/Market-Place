@@ -1,0 +1,182 @@
+.product-card {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border-left: 4px solid var(--primary-color);
+  height: 400px; 
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .product-image-container {
+    width: 100%;
+    height: 200px; 
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    flex-shrink: 0; 
+
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 20px;
+    }
+  }
+
+  .product-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; 
+    min-height: 200px; 
+
+    .product-name {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: var(--primary-color);
+      min-height: 1.2em; 
+    }
+
+    .product-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      min-height: 28px; 
+
+      .product-price {
+        font-weight: 700;
+        font-size: 20px;
+      }
+
+      .product-rating {
+        background: rgba(174, 122, 255, 0.1);
+        color: var(--primary-color);
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 14px;
+      }
+    }
+
+    .product-categories {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      min-height: 28px; 
+
+      .category-badge {
+        font-size: 12px;
+        padding: 4px 10px;
+        background: rgba(174, 122, 255, 0.1);
+        color: var(--primary-color);
+        border-radius: 4px;
+        flex-grow: 1;
+        text-align: center;
+        
+        &.empty {
+          visibility: hidden; 
+        }
+      }
+    }
+
+    .product-description {
+      margin: 0;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.4;
+      flex-grow: 1;
+      overflow: hidden;
+      
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      
+      display: -moz-box;
+      -moz-box-orient: vertical;
+      line-clamp: 3;
+      box-orient: vertical;
+      
+      max-height: 4.2em; 
+    }
+  }
+
+  .product-actions {
+    margin-top: 15px;
+    
+    .button {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      
+      &-add {
+        background: var(--primary-color);
+        
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(255, 255, 255, 0.25);
+          filter: brightness(105%);
+          }
+      
+          &:active {
+              transform: translateY(1px);
+              box-shadow: 0 2px 8px rgba(255, 255, 255, 0.2);
+          }
+      
+          &::before {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: radial-gradient(
+                  circle at var(--mouse-x) var(--mouse-y),
+                  rgba(255, 255, 255, 0.3) 0%,
+                  transparent 70%
+              );
+              opacity: 0;
+              transition: opacity 0.3s ease;
+              z-index: -1;
+          }
+      
+          &:hover::before {
+              opacity: 1;
+          }
+      
+          &::after {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: radial-gradient(circle at center, rgba(255,255,255,0.4) 0%, transparent 70%);
+              opacity: 0;
+              transition: opacity 0.3s ease;
+          }
+      
+          &:hover::after {
+              opacity: 0.3;
+          }
+        }
+          
+      &-remove {
+        background: #f44336;
+        
+        &:hover {
+          background: #d32f2f;
+        }
+      }
+    }
+  }
+}
