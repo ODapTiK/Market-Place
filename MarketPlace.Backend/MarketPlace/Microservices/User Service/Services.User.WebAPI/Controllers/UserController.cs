@@ -9,14 +9,20 @@ namespace UserService
         private readonly IUpdateUserUseCase _updateUserUseCase;
         private readonly IGetUserInfoUseCase _getUserInfoUseCase;
         private readonly IUpdateUserLogoUseCase _updateUserLogoUseCase;
+        private readonly IReadUserNotificationUseCase _readUserNotificationUseCase;
+        private readonly IGetUserUnreadNotificationsCountUseCase _getUserUnreadNotificationsCountUseCase;
 
         public UserController(IUpdateUserUseCase updateUserUseCase, 
                               IGetUserInfoUseCase getUserInfoUseCase,
-                              IUpdateUserLogoUseCase updateUserLogoUseCase)
+                              IUpdateUserLogoUseCase updateUserLogoUseCase,
+                              IReadUserNotificationUseCase readUserNotificationUseCase,
+                              IGetUserUnreadNotificationsCountUseCase getUserUnreadNotificationsCountUseCase)
         {
             _updateUserUseCase = updateUserUseCase;
             _getUserInfoUseCase = getUserInfoUseCase;
             _updateUserLogoUseCase = updateUserLogoUseCase;
+            _readUserNotificationUseCase = readUserNotificationUseCase;
+            _getUserUnreadNotificationsCountUseCase = getUserUnreadNotificationsCountUseCase;
         }
 
         [Authorize(Policy = "User")]
@@ -29,7 +35,7 @@ namespace UserService
         }
 
         [Authorize(Policy = "User")]
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> UpdateUser([FromBody] UserDTO userDTO, CancellationToken cancellationToken)
         {
             userDTO.Id = UserId;
@@ -39,12 +45,30 @@ namespace UserService
         }
 
         [Authorize(Policy = "User")]
-        [HttpPut("logo")]
+        [HttpPatch("logo")]
         public async Task<IActionResult> UpdateUserLogo([FromBody] UserLogoDTO logo, CancellationToken cancellationToken)
         {
             await _updateUserLogoUseCase.Execute(UserId, logo.base64Logo, cancellationToken);
 
             return Ok();
+        }
+
+        [Authorize(Policy = "User")]
+        [HttpPatch("notifications/{id}")]
+        public async Task<IActionResult> ReadUserMessage(Guid id, CancellationToken cancellationToken)
+        {
+            await _readUserNotificationUseCase.Execute(UserId, id, cancellationToken);  
+
+            return Ok();
+        }
+
+        [Authorize(Policy = "User")]
+        [HttpGet("notifications/unread-count")]
+        public async Task<ActionResult<int>> GetUnreadNotificationsCount(CancellationToken cancellationToken)
+        {
+            var count = await _getUserUnreadNotificationsCountUseCase.Execute(UserId, cancellationToken);   
+
+            return Ok(count);
         }
     }
 }

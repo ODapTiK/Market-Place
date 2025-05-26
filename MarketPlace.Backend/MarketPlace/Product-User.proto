@@ -8,6 +8,7 @@ service ProductUserService {
     rpc AddManufacturerProduct(ProductRequest) returns (ProductResponse);
     rpc RemoveManufacturerProduct(ProductRequest) returns (ProductResponse);
     rpc GetManufacturers(ManufacturersRequest) returns (ManufacturerResponse);
+    rpc CreateManufacturersDailyReport(ManufacturersDailyReportRequest) returns (ProductResponse);
 }
 
 message ProductRequest {
@@ -28,3 +29,16 @@ message ManufacturerResponse {
     repeated string manufacturer_id = 3;
 }
 
+message ProductViews {
+    string key = 1;
+    int32 value = 2;
+}
+
+message ManufacturerDailyReport {
+    string manufacturer_id = 1;
+    repeated ProductViews products_views = 2;
+}
+
+message ManufacturersDailyReportRequest {
+    repeated ManufacturerDailyReport reports = 1;
+}

@@ -1,152 +1,314 @@
 ﻿version: '3.8'
 
+networks:
+  backend-network:
+    driver: bridge
+
+volumes:
+  authservicedb_data:
+  userservicedb_data:
+  userservicehangfiredb_data:
+  orderservicedb_data:
+  orderservicehangfiredb_data:
+  productservicehangfiredb_data:
+  rabbitmq_data:
+  mongo_data:
+  redis_data:
+  elasticsearch_data:
+  ocelot_data:
+  certs:
+
 services:
+  # Базы данных
   authservicedb:
-    image: postgres:latest
-    env_file:
-      - .env
+    image: postgres:15-alpine
+    env_file: .env
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${AUTH_DB_NAME}
-    restart: always
+    volumes:
+      - authservicedb_data:/var/lib/postgresql/data
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d ${AUTH_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${AUTH_DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 15s
+    networks:
+      - backend-network
 
   userservicedb:
-    image: postgres:latest
-    env_file:
-      - .env
+    image: postgres:15-alpine
+    env_file: .env
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${USER_DB_NAME}
-    restart: always
+    volumes:
+      - userservicedb_data:/var/lib/postgresql/data
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d ${USER_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${USER_DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 15s
+    networks:
+      - backend-network
 
   userservicehangfiredb:
-    image: postgres:latest
-    env_file:
-      - .env
+    image: postgres:15-alpine
+    env_file: .env
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${USER_HANGFIRE_DB_NAME}
-    restart: always
+    volumes:
+      - userservicehangfiredb_data:/var/lib/postgresql/data
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d ${USER_HANGFIRE_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${USER_HANGFIRE_DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 15s
+    networks:
+      - backend-network
 
   orderservicedb:
-    image: postgres:latest
-    env_file:
-      - .env
+    image: postgres:15-alpine
+    env_file: .env
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${ORDER_DB_NAME}
-    restart: always
+    volumes:
+      - orderservicedb_data:/var/lib/postgresql/data
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d ${ORDER_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${ORDER_DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 15s
+    networks:
+      - backend-network
   
   orderservicehangfiredb:
-    image: postgres:latest
-    env_file:
-      - .env
+    image: postgres:15-alpine
+    env_file: .env
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${ORDER_HANGFIRE_DB_NAME}
-    restart: always
+    volumes:
+      - orderservicehangfiredb_data:/var/lib/postgresql/data
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d ${ORDER_HANGFIRE_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${ORDER_HANGFIRE_DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 15s
+    networks:
+      - backend-network
 
   productservicehangfiredb:
-    image: postgres:latest
-    env_file:
-      - .env
+    image: postgres:15-alpine
+    env_file: .env
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${PRODUCT_HANGFIRE_DB_NAME}
-    restart: always
+    volumes:
+      - productservicehangfiredb_data:/var/lib/postgresql/data
+    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d ${PRODUCT_HANGFIRE_DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${PRODUCT_HANGFIRE_DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 15s
+    networks:
+      - backend-network
 
+  # Внешние сервисы
   mongodb:
-    image: mongo:latest
+    image: mongo:6.0
     ports:
       - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    command: [--wiredTigerCacheSizeGB=1]
+    networks:
+      - backend-network
 
   redis:
-    image: redis:latest
+    image: redis:7-alpine
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend-network
 
   rabbitmq:
-    image: rabbitmq:management
+    image: rabbitmq:3.13-management-alpine
     ports:
       - "5672:5672"
-      - "15672:15672" 
+      - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - backend-network
+
+  # ELK стек
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - bootstrap.memory_lock=true
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - backend-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.14.3
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - backend-network
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.14.3
+    ports:
+      - "5044:5044"
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/config:/usr/share/logstash/config
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - backend-network
+
+  # Микросервисы
+  apigateway:
+    image: ${DOCKER_REGISTRY:-apigateway}:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: Api Gateway/ApiGateway/Dockerfile
+    ports:
+      - "6000:6000"
+      - "6010:6010"
+    volumes:
+      - ./Api Gateway/ApiGateway/certs:/app/certs
+    env_file: .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTPS_PORTS=6010
+      - ASPNETCORE_HTTP_PORTS=6000
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/apigateway.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+    depends_on:
+      - authservice
+      - userservice
+      - orderservice
+      - productservice
+    networks:
+      - backend-network
 
   authservice:
-    image: authservice:release
-    env_file:
-      - .env
+    image: ${DOCKER_REGISTRY:-authservice}:${TAG:-latest}
     build:
       context: .
       dockerfile: Microservices/Authorization Service/Services.Authorization.WebAPI/Dockerfile
+      args:
+        - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "6001:6001"
+      - "6011:6011"
+    volumes:
+      - ./Microservices/Authorization Service/Services.Authorization.WebAPI/certs:/app/certs
+    env_file: .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - AUTH_DB_CONNECTION_STRING=${AUTH_DB_CONNECTION_STRING}
+      - ASPNETCORE_HTTPS_PORTS=6011
+      - ASPNETCORE_HTTP_PORTS=6001
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/authservice.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+      - AUTH_DB_CONNECTION_STRING=Host=authservicedb;Port=5432;Database=${AUTH_DB_NAME};Username=${DB_USERNAME};Password=${DB_PASSWORD}
       - JWT_KEY=${JWT_KEY}
       - JWT_EXPIRED_TIME=${JWT_EXPIRED_TIME}
     depends_on:
       authservicedb:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - backend-network
 
   userservice:
-    image: userservice:release
-    env_file:
-      - .env
+    image: ${DOCKER_REGISTRY:-userservice}:${TAG:-latest}
     build:
       context: .
       dockerfile: Microservices/User Service/Services.User.WebAPI/Dockerfile
+      args:
+        - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "6002:6002"
+      - "6012:6012"
+    volumes:
+      - ./Microservices/User Service/Services.User.WebAPI/certs:/app/certs
+    env_file: .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - USER_DB_CONNECTION_STRING=${USER_DB_CONNECTION_STRING}
-      - USER_HANGFIRE_DB_CONNECTION_STRING=${USER_HANGFIRE_DB_CONNECTION_STRING}
+      - ASPNETCORE_HTTPS_PORTS=6012
+      - ASPNETCORE_HTTP_PORTS=6002
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/userservice.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+      - USER_DB_CONNECTION_STRING=Host=userservicedb;Port=5432;Database=${USER_DB_NAME};Username=${DB_USERNAME};Password=${DB_PASSWORD}
+      - USER_HANGFIRE_DB_CONNECTION_STRING=Host=userservicehangfiredb;Port=5432;Database=${USER_HANGFIRE_DB_NAME};Username=${DB_USERNAME};Password=${DB_PASSWORD}
       - JWT_KEY=${JWT_KEY}
       - JWT_EXPIRED_TIME=${JWT_EXPIRED_TIME}
     depends_on:
@@ -154,103 +316,83 @@ services:
         condition: service_healthy
       userservicehangfiredb:
         condition: service_healthy
+    networks:
+      - backend-network
 
   orderservice:
-    image: orderservice:release
-    env_file:
-      - .env
+    image: ${DOCKER_REGISTRY:-orderservice}:${TAG:-latest}
     build:
       context: .
       dockerfile: Microservices/Order Service/Services.Order.WebAPI/Dockerfile
+      args:
+        - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "6003:6003"
+      - "6013:6013"
+    volumes:
+      - ./Microservices/Order Service/Services.Order.WebAPI/certs:/app/certs
+    env_file: .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ORDER_DB_CONNECTION_STRING=${ORDER_DB_CONNECTION_STRING}
-      - ORDER_HANGFIRE_DB_CONNECTION_STRING=${ORDER_HANGFIRE_DB_CONNECTION_STRING}
+      - ASPNETCORE_HTTPS_PORTS=6013
+      - ASPNETCORE_HTTP_PORTS=6003
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/orderservice.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+      - ORDER_DB_CONNECTION_STRING=Host=orderservicedb;Port=5432;Database=${ORDER_DB_NAME};Username=${DB_USERNAME};Password=${DB_PASSWORD}
+      - ORDER_HANGFIRE_DB_CONNECTION_STRING=Host=orderservicehangfiredb;Port=5432;Database=${ORDER_HANGFIRE_DB_NAME};Username=${DB_USERNAME};Password=${DB_PASSWORD}
       - JWT_KEY=${JWT_KEY}
       - JWT_EXPIRED_TIME=${JWT_EXPIRED_TIME}
+      - RabbitMq__HostName=rabbitmq
+      - RabbitMq__UserName=${RABBITMQ_USER:-guest}
+      - RabbitMq__Password=${RABBITMQ_PASS:-guest}
     depends_on:
       orderservicedb:
         condition: service_healthy
       orderservicehangfiredb:
         condition: service_healthy
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
+    networks:
+      - backend-network
 
   productservice:
-    image: productservice:release
+    image: ${DOCKER_REGISTRY:-productservice}:${TAG:-latest}
     build:
       context: .
       dockerfile: Microservices/Product Service/Services.Product.WebAPI/Dockerfile
+      args:
+        - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "6004:6004"
-    env_file:
-      - .env
+      - "6014:6014"
+    volumes:
+      - ./Microservices/Product Service/Services.Product.WebAPI/certs:/app/certs
+    env_file: .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - PRODUCT_HANGFIRE_DB_CONNECTION_STRING=${PRODUCT_HANGFIRE_DB_CONNECTION_STRING}
+      - ASPNETCORE_HTTPS_PORTS=6014
+      - ASPNETCORE_HTTP_PORTS=6004
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/productservice.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+      - PRODUCT_HANGFIRE_DB_CONNECTION_STRING=Host=productservicehangfiredb;Port=5432;Database=${PRODUCT_HANGFIRE_DB_NAME};Username=${DB_USERNAME};Password=${DB_PASSWORD}
       - MongoDb__ConnectionString=mongodb://mongodb:27017
-      - Redis__ConnectionString=redis
-      - RabbitMqOptions__UserName=guest
-      - RabbitMqOptions__Password=guest
-      - RabbitMqOptions__HostName=rabbitmq
+      - Redis__ConnectionString=redis:6379
+      - RabbitMq__HostName=rabbitmq
+      - RabbitMq__UserName=${RABBITMQ_USER:-guest}
+      - RabbitMq__Password=${RABBITMQ_PASS:-guest}
       - JWT_KEY=${JWT_KEY}
       - JWT_EXPIRED_TIME=${JWT_EXPIRED_TIME}
+      - Elasticsearch__Url=http://elasticsearch:9200
     depends_on:
       productservicehangfiredb:
         condition: service_healthy
       mongodb:
         condition: service_started
       redis:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
-        condition: service_started
-    
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
-    container_name: elasticsearch
-    env_file:
-      - .env
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - ES_JAVA_OPTS=-Xms512m -Xms512m
-      - xpack.security.http.ssl.enabled=false
-    ports:
-      - "9200:9200"
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9200"]
-      interval: 10s
-      retries: 3
-      start_period: 10s
-      timeout: 5s
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.14.3
-    container_name: kibana
-    env_file:
-      - .env
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.14.3
-    container_name: logstash
-    env_file:
-      - .env
-    ports:
-      - "5044:5044"
-    volumes:
-      - ./logstash/pipeline:/usr/share/logstash/pipeline
-    depends_on:
-      - elasticsearch
-
-volumes:
-  postgres_data:
-  mongo_data:
-  elasticsearch-data:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - backend-network

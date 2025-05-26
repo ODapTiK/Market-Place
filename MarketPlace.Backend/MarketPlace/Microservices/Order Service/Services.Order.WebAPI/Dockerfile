@@ -4,8 +4,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 6003
-
+EXPOSE 6003 
+EXPOSE 6013
 
 # Этот этап используется для сборки проекта службы
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
@@ -29,4 +29,12 @@ RUN dotnet publish "./Services.Order.WebAPI.csproj" -c $BUILD_CONFIGURATION -o /
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+COPY ["Microservices/Order Service/Services.Order.WebAPI/certs/orderservice.pfx", "/https/aspnetapp.pfx"]
+
+# Переменные окружения для Kestrel
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+ENV ASPNETCORE_URLS=http://+:6003;https://+:6013
+
 ENTRYPOINT ["dotnet", "Services.Order.WebAPI.dll"]

@@ -10,5 +10,16 @@ namespace UserService
         {
             return await _context.Admins.Where(x => true).ToListAsync(cancellationToken);
         }
+
+        public async Task AddNotificationAsync(Admin manufacturer, Notification notification, CancellationToken cancellationToken)
+        {
+            manufacturer.AdminNotifications.Add(notification);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public override async Task<Admin?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Admins.Include(x => x.AdminNotifications).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
     }
 }

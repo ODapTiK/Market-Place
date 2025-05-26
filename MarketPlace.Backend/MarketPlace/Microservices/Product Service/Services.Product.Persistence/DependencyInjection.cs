@@ -19,6 +19,7 @@ namespace ProductService
             BsonSerializer.RegisterSerializer<Guid>(new GuidSerializer(GuidRepresentation.Standard));
             services.AddScoped<IJwtOptions, JwtOptions>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IBackgroundTaskService, BackgroundTaskService>();
 
             services.AddSingleton<IConnectionMultiplexer>(serviceProvider =>
             {

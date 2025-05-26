@@ -13,19 +13,23 @@ import { CartPageComponent } from './pages/cart-page/cart-page.component';
 import { adminAccessGuard } from './auth/admin-access.guard';
 import { AdminLayoutComponent } from './common-ui/admin-layout/admin-layout.component';
 import { AdminProfilePageComponent } from './pages/admin-profile-page/admin-profile-page.component';
+import { UserNotificationPageComponent } from './pages/user-notification-page/user-notification-page.component';
+import { AdminNotificationPageComponent } from './pages/admin-notification-page/admin-notification-page.component';
 
 export const routes: Routes = [
     {path:'user', component: UserLayoutComponent, canActivate: [userAccessGuard], children: [
         {path:'profile', component: UserProfilePageComponent},
         {path:'catalog', component: CatalogPageComponent},
-        {path:'cart', component: CartPageComponent}
+        {path:'cart', component: CartPageComponent},
+        {path:'notifications', component: UserNotificationPageComponent}
     ]},
     {path:'manufacturer', component: ManufacturerLayoutComponent, canActivate: [manufacturerAccessGuard], children: [
         {path:'profile', component: ManufacturerProfilePageComponent},
         {path:'notifications', component: ManufacturerNotificationsPageComponent}
     ]},
     {path:'admin', component: AdminLayoutComponent, canActivate: [adminAccessGuard], children: [
-        {path:'profile', component: AdminProfilePageComponent}
+        {path:'profile', component: AdminProfilePageComponent},
+        {path:'notifications', component: AdminNotificationPageComponent}
     ]},
     {path:'login', component: LoginPageComponent},
     {path:'register', component: RegisterPageComponent},

@@ -14,6 +14,7 @@ import { ImagePipe } from '../../data/pipes/image.pipe';
 export class ProductCardComponent {
   @Input() product!: Product;
   @Input() isInCart: boolean = false;
+  @Input() isManufacturerView: boolean = false;
   @Output() addToCart = new EventEmitter<void>();
   @Output() removeFromCart = new EventEmitter<void>();
   @Output() openModal = new EventEmitter<void>();

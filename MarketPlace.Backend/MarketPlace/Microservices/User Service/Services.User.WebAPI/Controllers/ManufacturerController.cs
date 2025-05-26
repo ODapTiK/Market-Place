@@ -9,14 +9,20 @@ namespace UserService
         private readonly IUpdateManufacturerUseCase _updateManufacturerUseCase;
         private readonly IGetManufacturerInfoUseCase _getManufacturerInfoUseCase;
         private readonly IUpdateManufacturerLogoUseCase _updateManufacturerLogoUseCase;
+        private readonly IReadManufacturerNotificationUseCase _readManufacturerNotificationUseCase;
+        private readonly IGetManufacturerUnreadNotificationsCountUseCase _getManufacturerUnreadNotificationsCountUseCase;
 
         public ManufacturerController(IUpdateManufacturerUseCase updateManufacturerUseCase, 
                                       IGetManufacturerInfoUseCase getManufacturerInfoUseCase,
-                                      IUpdateManufacturerLogoUseCase updateManufacturerLogoUseCase)
+                                      IUpdateManufacturerLogoUseCase updateManufacturerLogoUseCase,
+                                      IReadManufacturerNotificationUseCase readManufacturerNotificationUseCase,
+                                      IGetManufacturerUnreadNotificationsCountUseCase getManufacturerUnreadNotificationsCountUseCase)
         {
             _updateManufacturerUseCase = updateManufacturerUseCase;
             _getManufacturerInfoUseCase = getManufacturerInfoUseCase;
             _updateManufacturerLogoUseCase = updateManufacturerLogoUseCase;
+            _readManufacturerNotificationUseCase = readManufacturerNotificationUseCase;
+            _getManufacturerUnreadNotificationsCountUseCase = getManufacturerUnreadNotificationsCountUseCase;
         }
 
         [Authorize(Policy = "Manufacturer")]
@@ -29,7 +35,7 @@ namespace UserService
         }
 
         [Authorize(Policy = "Manufacturer")]
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> UpdateManufaturer([FromBody] ManufacturerDTO manufacturerDTO, CancellationToken cancellationToken)
         {
             manufacturerDTO.Id = UserId;
@@ -39,12 +45,30 @@ namespace UserService
         }
 
         [Authorize(Policy = "Manufacturer")]
-        [HttpPut("logo")]
+        [HttpPatch("logo")]
         public async Task<IActionResult> UpdateManufaturerLogo([FromBody] ManufacturerLogoDTO logo, CancellationToken cancellationToken)
         {
             await _updateManufacturerLogoUseCase.Execute(UserId, logo.base64Logo, cancellationToken);
 
             return Ok();
+        }
+
+        [Authorize(Policy = "Manufacturer")]
+        [HttpPatch("notifications/{id}")]
+        public async Task<IActionResult> ReadUserMessage(Guid id, CancellationToken cancellationToken)
+        {
+            await _readManufacturerNotificationUseCase.Execute(UserId, id, cancellationToken);
+
+            return Ok();
+        }
+
+        [Authorize(Policy = "Manufacturer")]
+        [HttpGet("notifications/unread-count")]
+        public async Task<ActionResult<int>> GetUnreadNotificationsCount(CancellationToken cancellationToken)
+        {
+            var count = await _getManufacturerUnreadNotificationsCountUseCase.Execute(UserId, cancellationToken);
+
+            return Ok(count);
         }
     }
 }

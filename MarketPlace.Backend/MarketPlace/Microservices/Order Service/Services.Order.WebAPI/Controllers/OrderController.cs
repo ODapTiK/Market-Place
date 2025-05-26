@@ -27,7 +27,7 @@ namespace OrderService
         }
 
         [Authorize]
-        [HttpPut]
+        [HttpPatch]
         public async Task<ActionResult<List<Order>>> GetOrdersByIdList([FromBody] GetOrdersByIdListDTO getOrdersByIdListDTO, CancellationToken cancellationToken)
         {
             var query = new GetOrdersByIdListQuery()
@@ -40,7 +40,7 @@ namespace OrderService
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> SetOrderStatusReady(Guid id, CancellationToken cancellationToken)
         {
             var command = new SetOrderStatusReadyCommand()

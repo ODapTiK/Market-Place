@@ -12,6 +12,8 @@ service OrderUserService {
     rpc DeleteUserOrders(DeleteUserOrdersRequest) returns (Response);
     rpc AddOrderToControlAdmin(AddOrderToControlAdminRequest) returns (Response);
     rpc RemoveObsoleteOrderFromUserAndAdmin(RemoveObsoleteOrderFromUserAndAdminRequest) returns (Response);
+    rpc CreateUpdateProductNotification(UpdateProductNotificationsRequest) returns (Response);
+    rpc CreateOrderReadyNotification(OrderReadyRequest) returns (Response);
 }
 
 message OrderRequest {
@@ -36,6 +38,16 @@ message RemoveObsoleteOrderFromUserAndAdminRequest{
     string user_id = 1;
     string admin_id = 2;
     string order_id = 3;
+}
+
+message UpdateProductNotificationsRequest{
+    repeated string user_id = 1;
+    string product_id = 2;
+}
+
+message OrderReadyRequest{
+    string user_id = 1;
+    string order_id = 2;
 }
 
 message Response {

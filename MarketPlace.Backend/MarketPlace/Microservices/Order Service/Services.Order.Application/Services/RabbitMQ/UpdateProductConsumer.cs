@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Proto.OrderUser;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -12,10 +14,13 @@ namespace OrderService
         private readonly string _queueName;
         private readonly IChannel _channel;
         private readonly IServiceProvider _serviceProvider;
+        private readonly OrderUserService.OrderUserServiceClient _orderUserServiceClient;
         private readonly RabbitMqOptions _rabbitMqOptions;
 
-        public UpdateProductConsumer(IServiceProvider serviceProvider, IOptions<RabbitMqOptions> options)
+        public UpdateProductConsumer(IServiceProvider serviceProvider, IOptions<RabbitMqOptions> options, OrderUserService.OrderUserServiceClient orderUserServiceClient)
         {
+            _orderUserServiceClient = orderUserServiceClient;
+            _serviceProvider = serviceProvider;
             _rabbitMqOptions = options.Value;
             _serviceProvider = serviceProvider;
             _queueName = "UpdatedProducts";
@@ -48,11 +53,21 @@ namespace OrderService
                     var ordersWithUpdatedProducts = await orderRepository
                         .GetManyOrdersAsync(x => x.OrderPoints.Any(x => x.ProductId.Equals(updatedProductId)), stoppingToken);
 
-                    var usersIdToWarn = ordersWithUpdatedProducts.Select(x => x.UserId).Distinct().ToList();
+                    var usersIdToWarn = ordersWithUpdatedProducts.Select(x => x.UserId.ToString()).Distinct().ToList();
 
                     Console.WriteLine("message get");
-                    //TO DO 
-                    //Send message for each user whose order has been changed
+
+                    var notificationRpcRequest = new UpdateProductNotificationsRequest()
+                    {
+                        ProductId = updatedProductId.ToString()
+                    };
+
+                    notificationRpcRequest.UserId.AddRange(usersIdToWarn);
+
+                    var notificationRpcResponse = await _orderUserServiceClient.CreateUpdateProductNotificationAsync(notificationRpcRequest);
+
+                    if(!notificationRpcResponse.Success)
+                        throw new GRPCRequestFailException(notificationRpcResponse.Message);
                 }
                 await _channel.BasicAckAsync(ea.DeliveryTag, false);
             };

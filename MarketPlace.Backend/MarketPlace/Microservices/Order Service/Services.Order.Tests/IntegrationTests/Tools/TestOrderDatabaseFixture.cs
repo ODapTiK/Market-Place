@@ -1,37 +1,58 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Testcontainers.PostgreSql;
 
 namespace OrderService
 {
-    public class TestOrderDatabaseFixture : IDisposable
+    public class TestOrderDatabaseFixture : IAsyncLifetime
     {
-        public OrderDbContext _context { get; private set; }
-        private readonly IServiceScope _scope;
-        private bool _isDisposed = false;
+        private readonly PostgreSqlContainer _postgreSqlContainer;
+        private IServiceProvider _serviceProvider;
+        private IServiceScope _scope;
+
+        public OrderDbContext _context => _scope.ServiceProvider.GetRequiredService<OrderDbContext>();
 
         public TestOrderDatabaseFixture()
         {
-            if(_isDisposed)
-                throw new ObjectDisposedException(ToString());
+            // Настройка контейнера PostgreSQL
+            _postgreSqlContainer = new PostgreSqlBuilder()
+                .WithImage("postgres:15-alpine")
+                .WithDatabase("test_order_db")
+                .WithUsername("postgres")
+                .WithPassword("postgres")
+                .WithCleanUp(true)
+                .Build();
+        }
+
+        public async Task InitializeAsync()
+        {
+            // Запуск контейнера
+            await _postgreSqlContainer.StartAsync();
 
             var services = new ServiceCollection();
 
+            // Настройка DbContext с подключением к контейнеру
             services.AddDbContext<OrderDbContext>(options =>
-                options.UseInMemoryDatabase("TestDatabase"));
+                options.UseNpgsql(_postgreSqlContainer.GetConnectionString(),
+                    npgsqlOptions => npgsqlOptions.MigrationsAssembly(typeof(OrderDbContext).Assembly.FullName)),
+                ServiceLifetime.Scoped);
 
-            var serviceProvider = services.BuildServiceProvider();
-            _scope = serviceProvider.CreateScope();
-            _context = serviceProvider.GetRequiredService<OrderDbContext>();
+            _serviceProvider = services.BuildServiceProvider();
+            _scope = _serviceProvider.CreateScope();
+
+            // Применение миграций
+            await _context.Database.MigrateAsync();
         }
-        public void Dispose()
+
+        public async Task DisposeAsync()
         {
-            if (!_isDisposed)
+            if (_scope != null)
             {
-                _isDisposed = true;
-                _context.Database.EnsureDeleted();
-                _context.Dispose();
-                _scope?.Dispose();
+                await _context.Database.EnsureDeletedAsync();
+                _scope.Dispose();
             }
+
+            await _postgreSqlContainer.DisposeAsync();
         }
     }
 }

@@ -30,7 +30,8 @@ export class AdminProfilePageComponent {
     name: '',
     surname: '',
     logo: null,
-    adminControlOrdersId: []
+    adminControlOrdersId: [],
+    adminNotifications: []
   };
   
   originalProfile: AdminProfile = { ...this.profile };

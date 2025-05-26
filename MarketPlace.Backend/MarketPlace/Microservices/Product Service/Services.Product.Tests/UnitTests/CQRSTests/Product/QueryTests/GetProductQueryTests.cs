@@ -7,12 +7,18 @@ namespace ProductService
     public class GetProductQueryTests
     {
         private readonly Mock<IProductRepository> _productRepositoryMock;
+        private readonly Mock<IProductRedisService> _redisServiceMock;
+        private readonly Mock<IBackgroundTaskService> _backgroundTaskServiceMock;
         private readonly GetProductQueryHandler _handler;
 
         public GetProductQueryTests()
         {
             _productRepositoryMock = new Mock<IProductRepository>();
-            _handler = new GetProductQueryHandler(_productRepositoryMock.Object);
+            _redisServiceMock = new Mock<IProductRedisService>();
+            _backgroundTaskServiceMock = new Mock<IBackgroundTaskService>();
+            _handler = new GetProductQueryHandler(_productRepositoryMock.Object,
+                                                  _redisServiceMock.Object,
+                                                  _backgroundTaskServiceMock.Object);
         }
 
         [Fact]

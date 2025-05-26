@@ -7,5 +7,6 @@ namespace UserService
         public Task AddOrderAsync(User user, Guid orderId, CancellationToken cancellationToken);
         public Task RemoveOrderAsync(User user, Guid orderId, CancellationToken cancellationToken);
         public Task<List<User>> GetManyAsync(Expression<Func<User, bool>> predicate, CancellationToken cancellationToken);
+        public Task AddNotificationAsync(User user, Notification notification, CancellationToken cancellationToken);
     }
 }

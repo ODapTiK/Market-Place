@@ -21,5 +21,16 @@ namespace UserService
         {
             return await _context.Manufacturers.Where(x => true).ToListAsync(cancellationToken);
         }
+
+        public async Task AddNotificationAsync(Manufacturer manufacturer, Notification notification, CancellationToken cancellationToken)
+        {
+            manufacturer.ManufacturerNotifications.Add(notification);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public override async Task<Manufacturer?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Manufacturers.Include(x => x.ManufacturerNotifications).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
     }
 }

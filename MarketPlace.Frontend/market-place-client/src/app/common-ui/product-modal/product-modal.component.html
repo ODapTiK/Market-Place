@@ -51,7 +51,7 @@
             </div>
           </div>
 
-          <div class="cart-actions">
+          <div *ngIf="!isManufacturerView" class="cart-actions">
             <button *ngIf="!isInCart" 
                     class="button button-add" 
                     (click)="addToCart.emit()">

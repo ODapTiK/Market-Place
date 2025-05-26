@@ -21,7 +21,18 @@ namespace UserService
 
         public async Task<List<User>> GetManyAsync(Expression<Func<User, bool>> predicate, CancellationToken cancellationToken)
         {
-            return await _context.Users.Where(predicate).ToListAsync(cancellationToken);
+            return await _context.Users.Include(x => x.UserNotifications).Where(predicate).ToListAsync(cancellationToken);
+        }
+
+        public override async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Users.Include(x => x.UserNotifications).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
+
+        public async Task AddNotificationAsync(User user, Notification notification, CancellationToken cancellationToken)
+        {
+            user.UserNotifications.Add(notification);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -31,11 +31,23 @@ namespace ProductService
                 ManufacturerId = { }
             };
 
-            var mockCall = CallHelpers.CreateAsyncUnaryCall(manufacturersResponse);
+            var manufacturerMockCall = CallHelpers.CreateAsyncUnaryCall(manufacturersResponse);
             _productUserServiceClientMock
                 .Setup(x => x.GetManufacturersAsync(
                     It.IsAny<ManufacturersRequest>(), null, null, CancellationToken.None))
-                .Returns(mockCall);
+                .Returns(manufacturerMockCall);
+
+            var dailyReportResponse = new ProductResponse()
+            {
+                Success = true,
+                Message = "Success test"
+            };
+
+            var dailyReportMockCall = CallHelpers.CreateAsyncUnaryCall(dailyReportResponse);
+            _productUserServiceClientMock
+                .Setup(x => x.CreateManufacturersDailyReportAsync(
+                    It.IsAny<ManufacturersDailyReportRequest>(), null, null, CancellationToken.None))
+                .Returns(dailyReportMockCall);
 
             var cancellationToken = new CancellationToken();
 
@@ -78,6 +90,18 @@ namespace ProductService
                 .Setup(x => x.GetManufacturersAsync(
                     It.IsAny<ManufacturersRequest>(), null, null, CancellationToken.None))
                 .Returns(mockCall);
+
+            var dailyReportResponse = new ProductResponse()
+            {
+                Success = true,
+                Message = "Success test"
+            };
+
+            var dailyReportMockCall = CallHelpers.CreateAsyncUnaryCall(dailyReportResponse);
+            _productUserServiceClientMock
+                .Setup(x => x.CreateManufacturersDailyReportAsync(
+                    It.IsAny<ManufacturersDailyReportRequest>(), null, null, CancellationToken.None))
+                .Returns(dailyReportMockCall);
 
             _productRepositoryMock.Setup(x => x.GetManyProductsAsync(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(products);

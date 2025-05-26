@@ -41,8 +41,12 @@ namespace ProductService
             // Arrange
             var key = "nonexistent:key";
 
-            // Act & Assert
-            await Assert.ThrowsAsync<EntityNotFoundException>(async () => await _redisService.GetCacheValue(key));
+            // Act 
+
+            var entity = await _redisService.GetCacheValue(key);
+
+            //Assert
+            Assert.Null(entity);
         }
 
         [Fact]
@@ -57,7 +61,7 @@ namespace ProductService
             await _redisService.RemoveCacheValue(key);
 
             // Assert
-            await Assert.ThrowsAsync<EntityNotFoundException>(async () => await _redisService.GetCacheValue(key));
+            Assert.Null(await _redisService.GetCacheValue(key));
         }
 
         [Fact]

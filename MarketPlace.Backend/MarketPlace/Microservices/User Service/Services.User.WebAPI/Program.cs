@@ -91,7 +91,7 @@ namespace UserService
             services.AddGrpc();
             services.AddGrpcClient<OrderUserService.OrderUserServiceClient>(options =>
             {
-                options.Address = new Uri("https://localhost:6013");
+                options.Address = new Uri("https://orderservice:6013");
             }).ConfigurePrimaryHttpMessageHandler(() =>
             {
                 var handler = new HttpClientHandler();
@@ -158,30 +158,37 @@ namespace UserService
                     Log.Fatal(exception, "An error occured while app initialization");
                 }
             }
+            var webSocketOptions = new WebSocketOptions
+            {
+                KeepAliveInterval = TimeSpan.FromMinutes(2)
+            };
+
+            webSocketOptions.AllowedOrigins.Add("http://localhost:4200");
+
+            app.UseWebSockets(webSocketOptions);
 
             app.UseExceptionHandler();
             app.UseRouting();
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseCors("AllowAll");
             app.UseSwagger();
             app.UseSwaggerUI(config =>
             {
                 config.RoutePrefix = string.Empty;
-                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Event App API V1");
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Market Place API V1");
             });
 
-            //app.UseHangfireServer();
             app.UseHangfireDashboard();
 
             var manager = new RecurringJobManager();
-            manager.AddOrUpdate<BirthdayGreetingsGenerator>("birthday-greetings", x => x.GenerateBirthdayGreetings(default), Cron.Daily);
+            manager.AddOrUpdate<BirthdayGreetingsGenerator>("birthday-greetings", x => x.GenerateBirthdayGreetings(default), Cron.Daily());
 
             app.MapControllers();
             app.MapGrpcService<AuthServiceImpl>();
             app.MapGrpcService<OrderServiceImpl>();
             app.MapGrpcService<ProductServiceImpl>();
-
+            app.MapHub<NotificationHub>("/notificationHub");
 
             app.Run();
         }

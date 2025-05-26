@@ -15,9 +15,10 @@
                 </a>
             </li>
             <li>
-                <a class="sidebar-item">
+                <a routerLink='notifications' class="sidebar-item">
                     <svg icon="notification" class="sidebar-item-icon"></svg>
                     <span>Уведомления</span>
+                    <span *ngIf="unreadCount > 0" class="badge">{{ unreadCount }}</span>
                 </a>
             </li>
             <li>

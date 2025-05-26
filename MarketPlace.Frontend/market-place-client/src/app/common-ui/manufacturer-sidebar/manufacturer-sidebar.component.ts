@@ -3,11 +3,12 @@ import { SvgIconComponent } from '../svg-icon/svg-icon.component';
 import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../data/services/user.service';
 import { AuthService } from '../../auth/auth.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-manufacturer-sidebar',
-  imports: [SvgIconComponent, RouterModule],
+  imports: [CommonModule, SvgIconComponent, RouterModule],
   templateUrl: './manufacturer-sidebar.component.html',
   styleUrl: './manufacturer-sidebar.component.scss'
 })
@@ -16,13 +17,42 @@ export class ManufacturerSidebarComponent {
   router = inject(Router);
   authService = inject(AuthService)
   
+  unreadCount = 0;
+  private notificationSub: Subscription | undefined;
+  private notificationReadSub: Subscription | undefined;
+
   manufacturerProfile = this.userService.manufacturerProfile;
 
   logout() {
     this.authService.logout();
+    this.authService.deleteTokens();
   }
 
   ngOnInit() {
     firstValueFrom(this.userService.getManufacturerProfile());
+    this.userService.getManufacturerUnreadCount().subscribe((count: number) => {
+      this.unreadCount = count;
+    });
+    this.notificationSub = this.userService.notificationReceived.subscribe({
+      next: () => {
+        this.unreadCount++;
+      },
+      error: (err) => {
+        console.error('Notification error', err);
+      }
+    });
+    this.notificationReadSub = this.userService.onManufacturerNotificationRead().subscribe({
+      next: () => {
+        this.unreadCount = Math.max(0, this.unreadCount - 1); 
+      },
+      error: (err) => {
+        console.error('Notification read error', err);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.notificationSub?.unsubscribe();
+    this.notificationReadSub?.unsubscribe(); 
   }
 }

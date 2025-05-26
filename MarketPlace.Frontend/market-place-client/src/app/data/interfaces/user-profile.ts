@@ -1,3 +1,5 @@
+import { Notification } from "./notification";
+
 export interface UserProfile {
     id: string;
     name: string;
@@ -5,4 +7,5 @@ export interface UserProfile {
     birthDate: string;
     logo?: string | null;
     userOrdersId: string[];
+    userNotifications: Notification[];
 }

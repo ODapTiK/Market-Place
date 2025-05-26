@@ -1,8 +1,23 @@
 # Игнорируем папки bin и obj в любых проектах
 **/bin/
 **/obj/
+**/ssl/
+**/certs/
+**/keys/
 
 # Дополнительные игнорируемые файлы и каталоги
+
+*.crt
+*.pem
+*.key
+*.pfx
+*.cer
+*.der
+*.csr
+*.p12
+*.keystore
+*.jks
+*.truststore
 *.env
 *.user
 *.suo
