@@ -3,6 +3,7 @@ using FluentAssertions;
 using Proto.OrderUser;
 using Bogus;
 using Grpc.Core;
+using Microsoft.AspNetCore.SignalR;
 
 namespace UserService
 {
@@ -12,6 +13,9 @@ namespace UserService
         private readonly Mock<IRemoveUserOrderUseCase> _removeUserOrderUseCaseMock;
         private readonly Mock<IAddOrderToControlAdminUseCase> _addOrderToControlAdminUseCaseMock;
         private readonly Mock<IRemoveControlAdminOrderUseCase> _removeControlAdminOrderUseCaseMock;
+        private readonly Mock<IAddUserNotificationUseCase> _addUserNotificationUseCase;
+        private readonly Mock<IAddAdminNotificationUseCase> _addAdminNotificationUseCaseMock;
+        private readonly Mock<IHubContext<NotificationHub>> _notificationHub;
         private readonly OrderServiceImpl _orderService;
         private readonly Faker<OrderRequest> _requestFaker;
         public OrderServiceImplTests()
@@ -20,6 +24,14 @@ namespace UserService
             _removeUserOrderUseCaseMock = new Mock<IRemoveUserOrderUseCase>();
             _addOrderToControlAdminUseCaseMock = new Mock<IAddOrderToControlAdminUseCase>();
             _removeControlAdminOrderUseCaseMock = new Mock<IRemoveControlAdminOrderUseCase>();
+            _addUserNotificationUseCase = new Mock<IAddUserNotificationUseCase>();
+            _addAdminNotificationUseCaseMock = new Mock<IAddAdminNotificationUseCase>();
+            _notificationHub = new Mock<IHubContext<NotificationHub>>();
+
+            var groupMock = new Mock<IGroupManager>();
+            _notificationHub.Setup(x => x.Groups).Returns(groupMock.Object);
+
+
             _requestFaker = new Faker<OrderRequest>()
                 .RuleFor(x => x.UserId, Guid.NewGuid().ToString())
                 .RuleFor(x => x.OrderId, Guid.NewGuid().ToString());
@@ -28,7 +40,10 @@ namespace UserService
                 _addUserOrderUseCaseMock.Object,
                 _removeUserOrderUseCaseMock.Object,
                 _addOrderToControlAdminUseCaseMock.Object,
-                _removeControlAdminOrderUseCaseMock.Object);
+                _removeControlAdminOrderUseCaseMock.Object,
+                _addUserNotificationUseCase.Object,
+                _addAdminNotificationUseCaseMock.Object,
+                _notificationHub.Object);
         }
 
         [Fact]
@@ -122,6 +137,9 @@ namespace UserService
             };
             var context = new Mock<ServerCallContext>();
 
+            var clientGroupMock = new Mock<IClientProxy>();
+            _notificationHub.Setup(x => x.Clients.Group(It.IsAny<string>()))
+                          .Returns(clientGroupMock.Object);
             // Act
             var response = await _orderService.AddOrderToControlAdmin(request, context.Object);
 

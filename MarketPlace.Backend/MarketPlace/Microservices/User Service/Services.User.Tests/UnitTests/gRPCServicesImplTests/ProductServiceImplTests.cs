@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Proto.ProductUser;
 using Bogus;
+using Microsoft.AspNetCore.SignalR;
 
 namespace UserService
 {
@@ -10,6 +11,8 @@ namespace UserService
         private readonly Mock<IAddManufacturerProductUseCase> _addManufacturerProductUseCaseMock;
         private readonly Mock<IRemoveManufacturerProductUseCase> _removeManufacturerProductUseCaseMock;
         private readonly Mock<IGetManufacturersIdUseCase> _getManufacturersIdUseCaseMock;
+        private readonly Mock<IAddManufacturerNotificationUseCase> _addManufacturerNotificationUseCaseMock;
+        private readonly Mock<IHubContext<NotificationHub>> _hubContext;
         private readonly ProductServiceImpl _productService;
         private readonly Faker<ProductRequest> _requestFaker;
 
@@ -18,6 +21,8 @@ namespace UserService
             _addManufacturerProductUseCaseMock = new Mock<IAddManufacturerProductUseCase>();
             _removeManufacturerProductUseCaseMock = new Mock<IRemoveManufacturerProductUseCase>();
             _getManufacturersIdUseCaseMock = new Mock<IGetManufacturersIdUseCase>();
+            _addManufacturerNotificationUseCaseMock = new Mock<IAddManufacturerNotificationUseCase>();
+            _hubContext = new Mock<IHubContext<NotificationHub>>();
 
             _requestFaker = new Faker<ProductRequest>()
                 .RuleFor(x => x.ManufacturerId, Guid.NewGuid().ToString())
@@ -26,7 +31,9 @@ namespace UserService
             _productService = new ProductServiceImpl(
                 _addManufacturerProductUseCaseMock.Object,
                 _removeManufacturerProductUseCaseMock.Object,
-                _getManufacturersIdUseCaseMock.Object);
+                _getManufacturersIdUseCaseMock.Object,
+                _addManufacturerNotificationUseCaseMock.Object,
+                _hubContext.Object);
         }
 
         [Fact]

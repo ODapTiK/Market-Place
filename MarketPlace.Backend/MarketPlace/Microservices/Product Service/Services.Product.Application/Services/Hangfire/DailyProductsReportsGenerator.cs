@@ -1,4 +1,5 @@
-﻿using Proto.ProductUser;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Proto.ProductUser;
 
 namespace ProductService
 {
@@ -18,6 +19,7 @@ namespace ProductService
 
         public async Task GenerateDailyReports(CancellationToken cancellationToken)
         {
+            Console.WriteLine("Daily report");
             var rpcResponse = await _productUserServiceClient.GetManufacturersAsync(new ManufacturersRequest());
 
             if (!rpcResponse.Success)
@@ -25,21 +27,34 @@ namespace ProductService
 
             var cutoffDate = DateTime.Now.ToUniversalTime().AddHours(-1 * REPORTS_TIME_INTERVAL);
 
-            foreach(var manufacturerId in rpcResponse.ManufacturerId)
-            {
-                var manufacturerProducts = await _productRepository.GetManyProductsAsync(x => x.ManufacturerId.ToString() == manufacturerId, cancellationToken);
+            var dailyReportRpcRequest = new ManufacturersDailyReportRequest();
 
-                var report = new Dictionary<Guid, int>();   
+            foreach (var manufacturerId in rpcResponse.ManufacturerId)
+            {
+                var manufacturerDailyReport = new ManufacturerDailyReport()
+                {
+                    ManufacturerId = manufacturerId,
+                };
+                var manufacturerProducts = await _productRepository.GetManyProductsAsync(x => x.ManufacturerId.ToString() == manufacturerId, cancellationToken);
 
                 foreach(var product in manufacturerProducts)
                 {
                     var viewsLastDay = product.ViewAt.Count(view => view > cutoffDate);
-                    report[product.Id] = viewsLastDay;
+                    var productViews = new ProductViews()
+                    {
+                        Key = product.Id.ToString(),
+                        Value = viewsLastDay
+                    };
+                    manufacturerDailyReport.ProductsViews.Add(productViews);
                 }
-
-                // TO DO
-                //Send notification to each manufacturer
+                
+                dailyReportRpcRequest.Reports.Add(manufacturerDailyReport);
             }
+
+            var dailyReportRpcResponse = await _productUserServiceClient.CreateManufacturersDailyReportAsync(dailyReportRpcRequest);
+
+            if (!dailyReportRpcResponse.Success)
+                throw new GRPCRequestFailException(dailyReportRpcResponse.Message);
         }
     }
 }

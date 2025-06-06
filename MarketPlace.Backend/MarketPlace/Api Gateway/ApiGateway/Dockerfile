@@ -4,8 +4,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
 WORKDIR /app
-EXPOSE 6000
-
+EXPOSE 6000 
+EXPOSE 6010
 
 # Этот этап используется для сборки проекта службы
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
@@ -26,4 +26,12 @@ RUN dotnet publish "./ApiGateway.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+COPY ["Api Gateway/ApiGateway/certs/apigateway.pfx", "/https/aspnetapp.pfx"]
+
+# Переменные окружения для Kestrel
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+ENV ASPNETCORE_URLS=http://+:6000;https://+:6010
+
 ENTRYPOINT ["dotnet", "ApiGateway.dll"]

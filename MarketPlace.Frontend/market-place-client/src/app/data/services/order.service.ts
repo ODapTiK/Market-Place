@@ -24,11 +24,11 @@ export class OrderService {
   }
 
   getOrdersByIdList(payload: {orderIds: string[]}){
-    return this.httpClient.put<Order[]>(`${this.baseApiOrderServiceUrl}/orders`, payload);
+    return this.httpClient.patch<Order[]>(`${this.baseApiOrderServiceUrl}/orders`, payload);
   }
 
   setOrderStatusReady(id: string){
-    return this.httpClient.put(`${this.baseApiOrderServiceUrl}/orders/${id}`, null);
+    return this.httpClient.patch(`${this.baseApiOrderServiceUrl}/orders/${id}`, null);
   }
 
   createOrder(payload: {points: any, controlAdminId: string}) {

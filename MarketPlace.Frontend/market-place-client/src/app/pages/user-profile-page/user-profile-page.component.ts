@@ -13,13 +13,14 @@ import { ProductService } from '../../data/services/product.service';
 import { Review } from '../../data/interfaces/review';
 import { ReviewFormComponent } from '../../common-ui/review-form/review-form.component';
 import { ErrorHandlerService } from '../../data/services/error-handler.service';
+import { Router, RouterModule } from '@angular/router';
 
 const MAX_RETRY_ATTEMPTS = 3;
 
 @Component({
   selector: 'app-user-profile-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, TruncatePipe, ImagePipe, ReviewFormComponent],
+  imports: [CommonModule, FormsModule, DatePipe, TruncatePipe, ImagePipe, ReviewFormComponent, RouterModule],
   templateUrl: './user-profile-page.component.html',
   styleUrls: ['./user-profile-page.component.scss']
 })
@@ -28,6 +29,7 @@ export class UserProfilePageComponent {
   private orderService = inject(OrderService);
   private productService = inject(ProductService);
   private errorHandler = inject(ErrorHandlerService);
+  private router = inject(Router);
 
   profile: UserProfile = {
     id: '',
@@ -35,7 +37,8 @@ export class UserProfilePageComponent {
     surname: '',
     logo: null,
     birthDate: '',
-    userOrdersId: []
+    userOrdersId: [],
+    userNotifications: []
   };
   
   showReviewForm: { [key: string]: boolean } = {};
@@ -232,5 +235,9 @@ export class UserProfilePageComponent {
         this.errorHandler.handleError(err, "Unable to create review");
       }
     });
+  }
+
+  navigateToCatalog() {
+    this.router.navigate(['/user/catalog']);
   }
 }

@@ -79,7 +79,7 @@ namespace AuthorizationService
 
             services.AddGrpcClient<AuthUserService.AuthUserServiceClient>(options =>
             {
-                options.Address = new Uri("https://localhost:6012");
+                options.Address = new Uri("https://userservice:6012");
             }).ConfigurePrimaryHttpMessageHandler(() =>
             {
                 var handler = new HttpClientHandler();
@@ -156,7 +156,7 @@ namespace AuthorizationService
             app.UseSwaggerUI(config =>
             {
                 config.RoutePrefix = string.Empty;
-                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Event App API V1");
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Market Place API V1");
             });
             
             app.MapControllers();

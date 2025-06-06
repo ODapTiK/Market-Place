@@ -1,0 +1,23 @@
+<div class="notifications-container">
+    <h1 class="page-title">Уведомления</h1>
+    
+    <div class="notifications-list">
+      <div *ngFor="let notification of notifications" class="notification-card" [class.unread]="!notification.isRead">
+        <div class="notification-content">
+          <h3 class="notification-title">{{ notification.title }}</h3>
+          <p class="notification-message">{{ notification.message }}</p>
+          <div class="notification-meta">
+            <span class="notification-time">{{ notification.createdAt | date:'dd.MM.yyyy HH:mm' }}</span>
+            <button *ngIf="!notification.isRead" class="mark-as-read" (click)="markAsRead(notification.id)">
+              Отметить как прочитанное
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="notifications.length === 0" class="empty-state">
+        <i class="icon-bell"></i>
+        <p>У вас пока нет уведомлений</p>
+      </div>
+    </div>
+  </div>

@@ -12,6 +12,7 @@ namespace OrderService
         private readonly Mock<IOrderRepository> _orderRepositoryMock;
         private readonly Mock<IObsoleteOrderCollector> _obsoleteOrderCollectorMock;
         private readonly Mock<IBackgroundJobClient> _backgroundJobClientMock;
+        private readonly Mock<IObsoleteOrdersClearingSettings> _obsoleteOrdersClearingSettingsMock;
         private readonly DeleteOrderCommandHandler _handler;
         private readonly Faker _faker;
         private readonly DeleteOrderCommandValidator _validator;
@@ -22,10 +23,12 @@ namespace OrderService
             _orderUserServiceClientMock = new Mock<OrderUserService.OrderUserServiceClient>();
             _obsoleteOrderCollectorMock = new Mock<IObsoleteOrderCollector>();
             _backgroundJobClientMock = new Mock<IBackgroundJobClient>();
+            _obsoleteOrdersClearingSettingsMock = new Mock<IObsoleteOrdersClearingSettings>();
             _handler = new DeleteOrderCommandHandler(_orderRepositoryMock.Object, 
                                                      _orderUserServiceClientMock.Object, 
                                                      _obsoleteOrderCollectorMock.Object,
-                                                     _backgroundJobClientMock.Object);
+                                                     _backgroundJobClientMock.Object,
+                                                     _obsoleteOrdersClearingSettingsMock.Object);
             _faker = new Faker();
             _validator = new DeleteOrderCommandValidator();
         }

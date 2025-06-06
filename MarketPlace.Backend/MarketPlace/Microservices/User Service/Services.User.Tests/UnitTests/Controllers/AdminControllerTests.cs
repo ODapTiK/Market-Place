@@ -12,6 +12,8 @@ namespace UserService
         private readonly Mock<IUpdateAdminUseCase> _updateAdminUseCaseMock;
         private readonly Mock<IGetAdminInfoUseCase> _getAdminInfoUseCaseMock;
         private readonly Mock<IUpdateAdminLogoUseCase> _updateAdminLogoUseCaseMock;
+        private readonly Mock<IReadAdminNotificationUseCase> _readAdminNotificationUseCaseMock;
+        private readonly Mock<IGetAdminUnreadNotificationsCountUseCase> _getAdminUnreadNotificationsCountUseCase;
         private readonly AdminController _controller;
 
         public AdminControllerTests()
@@ -19,6 +21,8 @@ namespace UserService
             _updateAdminUseCaseMock = new Mock<IUpdateAdminUseCase>();
             _getAdminInfoUseCaseMock = new Mock<IGetAdminInfoUseCase>();
             _updateAdminLogoUseCaseMock = new Mock<IUpdateAdminLogoUseCase>();
+            _readAdminNotificationUseCaseMock = new Mock<IReadAdminNotificationUseCase>();
+            _getAdminUnreadNotificationsCountUseCase = new Mock<IGetAdminUnreadNotificationsCountUseCase>();
 
             var httpContext = new DefaultHttpContext();
             var claims = new[] { new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()) };
@@ -29,7 +33,9 @@ namespace UserService
             _controller = new AdminController(
                 _updateAdminUseCaseMock.Object,
                 _getAdminInfoUseCaseMock.Object,
-                _updateAdminLogoUseCaseMock.Object)
+                _updateAdminLogoUseCaseMock.Object,
+                _getAdminUnreadNotificationsCountUseCase.Object,
+                _readAdminNotificationUseCaseMock.Object)
             {
                 ControllerContext = new ControllerContext
                 {

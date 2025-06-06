@@ -1,28 +1,41 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Testcontainers.PostgreSql;
 
 namespace AuthorizationService
 {
-    public class TestUserDatabaseFixture : IDisposable
+    public class TestUserDatabaseFixture : IAsyncLifetime
     {
-        public AuthDbContext _context { get; private set; }
-        public UserManager<User> _userManager { get; private set; }
-        public RoleManager<IdentityRole<Guid>> _roleManager { get; private set; }
+        private readonly PostgreSqlContainer _postgreSqlContainer;
+        private IServiceProvider _serviceProvider;
+        private IServiceScope _scope;
 
-        private readonly IServiceScope _scope;
-        private bool _isDisposed = false;
+        public AuthDbContext _context => _scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+        public UserManager<User> _userManager => _scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+        public RoleManager<IdentityRole<Guid>> _roleManager => _scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
         public TestUserDatabaseFixture()
         {
-            if (_isDisposed)
-                throw new ObjectDisposedException(ToString());
+            _postgreSqlContainer = new PostgreSqlBuilder()
+                .WithImage("postgres:15-alpine")
+                .WithDatabase("test_auth_db")
+                .WithUsername("postgres")
+                .WithPassword("postgres")
+                .WithCleanUp(true)
+                .Build();
+        }
+
+        public async Task InitializeAsync()
+        {
+            await _postgreSqlContainer.StartAsync();
 
             var services = new ServiceCollection();
 
             services.AddDbContext<AuthDbContext>(options =>
-                options.UseInMemoryDatabase("TestDatabase"));
+                options.UseNpgsql(_postgreSqlContainer.GetConnectionString(),
+                    npgsqlOptions => npgsqlOptions.MigrationsAssembly(typeof(AuthDbContext).Assembly.FullName)),
+                ServiceLifetime.Scoped);
 
             services.AddIdentity<User, IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<AuthDbContext>()
@@ -30,24 +43,25 @@ namespace AuthorizationService
 
             services.AddLogging();
 
+            _serviceProvider = services.BuildServiceProvider();
+            _scope = _serviceProvider.CreateScope();
 
+            // Применяем миграции
+            await _context.Database.MigrateAsync();
 
-            var serviceProvider = services.BuildServiceProvider();
-            _roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-            _roleManager.CreateAsync(new IdentityRole<Guid> { Name = "Admin" }).Wait();
-            _userManager = serviceProvider.GetRequiredService<UserManager<User>>();
-            _scope = serviceProvider.CreateScope();
-            _context = serviceProvider.GetRequiredService<AuthDbContext>();
+            // Создаем роль Admin
+            await _roleManager.CreateAsync(new IdentityRole<Guid> { Name = "Admin" });
         }
-        public void Dispose()
+
+        public async Task DisposeAsync()
         {
-            if (!_isDisposed)
+            if (_scope != null)
             {
-                _isDisposed = true;
-                _context.Database.EnsureDeleted();
-                _context.Dispose();
-                _scope?.Dispose();
+                await _context.Database.EnsureDeletedAsync();
+                _scope.Dispose();
             }
+
+            await _postgreSqlContainer.DisposeAsync();
         }
     }
 }

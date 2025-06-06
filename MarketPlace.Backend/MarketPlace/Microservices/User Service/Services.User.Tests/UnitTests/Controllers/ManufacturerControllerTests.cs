@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.Security.Claims;
 using FluentAssertions;
+using System.Runtime.CompilerServices;
 
 namespace UserService
 {
@@ -13,6 +14,8 @@ namespace UserService
         private readonly Mock<IUpdateManufacturerUseCase> _updateManufacturerUseCaseMock;
         private readonly Mock<IGetManufacturerInfoUseCase> _getManufacturerInfoUseCaseMock;
         private readonly Mock<IUpdateManufacturerLogoUseCase> _updateManufacturerLogoUseCaseMock;
+        private readonly Mock<IReadManufacturerNotificationUseCase> _readManufacturerNotificationUseCaseMock;
+        private readonly Mock<IGetManufacturerUnreadNotificationsCountUseCase> _getManufacturerUnreadNotificationsCountUseCase;
         private readonly ManufacturerController _controller;
         private readonly Faker _faker;
 
@@ -21,6 +24,8 @@ namespace UserService
             _updateManufacturerUseCaseMock = new Mock<IUpdateManufacturerUseCase>();
             _getManufacturerInfoUseCaseMock = new Mock<IGetManufacturerInfoUseCase>();
             _updateManufacturerLogoUseCaseMock = new Mock<IUpdateManufacturerLogoUseCase>();
+            _readManufacturerNotificationUseCaseMock = new Mock<IReadManufacturerNotificationUseCase>();
+            _getManufacturerUnreadNotificationsCountUseCase = new Mock<IGetManufacturerUnreadNotificationsCountUseCase>();
 
             var httpContext = new DefaultHttpContext();
             var claims = new[] { new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()) };
@@ -31,7 +36,9 @@ namespace UserService
             _controller = new ManufacturerController(
                 _updateManufacturerUseCaseMock.Object,
                 _getManufacturerInfoUseCaseMock.Object,
-                _updateManufacturerLogoUseCaseMock.Object)
+                _updateManufacturerLogoUseCaseMock.Object,
+                _readManufacturerNotificationUseCaseMock.Object,
+                _getManufacturerUnreadNotificationsCountUseCase.Object)
             {
                 ControllerContext = new ControllerContext
                 {

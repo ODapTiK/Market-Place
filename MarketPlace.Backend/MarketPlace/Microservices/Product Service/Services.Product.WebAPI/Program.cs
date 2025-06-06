@@ -78,7 +78,7 @@ namespace ProductService
             services.AddGrpc();
             services.AddGrpcClient<ProductUserService.ProductUserServiceClient>(options =>
             {
-                options.Address = new Uri("https://localhost:6012");
+                options.Address = new Uri("https://userservice:6012");
             }).ConfigurePrimaryHttpMessageHandler(() =>
             {
                 var handler = new HttpClientHandler();
@@ -90,7 +90,7 @@ namespace ProductService
             });
             services.AddGrpcClient<OrderProductService.OrderProductServiceClient>(options =>
             {
-                options.Address = new Uri("https://localhost:6013");
+                options.Address = new Uri("https://orderservice:6013");
             }).ConfigurePrimaryHttpMessageHandler(() =>
             {
                 var handler = new HttpClientHandler();
@@ -166,10 +166,9 @@ namespace ProductService
             app.UseSwaggerUI(config =>
             {
                 config.RoutePrefix = string.Empty;
-                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Event App API V1");
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "Market Place API V1");
             });
 
-            //app.UseHangfireServer();
             app.UseHangfireDashboard();
 
             var manager = new RecurringJobManager();

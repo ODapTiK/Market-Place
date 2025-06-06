@@ -6,7 +6,7 @@
         {
           "Name": "Users API",
           "Version": "v1",
-          "Url": "http://localhost:6002/swagger/v1/swagger.json"
+          "Url": "http://userservice:6002/swagger/v1/swagger.json"
         }
       ]
     },
@@ -16,7 +16,7 @@
         {
           "Name": "Products API",
           "Version": "v1",
-          "Url": "http://localhost:6004/swagger/v1/swagger.json"
+          "Url": "http://productservice:6004/swagger/v1/swagger.json"
         }
       ]
     },
@@ -26,7 +26,7 @@
         {
           "Name": "Orders API",
           "Version": "v1",
-          "Url": "http://localhost:6003/swagger/v1/swagger.json"
+          "Url": "http://orderservice:6003/swagger/v1/swagger.json"
         }
       ]
     }

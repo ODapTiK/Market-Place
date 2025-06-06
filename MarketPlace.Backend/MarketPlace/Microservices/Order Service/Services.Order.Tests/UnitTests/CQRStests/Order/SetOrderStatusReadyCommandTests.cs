@@ -4,6 +4,7 @@ using Hangfire;
 using Hangfire.Common;
 using Hangfire.States;
 using Moq;
+using Proto.OrderUser;
 
 namespace OrderService
 {
@@ -12,6 +13,8 @@ namespace OrderService
         private readonly Mock<IOrderRepository> _orderRepositoryMock;
         private readonly Mock<IObsoleteOrderCollector> _obsoleteOrderCollectorMock;
         private readonly Mock<IBackgroundJobClient> _backgroundJobClientMock;
+        private readonly Mock<OrderUserService.OrderUserServiceClient> _orderUserServiceMock;
+        private readonly Mock<IObsoleteOrdersClearingSettings> _obsoleteOrdersClearingSettingsMock;
         private readonly SetOrderStatusReadyCommandHandler _handler;
         private readonly Faker<Order> _orderFaker;
 
@@ -20,11 +23,15 @@ namespace OrderService
             _orderRepositoryMock = new Mock<IOrderRepository>();
             _obsoleteOrderCollectorMock = new Mock<IObsoleteOrderCollector>();
             _backgroundJobClientMock = new Mock<IBackgroundJobClient>();
+            _obsoleteOrdersClearingSettingsMock = new Mock<IObsoleteOrdersClearingSettings>();
+            _orderUserServiceMock = new Mock<OrderUserService.OrderUserServiceClient>();
 
             _handler = new SetOrderStatusReadyCommandHandler(
                 _orderRepositoryMock.Object,
                 _obsoleteOrderCollectorMock.Object,
-                _backgroundJobClientMock.Object);
+                _backgroundJobClientMock.Object,
+                _orderUserServiceMock.Object,
+                _obsoleteOrdersClearingSettingsMock.Object);
 
             _orderFaker = new Faker<Order>()
                 .RuleFor(o => o.Id, f => f.Random.Guid())
@@ -52,6 +59,17 @@ namespace OrderService
                 .ReturnsAsync(order);
             _orderRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
+            _obsoleteOrderCollectorMock.Setup(repo => repo.RemoveObsoleteOrderAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+            var mockCall = CallHelpers.CreateAsyncUnaryCall(new Response
+            {
+                Message = "Success test",
+                Success = true
+            });
+            _orderUserServiceMock
+                .Setup(m => m.CreateOrderReadyNotificationAsync(
+                    It.IsAny<OrderReadyRequest>(), null, null, CancellationToken.None))
+                .Returns(mockCall);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
@@ -59,6 +77,9 @@ namespace OrderService
             // Assert
             order.Status.Should().Be(OrderStatus.Ready.GetDisplayName());
             _orderRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<CancellationToken>()), Times.Once);
+            _backgroundJobClientMock.Verify(x => x.Create(
+                 It.Is<Job>(job => job.Method.Name == nameof(IObsoleteOrderCollector.RemoveObsoleteOrderAsync)),
+                 It.IsAny<IState>()));
         }
 
         [Fact]
@@ -79,6 +100,15 @@ namespace OrderService
                 .ReturnsAsync(order);
             _obsoleteOrderCollectorMock.Setup(repo => repo.RemoveObsoleteOrderAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
+            var mockCall = CallHelpers.CreateAsyncUnaryCall(new Response
+            {
+                Message = "Success test",
+                Success = true
+            });
+            _orderUserServiceMock
+                .Setup(m => m.CreateOrderReadyNotificationAsync(
+                    It.IsAny<OrderReadyRequest>(), null, null, CancellationToken.None))
+                .Returns(mockCall);
 
 
             // Act
@@ -147,6 +177,15 @@ namespace OrderService
 
             _orderRepositoryMock.Setup(x => x.GetByIdAsync(order.Id, cancellationToken))
                 .ReturnsAsync(order);
+            var mockCall = CallHelpers.CreateAsyncUnaryCall(new Response
+            {
+                Message = "Success test",
+                Success = true
+            });
+            _orderUserServiceMock
+                .Setup(m => m.CreateOrderReadyNotificationAsync(
+                    It.IsAny<OrderReadyRequest>(), null, null, CancellationToken.None))
+                .Returns(mockCall);
 
             // Act
             await _handler.Handle(command, cancellationToken);

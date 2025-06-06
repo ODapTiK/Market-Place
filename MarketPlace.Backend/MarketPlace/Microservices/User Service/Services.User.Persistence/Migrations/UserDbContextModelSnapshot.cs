@@ -80,6 +80,50 @@ namespace Services.User.Persistence.Migrations
                     b.ToTable("Manufacturers");
                 });
 
+            modelBuilder.Entity("UserService.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("AdminId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("ManufacturerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdminId");
+
+                    b.HasIndex("ManufacturerId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notification");
+                });
+
             modelBuilder.Entity("UserService.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -112,6 +156,36 @@ namespace Services.User.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("UserService.Notification", b =>
+                {
+                    b.HasOne("UserService.Admin", null)
+                        .WithMany("AdminNotifications")
+                        .HasForeignKey("AdminId");
+
+                    b.HasOne("UserService.Manufacturer", null)
+                        .WithMany("ManufacturerNotifications")
+                        .HasForeignKey("ManufacturerId");
+
+                    b.HasOne("UserService.User", null)
+                        .WithMany("UserNotifications")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("UserService.Admin", b =>
+                {
+                    b.Navigation("AdminNotifications");
+                });
+
+            modelBuilder.Entity("UserService.Manufacturer", b =>
+                {
+                    b.Navigation("ManufacturerNotifications");
+                });
+
+            modelBuilder.Entity("UserService.User", b =>
+                {
+                    b.Navigation("UserNotifications");
                 });
 #pragma warning restore 612, 618
         }

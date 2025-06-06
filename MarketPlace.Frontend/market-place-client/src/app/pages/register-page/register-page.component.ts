@@ -109,7 +109,7 @@ export class RegisterPageComponent {
       const userData = {
         Email: formValue.Email as string,
         Password: formValue.Password as string,
-        Role: 'User' as const, 
+        Role: 'Manufacturer' as const, 
         Organization: formValue.Organization as string
       };
 
